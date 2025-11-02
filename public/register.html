@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Acadify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="container mx-auto px-4">
+        <div class="max-w-md mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="bg-blue-600 py-6 text-center">
+                <div class="flex justify-center mb-4">
+                    <i class="fas fa-graduation-cap text-4xl text-white"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-white">Acadify</h1>
+                <p class="text-blue-200 mt-1">Learning Resource Management System</p>
+            </div>
+            
+            <div class="p-8">
+                <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Create Your Account</h2>
+                
+                <form id="registerForm">
+                    <div class="mb-4">
+                        <label for="name" class="block text-gray-700 font-medium mb-2">Full Name</label>
+                        <input type="text" id="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your full name" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="email" class="block text-gray-700 font-medium mb-2">Email Address</label>
+                        <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="role" class="block text-gray-700 font-medium mb-2">Role</label>
+                        <select id="role" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            <option value="">Select your role</option>
+                            <option value="student">Student</option>
+                            <option value="faculty">Faculty</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4" id="programField" style="display: none;">
+                        <label for="program" class="block text-gray-700 font-medium mb-2">Program</label>
+                        <input type="text" id="program" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your program (e.g., BCA, MCA)">
+                    </div>
+                    
+                    <div class="mb-6" id="semesterField" style="display: none;">
+                        <label for="semester" class="block text-gray-700 font-medium mb-2">Semester</label>
+                        <input type="text" id="semester" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your semester (e.g., 1st, 2nd)">
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="password" class="block text-gray-700 font-medium mb-2">Password</label>
+                        <input type="password" id="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Create a password" required>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Create Account
+                    </button>
+                </form>
+                
+                <div class="mt-6 text-center">
+                    <p class="text-gray-600">Already have an account? <a href="login.html" class="text-blue-600 font-medium hover:text-blue-800">Sign In</a></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-8 text-center text-gray-600">
+            <p>&copy; 2025 Acadify. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        // Show/hide program and semester fields based on role
+        document.getElementById('role').addEventListener('change', function() {
+            const role = this.value;
+            const programField = document.getElementById('programField');
+            const semesterField = document.getElementById('semesterField');
+            
+            if (role === 'student') {
+                programField.style.display = 'block';
+                semesterField.style.display = 'block';
+            } else {
+                programField.style.display = 'none';
+                semesterField.style.display = 'none';
+            }
+        });
+        
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const role = document.getElementById('role').value;
+            const program = document.getElementById('program').value;
+            const semester = document.getElementById('semester').value;
+            const password = document.getElementById('password').value;
+            
+            const userData = { name, email, role, password };
+            
+            // Add program and semester only if role is student
+            if (role === 'student') {
+                userData.program = program;
+                userData.semester = semester;
+            }
+            
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert('Registration successful! Please check your email for login credentials.');
+                    window.location.href = 'login.html';
+                } else {
+                    alert(data.message || 'Registration failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred during registration');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Acadify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-graduation-cap text-2xl"></i>
+                    <h1 class="text-xl font-bold">Acadify - Admin Dashboard</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="userName" class="hidden md:inline"></span>
+                    <a href="#" id="logoutBtn" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg text-sm font-semibold transition">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex flex-col md:flex-row">
+            <!-- Sidebar -->
+            <div class="md:w-1/4 mb-6 md:mb-0">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-lg font-bold mb-4 text-gray-800">Navigation</h2>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded-lg bg-blue-100 text-blue-700 font-medium" id="dashboardLink">
+                                <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded-lg hover:bg-gray-100 text-gray-700" id="programsLink">
+                                <i class="fas fa-book mr-2"></i>Programs & Semesters
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded-lg hover:bg-gray-100 text-gray-700" id="usersLink">
+                                <i class="fas fa-users mr-2"></i>User Management
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded-lg hover:bg-gray-100 text-gray-700" id="timetableLink">
+                                <i class="fas fa-calendar-alt mr-2"></i>Timetable
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded-lg hover:bg-gray-100 text-gray-700" id="reportsLink">
+                                <i class="fas fa-chart-bar mr-2"></i>Reports
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="md:w-3/4 md:pl-6">
+                <!-- Dashboard Overview -->
+                <div id="dashboardSection">
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <h2 class="text-2xl font-bold mb-6 text-gray-800">Dashboard Overview</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div class="bg-blue-50 rounded-lg p-6 border border-blue-100">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-blue-800 font-semibold">Total Students</p>
+                                        <p class="text-3xl font-bold text-blue-600 mt-2" id="totalStudents">0</p>
+                                    </div>
+                                    <div class="bg-blue-100 p-3 rounded-full">
+                                        <i class="fas fa-user-graduate text-blue-600 text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-green-50 rounded-lg p-6 border border-green-100">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-green-800 font-semibold">Total Faculty</p>
+                                        <p class="text-3xl font-bold text-green-600 mt-2" id="totalFaculty">0</p>
+                                    </div>
+                                    <div class="bg-green-100 p-3 rounded-full">
+                                        <i class="fas fa-chalkboard-teacher text-green-600 text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-purple-50 rounded-lg p-6 border border-purple-100">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-purple-800 font-semibold">Total Programs</p>
+                                        <p class="text-3xl font-bold text-purple-600 mt-2" id="totalPrograms">0</p>
+                                    </div>
+                                    <div class="bg-purple-100 p-3 rounded-full">
+                                        <i class="fas fa-book-open text-purple-600 text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white border border-gray-200 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold mb-4 text-gray-800">Recent Activities</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <div class="bg-blue-100 p-2 rounded-full mr-3">
+                                        <i class="fas fa-user-plus text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-800">New student registered</p>
+                                        <p class="text-sm text-gray-600">John Doe joined BCA program</p>
+                                        <p class="text-xs text-gray-500 mt-1">2 hours ago</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="bg-green-100 p-2 rounded-full mr-3">
+                                        <i class="fas fa-file-upload text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-800">Faculty uploaded new resources</p>
+                                        <p class="text-sm text-gray-600">Dr. Smith uploaded 3 new PPTs</p>
+                                        <p class="text-xs text-gray-500 mt-1">5 hours ago</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="bg-purple-100 p-2 rounded-full mr-3">
+                                        <i class="fas fa-calendar-check text-purple-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-800">Timetable updated</p>
+                                        <p class="text-sm text-gray-600">MCA 2nd semester timetable revised</p>
+                                        <p class="text-xs text-gray-500 mt-1">1 day ago</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Programs & Semesters Section -->
+                <div id="programsSection" class="hidden">
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">Programs & Semesters</h2>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold">
+                                <i class="fas fa-plus mr-2"></i>Add New
+                            </button>
+                        </div>
+                        
+                        <div class="mb-8">
+                            <h3 class="text-lg font-semibold mb-4 text-gray-800">Programs</h3>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white border border-gray-200">
+                                    <thead>
+                                        <tr class="bg-gray-100">
+                                            <th class="py-2 px-4 border-b text-left">Program Name</th>
+                                            <th class="py-2 px-4 border-b text-left">Duration</th>
+                                            <th class="py-2 px-4 border-b text-left">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">BCA</td>
+                                            <td class="py-2 px-4 border-b">3 years</td>
+                                            <td class="py-2 px-4 border-b">
+                                                <button class="text-blue-600 hover:text-blue-800 mr-2">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="text-red-600 hover:text-red-800">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">MCA</td>
+                                            <td class="py-2 px-4 border-b">2 years</td>
+                                            <td class="py-2 px-4 border-b">
+                                                <button class="text-blue-600 hover:text-blue-800 mr-2">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="text-red-600 hover:text-red-800">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4 text-gray-800">Semesters</h3>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white border border-gray-200">
+                                    <thead>
+                                        <tr class="bg-gray-100">
+                                            <th class="py-2 px-4 border-b text-left">Semester Name</th>
+                                            <th class="py-2 px-4 border-b text-left">Program</th>
+                                            <th class="py-2 px-4 border-b text-left">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">1st Semester</td>
+                                            <td class="py-2 px-4 border-b">BCA</td>
+                                            <td class="py-2 px-4 border-b">
+                                                <button class="text-blue-600 hover:text-blue-800 mr-2">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="text-red-600 hover:text-red-800">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">2nd Semester</td>
+                                            <td class="py-2 px-4 border-b">BCA</td>
+                                            <td class="py-2 px-4 border-b">
+                                                <button class="text-blue-600 hover:text-blue-800 mr-2">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="text-red-600 hover:text-red-800">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Management Section -->
+                <div id="usersSection" class="hidden">
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">User Management</h2>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold">
+                                <i class="fas fa-upload mr-2"></i>Upload Users
+                            </button>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <div class="flex border-b">
+                                <button class="py-2 px-4 font-medium text-blue-600 border-b-2 border-blue-600">Students</button>
+                                <button class="py-2 px-4 font-medium text-gray-600 hover:text-gray-800">Faculty</button>
+                                <button class="py-2 px-4 font-medium text-gray-600 hover:text-gray-800">Admin</button>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white border border-gray-200">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="py-2 px-4 border-b text-left">Student ID</th>
+                                        <th class="py-2 px-4 border-b text-left">Name</th>
+                                        <th class="py-2 px-4 border-b text-left">Email</th>
+                                        <th class="py-2 px-4 border-b text-left">Program</th>
+                                        <th class="py-2 px-4 border-b text-left">Semester</th>
+                                        <th class="py-2 px-4 border-b text-left">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="py-2 px-4 border-b">STU123456</td>
+                                        <td class="py-2 px-4 border-b">John Doe</td>
+                                        <td class="py-2 px-4 border-b">john@example.com</td>
+                                        <td class="py-2 px-4 border-b">BCA</td>
+                                        <td class="py-2 px-4 border-b">1st</td>
+                                        <td class="py-2 px-4 border-b">
+                                            <button class="text-blue-600 hover:text-blue-800 mr-2">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="text-red-600 hover:text-red-800">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4 border-b">STU789012</td>
+                                        <td class="py-2 px-4 border-b">Jane Smith</td>
+                                        <td class="py-2 px-4 border-b">jane@example.com</td>
+                                        <td class="py-2 px-4 border-b">MCA</td>
+                                        <td class="py-2 px-4 border-b">2nd</td>
+                                        <td class="py-2 px-4 border-b">
+                                            <button class="text-blue-600 hover:text-blue-800 mr-2">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="text-red-600 hover:text-red-800">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        if (!token || !user || user.role !== 'admin') {
+            window.location.href = '../login.html';
+        }
+        
+        // Display user name
+        document.getElementById('userName').textContent = user.name;
+        
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../login.html';
+        });
+        
+        // Navigation
+        document.getElementById('dashboardLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showSection('dashboardSection');
+        });
+        
+        document.getElementById('programsLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showSection('programsSection');
+        });
+        
+        document.getElementById('usersLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showSection('usersSection');
+        });
+        
+        function showSection(sectionId) {
+            // Hide all sections
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('programsSection').classList.add('hidden');
+            document.getElementById('usersSection').classList.add('hidden');
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+        
+        // Fetch dashboard stats
+        async function fetchDashboardStats() {
+            try {
+                const response = await fetch('/api/admin/dashboard', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('totalStudents').textContent = data.stats.totalStudents;
+                    document.getElementById('totalFaculty').textContent = data.stats.totalFaculty;
+                    document.getElementById('totalPrograms').textContent = data.stats.totalPrograms;
+                }
+            } catch (error) {
+                console.error('Error fetching dashboard stats:', error);
+            }
+        }
+        
+        // Initialize dashboard
+        fetchDashboardStats();
+    </script>
+</body>
+</html>

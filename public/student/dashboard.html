@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Acadify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-graduation-cap text-2xl"></i>
+                    <h1 class="text-xl font-bold">Acadify - Student Dashboard</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="userName" class="hidden md:inline"></span>
+                    <a href="#" id="logoutBtn" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg text-sm font-semibold transition">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex flex-col md:flex-row">
+            <!-- Sidebar -->
+            <div class="md:w-1/4 mb-6 md:mb-0">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-lg font-bold mb-4 text-gray-800">Navigation</h2>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded-lg bg-blue-100 text-blue-700 font-medium" id="dashboardLink">
+                                <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded-lg hover:bg-gray-100 text-gray-700" id="resourcesLink">
+                                <i class="fas fa-book mr-2"></i>Learning Resources
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded-lg hover:bg-gray-100 text-gray-700" id="assignmentsLink">
+                                <i class="fas fa-tasks mr-2"></i>Assignments
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded-lg hover:bg-gray-100 text-gray-700" id="timetableLink">
+                                <i class="fas fa-calendar-alt mr-2"></i>Timetable
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded-lg hover:bg-gray-100 text-gray-700" id="meetingsLink">
+                                <i class="fas fa-video mr-2"></i>Online Classes
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded-lg hover:bg-gray-100 text-gray-700" id="aiChatLink">
+                                <i class="fas fa-robot mr-2"></i>AI Chat Assistant
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="md:w-3/4 md:pl-6">
+                <!-- Dashboard Overview -->
+                <div id="dashboardSection">
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <h2 class="text-2xl font-bold mb-6 text-gray-800">Dashboard Overview</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div class="bg-blue-50 rounded-lg p-6 border border-blue-100">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-blue-800 font-semibold">Program</p>
+                                        <p class="text-xl font-bold text-blue-600 mt-2" id="programName">BCA</p>
+                                    </div>
+                                    <div class="bg-blue-100 p-3 rounded-full">
+                                        <i class="fas fa-graduation-cap text-blue-600 text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-green-50 rounded-lg p-6 border border-green-100">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-green-800 font-semibold">Semester</p>
+                                        <p class="text-xl font-bold text-green-600 mt-2" id="semesterName">1st</p>
+                                    </div>
+                                    <div class="bg-green-100 p-3 rounded-full">
+                                        <i class="fas fa-book-open text-green-600 text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-purple-50 rounded-lg p-6 border border-purple-100">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-purple-800 font-semibold">Attendance</p>
+                                        <p class="text-xl font-bold text-purple-600 mt-2" id="attendanceRate">85%</p>
+                                    </div>
+                                    <div class="bg-purple-100 p-3 rounded-full">
+                                        <i class="fas fa-user-check text-purple-600 text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-white border border-gray-200 rounded-lg p-6">
+                                <h3 class="text-lg font-semibold mb-4 text-gray-800">Recent Announcements</h3>
+                                <div class="space-y-4">
+                                    <div class="border-b border-gray-100 pb-3">
+                                        <p class="font-medium text-gray-800">Exam Schedule Released</p>
+                                        <p class="text-sm text-gray-600">Check your timetable for upcoming exams</p>
+                                        <p class="text-xs text-gray-500 mt-1">2 days ago</p>
+                                    </div>
+                                    
+                                    <div class="border-b border-gray-100 pb-3">
+                                        <p class="font-medium text-gray-800">Library Access</p>
+                                        <p class="text-sm text-gray-600">Extended library hours during exam week</p>
+                                        <p class="text-xs text-gray-500 mt-1">1 week ago</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white border border-gray-200 rounded-lg p-6">
+                                <h3 class="text-lg font-semibold mb-4 text-gray-800">Upcoming Classes</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                        <div>
+                                            <p class="font-medium text-gray-800">Introduction to Programming</p>
+                                            <p class="text-sm text-gray-600">Room 201</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-sm font-medium text-gray-800">Today</p>
+                                            <p class="text-xs text-gray-600">10:00 AM</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                        <div>
+                                            <p class="font-medium text-gray-800">Mathematics</p>
+                                            <p class="text-sm text-gray-600">Room 105</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-sm font-medium text-gray-800">Tomorrow</p>
+                                            <p class="text-xs text-gray-600">2:00 PM</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Learning Resources Section -->
+                <div id="resourcesSection" class="hidden">
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">Learning Resources</h2>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <div class="flex border-b">
+                                <button class="py-2 px-4 font-medium text-blue-600 border-b-2 border-blue-600">All Resources</button>
+                                <button class="py-2 px-4 font-medium text-gray-600 hover:text-gray-800">Notes</button>
+                                <button class="py-2 px-4 font-medium text-gray-600 hover:text-gray-800">PPTs</button>
+                                <button class="py-2 px-4 font-medium text-gray-600 hover:text-gray-800">Assignments</button>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition">
+                                <div class="bg-blue-50 p-4">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h3 class="font-semibold text-gray-800">Introduction to Programming</h3>
+                                            <p class="text-sm text-gray-600">Notes</p>
+                                        </div>
+                                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">PDF</span>
+                                    </div>
+                                </div>
+                                <div class="p-4">
+                                    <p class="text-sm text-gray-600 mb-4">Basic concepts of programming with examples</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs text-gray-500">Uploaded 2 days ago</span>
+                                        <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                            <i class="fas fa-download mr-1"></i> Download
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition">
+                                <div class="bg-green-50 p-4">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h3 class="font-semibold text-gray-800">Data Structures</h3>
+                                            <p class="text-sm text-gray-600">PPT</p>
+                                        </div>
+                                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">PPTX</span>
+                                    </div>
+                                </div>
+                                <div class="p-4">
+                                    <p class="text-sm text-gray-600 mb-4">Detailed presentation on data structures</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs text-gray-500">Uploaded 1 week ago</span>
+                                        <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                            <i class="fas fa-download mr-1"></i> Download
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Chat Assistant Section -->
+                <div id="aiChatSection" class="hidden">
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <h2 class="text-2xl font-bold mb-6 text-gray-800">AI Learning Assistant</h2>
+                        
+                        <div class="border border-gray-200 rounded-lg h-96 flex flex-col">
+                            <div class="p-4 border-b border-gray-200 bg-gray-50">
+                                <h3 class="font-semibold text-gray-800">Gemini 2.5 Flash AI Assistant</h3>
+                            </div>
+                            
+                            <div class="flex-1 p-4 overflow-y-auto bg-gray-50">
+                                <div class="mb-4">
+                                    <div class="inline-block bg-blue-100 rounded-lg p-3 max-w-xs md:max-w-md">
+                                        <p class="text-gray-800">Hello! I'm your AI learning assistant. How can I help you with your studies today?</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4 text-right">
+                                    <div class="inline-block bg-green-100 rounded-lg p-3 max-w-xs md:max-w-md">
+                                        <p class="text-gray-800">Can you explain data structures?</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <div class="inline-block bg-blue-100 rounded-lg p-3 max-w-xs md:max-w-md">
+                                        <p class="text-gray-800">Certainly! Data structures are ways of organizing and storing data in a computer so that it can be accessed and modified efficiently. Common data structures include arrays, linked lists, stacks, queues, trees, and graphs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="p-4 border-t border-gray-200">
+                                <div class="flex">
+                                    <input type="text" class="flex-1 border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ask me anything about your studies...">
+                                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-lg font-semibold">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        if (!token || !user || user.role !== 'student') {
+            window.location.href = '../login.html';
+        }
+        
+        // Display user name
+        document.getElementById('userName').textContent = user.name;
+        
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../login.html';
+        });
+        
+        // Navigation
+        document.getElementById('dashboardLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showSection('dashboardSection');
+        });
+        
+        document.getElementById('resourcesLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showSection('resourcesSection');
+        });
+        
+        document.getElementById('aiChatLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showSection('aiChatSection');
+        });
+        
+        function showSection(sectionId) {
+            // Hide all sections
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('resourcesSection').classList.add('hidden');
+            document.getElementById('aiChatSection').classList.add('hidden');
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
