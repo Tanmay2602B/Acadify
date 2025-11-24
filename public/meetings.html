@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acadify - Meeting Planner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="bg-slate-950 text-slate-100">
+    <header class="border-b border-white/10 bg-slate-950/95 backdrop-blur-xl sticky top-0 z-30">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2 text-lg font-semibold">
+                <span
+                    class="h-9 w-9 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white"><i
+                        class="fas fa-video"></i></span>
+                <span>Acadify Meetings</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-5 text-sm text-slate-300 font-semibold">
+                <a href="index.html" class="hover:text-white transition">Home</a>
+                <a href="about.html" class="hover:text-white transition">About</a>
+                <a href="features.html" class="hover:text-white transition">Features</a>
+                <a href="contact.html" class="hover:text-white transition">Contact</a>
+            </nav>
+            <button id="meetingsMenuButton" class="md:hidden text-xl"><i class="fas fa-bars"></i></button>
+        </div>
+        <nav id="meetingsMobileMenu"
+            class="md:hidden hidden border-t border-white/10 px-6 py-4 text-sm font-semibold text-slate-300">
+            <a href="index.html" class="block py-2">Home</a>
+            <a href="about.html" class="block py-2">About</a>
+            <a href="features.html" class="block py-2">Features</a>
+            <a href="contact.html" class="block py-2">Contact</a>
+        </nav>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-12">
+        <section class="text-center space-y-4">
+            <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Meeting planner</p>
+            <h1 class="text-4xl font-semibold text-white">Keep every class, workshop, and sync on schedule.</h1>
+            <p class="text-slate-300 text-sm max-w-3xl mx-auto">Use the meeting workspace to orchestrate live Jitsi
+                sessions, share links with cohorts, and monitor attendance for compliance.</p>
+            <div class="flex flex-wrap justify-center gap-4 text-sm font-semibold">
+                <a href="login.html"
+                    class="px-5 py-3 rounded-2xl bg-white text-slate-900 shadow-lg shadow-white/20">Launch planner</a>
+                <a href="contact.html"
+                    class="px-5 py-3 rounded-2xl border border-white/20 hover:border-white/50 transition">Request
+                    demo</a>
+            </div>
+        </section>
+
+        <div id="studentNotice" class="hidden glass-soft border border-white/10 rounded-3xl p-5 text-sm text-slate-200">
+            <p class="font-semibold text-white mb-2">Heads up</p>
+            <p>Only admins and faculty can create or edit meetings. As a student you can review your upcoming sessions
+                below and join using the provided links.</p>
+        </div>
+
+        <section id="adminPlanner" class="glass-soft border border-white/10 rounded-3xl p-6 space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Upcoming</p>
+                    <h2 class="text-2xl font-semibold text-white">Week at a glance</h2>
+                </div>
+                <div class="flex gap-3 text-xs font-semibold">
+                    <button class="px-4 py-2 rounded-2xl border border-white/20 hover:border-white/50 transition">Export
+                        CSV</button>
+                    <button
+                        class="px-4 py-2 rounded-2xl bg-white/10 border border-white/20 hover:border-white/50 transition">Add
+                        meeting</button>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm text-left">
+                    <thead class="text-slate-300 uppercase tracking-widest text-xs">
+                        <tr>
+                            <th class="py-3 pr-4">When</th>
+                            <th class="py-3 pr-4">Program</th>
+                            <th class="py-3 pr-4">Title</th>
+                            <th class="py-3 pr-4">Mode</th>
+                            <th class="py-3 pr-4">Participants</th>
+                            <th class="py-3 pr-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5 text-slate-200">
+                        <tr>
+                            <td class="py-4 pr-4">Mon · 10:00 AM</td>
+                            <td class="py-4 pr-4">BCA · Sem 3</td>
+                            <td class="py-4 pr-4 font-semibold">Data Structures workshop</td>
+                            <td class="py-4 pr-4">Hybrid</td>
+                            <td class="py-4 pr-4">62 registered</td>
+                            <td class="py-4 pr-4 text-right space-x-3">
+                                <button class="text-xs text-sky-300 font-semibold">Copy link</button>
+                                <button class="text-xs text-emerald-300 font-semibold">Mark live</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 pr-4">Tue · 02:30 PM</td>
+                            <td class="py-4 pr-4">MCA · Sem 1</td>
+                            <td class="py-4 pr-4 font-semibold">AI ethics fireside</td>
+                            <td class="py-4 pr-4">Virtual</td>
+                            <td class="py-4 pr-4">120 registered</td>
+                            <td class="py-4 pr-4 text-right space-x-3">
+                                <button class="text-xs text-sky-300 font-semibold">Copy link</button>
+                                <button class="text-xs text-amber-300 font-semibold">Reschedule</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="py-4 pr-4">Thu · 11:15 AM</td>
+                            <td class="py-4 pr-4">BSc IT · Sem 5</td>
+                            <td class="py-4 pr-4 font-semibold">Capstone review</td>
+                            <td class="py-4 pr-4">On campus</td>
+                            <td class="py-4 pr-4">45 registered</td>
+                            <td class="py-4 pr-4 text-right space-x-3">
+                                <button class="text-xs text-rose-300 font-semibold">Cancel</button>
+                                <button class="text-xs text-sky-300 font-semibold">Copy link</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="studentPlanner" class="hidden glass-soft border border-white/10 rounded-3xl p-6 space-y-4">
+            <h2 class="text-xl font-semibold text-white">Your upcoming meetings</h2>
+            <div class="space-y-4">
+                <article
+                    class="bg-white/5 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm">
+                    <div>
+                        <p class="text-white font-semibold">Data Structures workshop</p>
+                        <p class="text-slate-400 text-xs">Mon · 10:00 AM · BCA Sem 3</p>
+                    </div>
+                    <div class="flex gap-2 mt-3 sm:mt-0">
+                        <button
+                            class="px-4 py-2 rounded-2xl border border-white/20 text-xs font-semibold hover:border-white/50 transition">Join</button>
+                        <button
+                            class="px-4 py-2 rounded-2xl border border-white/20 text-xs font-semibold hover:border-white/50 transition">Details</button>
+                    </div>
+                </article>
+                <article
+                    class="bg-white/5 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm">
+                    <div>
+                        <p class="text-white font-semibold">AI Ethics fireside</p>
+                        <p class="text-slate-400 text-xs">Tue · 2:30 PM · MCA Sem 1</p>
+                    </div>
+                    <div class="flex gap-2 mt-3 sm:mt-0">
+                        <button
+                            class="px-4 py-2 rounded-2xl border border-white/20 text-xs font-semibold hover:border-white/50 transition">Join</button>
+                        <button
+                            class="px-4 py-2 rounded-2xl border border-white/20 text-xs font-semibold hover:border-white/50 transition">Details</button>
+                    </div>
+                </article>
+                <article
+                    class="bg-white/5 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm">
+                    <div>
+                        <p class="text-white font-semibold">Capstone review</p>
+                        <p class="text-slate-400 text-xs">Thu · 11:15 AM · BSc IT Sem 5</p>
+                    </div>
+                    <div class="flex gap-2 mt-3 sm:mt-0">
+                        <button
+                            class="px-4 py-2 rounded-2xl border border-white/20 text-xs font-semibold hover:border-white/50 transition">Join</button>
+                        <button
+                            class="px-4 py-2 rounded-2xl border border-white/20 text-xs font-semibold hover:border-white/50 transition">Details</button>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section id="adminAutomation" class="grid gap-6 md:grid-cols-2 text-sm text-slate-300">
+            <div class="glass-soft rounded-3xl border border-white/10 p-6 space-y-3">
+                <h3 class="text-xl font-semibold text-white">Automation</h3>
+                <ul class="list-disc list-inside space-y-2">
+                    <li>Auto reminders to students via email and dashboard alerts.</li>
+                    <li>One-click attendance logging synced with reports.</li>
+                    <li>Meeting templates for labs, tutorials, and council sessions.</li>
+                </ul>
+            </div>
+            <div class="glass-soft rounded-3xl border border-white/10 p-6 space-y-3">
+                <h3 class="text-xl font-semibold text-white">Integrations</h3>
+                <ul class="list-disc list-inside space-y-2">
+                    <li>Embed Jitsi or drop in physical room details.</li>
+                    <li>Generate ICS calendar invites for faculty and students.</li>
+                    <li>Link meetings to resources, quizzes, or attendance exports.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="text-center space-y-4">
+            <h2 class="text-3xl font-semibold text-white">Need custom meeting flows?</h2>
+            <p class="text-slate-300 text-sm max-w-3xl mx-auto">Our team helps configure reminders, attendance SLAs, and
+                reporting rules tailored to your accreditation standards.</p>
+            <div class="flex flex-wrap justify-center gap-4 text-sm font-semibold">
+                <a href="contact.html"
+                    class="px-6 py-3 rounded-2xl border border-white/20 hover:border-white/50 transition">Talk to
+                    solutions</a>
+                <a href="features.html"
+                    class="px-6 py-3 rounded-2xl bg-white/10 border border-white/20 hover:border-white/50 transition">See
+                    full feature list</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="border-t border-white/10 mt-16">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-xs text-slate-500 text-center">
+            <p>&copy; 2025 Acadify. Meetings that keep cohorts connected.</p>
+        </div>
+    </footer>
+
+    <script>
+        const meetingsButton = document.getElementById('meetingsMenuButton');
+        const meetingsMenu = document.getElementById('meetingsMobileMenu');
+        meetingsButton?.addEventListener('click', () => {
+            meetingsMenu?.classList.toggle('hidden');
+        });
+
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+        if (!token || !user.role) {
+            window.location.href = 'login.html';
+        }
+
+        const adminPlanner = document.getElementById('adminPlanner');
+        const adminAutomation = document.getElementById('adminAutomation');
+        const studentPlanner = document.getElementById('studentPlanner');
+        const studentNotice = document.getElementById('studentNotice');
+
+        if (user.role === 'student') {
+            // Redirect students to the integrated dashboard view
+            window.location.href = 'student/dashboard.html#meetings';
+        } else {
+            studentPlanner?.classList.add('hidden');
+            studentNotice?.classList.add('hidden');
+        }
+    </script>
+</body>
+
+</html>

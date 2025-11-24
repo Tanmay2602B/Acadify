@@ -1,0 +1,108 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                    ACADIFY MVP - QUICK REFERENCE                          ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+🚀 SERVER
+  URL: http://localhost:3000
+  Status: Running ✓
+  MongoDB: Connected ✓
+
+📋 KEY ENDPOINTS
+
+  ADMIN - CSV IMPORT
+  POST /api/admin-import/import/students (upload CSV)
+  POST /api/admin-import/import/students/confirm (save)
+  GET  /api/admin-import/template/student (download template)
+
+  TIMETABLE GENERATOR
+  POST /api/timetable-generator/generate (auto-generate)
+  GET  /api/timetable-generator/ (view timetable)
+
+  MEETINGS (Auto-Attendance)
+  POST /api/meetings (create - faculty)
+  POST /api/meetings/:id/join (join - student)
+  POST /api/meetings/:id/leave (leave - auto marks attendance)
+
+  NOTIFICATIONS
+  GET  /api/notifications (get all)
+  GET  /api/notifications/unread-count (count)
+  PUT  /api/notifications/:id/read (mark read)
+
+  MCQ QUIZ (Auto-Grading)
+  POST /api/quiz (create - faculty)
+  POST /api/quiz/:id/submit (submit - student, auto-grades)
+  GET  /api/quiz/:id/results (view results - faculty)
+
+📁 SAMPLE FILES
+  - sample-students.csv (10 students)
+  - sample-faculty.csv (8 faculty)
+  - sample-data.json (test data)
+
+📚 DOCUMENTATION
+  - MVP_DOCUMENTATION.md (Complete guide)
+  - QUICK_START.md (Setup guide)
+  - FEATURES.md (Feature details)
+  - README.md (Project overview)
+
+🔑 AUTO-GENERATED CREDENTIALS
+  Format: {ROLE}-{timestamp}-{random}
+  Password: 12 characters (secure random)
+  Example: STU-1732089600000-A3F9B2
+
+🎯 MVP FEATURES IMPLEMENTED
+  ✓ Auto ID/Password Generation
+  ✓ CSV/Excel Import with Validation
+  ✓ Auto-Generated Timetable
+  ✓ Auto-Attendance via Meeting Joins
+  ✓ Auto-Notifications (In-app + Email)
+  ✓ MCQ Auto-Grading
+  ✓ Jitsi Meet Integration
+  ✓ Responsive Glassmorphism UI
+
+🧪 TESTING
+  1. Import students: Use sample-students.csv
+  2. Create meeting: POST /api/meetings
+  3. Join meeting: Student joins, duration tracked
+  4. Leave meeting: Auto-marks attendance if >= 30 min
+  5. Create quiz: POST /api/quiz with questions
+  6. Submit quiz: Auto-grades and returns results
+
+📧 EMAIL NOTIFICATIONS
+  Set ENABLE_EMAIL_NOTIFICATIONS=true in .env
+  Configure SMTP settings
+  Auto-sends on: assignments, meetings, grades
+
+🔒 SECURITY
+  - JWT authentication
+  - Bcrypt password hashing
+  - Role-based access control
+  - Auto-generated secure passwords
+  - Input validation
+
+🎨 UI/UX
+  - Glassmorphism theme
+  - Blue → Purple gradients
+  - Mobile-responsive
+  - Touch-friendly
+  - Smooth animations
+
+📊 STATISTICS
+  Models Created: 8
+  Controllers Created: 6
+  Routes Created: 6
+  Utilities Created: 3
+  Services Created: 1
+  Sample Files: 3
+
+🚀 NEXT STEPS
+  1. Test CSV import with sample files
+  2. Create a meeting and test auto-attendance
+  3. Create a quiz and test auto-grading
+  4. Check notifications system
+  5. Review MVP_DOCUMENTATION.md for details
+
+═══════════════════════════════════════════════════════════════════════════
+Version: 2.1.0 (MVP)
+Status: Production Ready ✅
+Last Updated: November 20, 2025
+═══════════════════════════════════════════════════════════════════════════

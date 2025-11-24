@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acadify - Platform Features</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100">
+    <header class="border-b border-white/10 bg-slate-950/95 backdrop-blur-xl sticky top-0 z-30">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2 text-lg font-semibold">
+                <span class="h-9 w-9 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white"><i class="fas fa-layer-group"></i></span>
+                <span>Acadify</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-5 text-sm text-slate-300 font-semibold">
+                <a href="index.html" class="hover:text-white transition">Home</a>
+                <a href="about.html" class="hover:text-white transition">About</a>
+                <a href="contact.html" class="hover:text-white transition">Contact</a>
+            </nav>
+            <div class="flex items-center gap-3">
+                <a href="register.html" class="hidden sm:inline-flex px-4 py-2 rounded-xl border border-white/20 text-sm font-semibold hover:border-white/50 transition">Get started</a>
+                <button id="featureMenuButton" class="md:hidden text-xl"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+        <nav id="featureMobileMenu" class="md:hidden hidden border-t border-white/10 px-6 py-4 text-sm font-semibold text-slate-300">
+            <a href="index.html" class="block py-2">Home</a>
+            <a href="about.html" class="block py-2">About</a>
+            <a href="contact.html" class="block py-2">Contact</a>
+        </nav>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-16">
+        <section class="text-center space-y-4">
+            <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Product overview</p>
+            <h1 class="text-4xl font-semibold text-white">Everything you need to run a high performing campus.</h1>
+            <p class="text-slate-300 text-sm max-w-3xl mx-auto">Acadify is a modular stack. Enable only the consoles you need or activate the full experience for admins, faculty, and students.</p>
+        </section>
+
+        <section class="grid gap-6 md:grid-cols-2">
+            <article class="glass-soft border border-white/10 rounded-3xl p-6 space-y-4">
+                <div class="flex items-center gap-3">
+                    <span class="h-10 w-10 rounded-2xl bg-indigo-500/30 text-indigo-200 flex items-center justify-center text-lg"><i class="fas fa-user-gear"></i></span>
+                    <div>
+                        <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Admin</p>
+                        <h2 class="text-2xl font-semibold text-white">Control Center</h2>
+                    </div>
+                </div>
+                <ul class="text-sm text-slate-300 space-y-2 list-disc list-inside">
+                    <li>Program, semester, and subject designer with drag-and-drop sequencing.</li>
+                    <li>Bulk CSV importer with validation, preview, and confirm workflow.</li>
+                    <li>Timetable generator that detects room collisions and faculty overlaps.</li>
+                    <li>Advanced reporting with exportable CSV/PDF snapshots.</li>
+                </ul>
+            </article>
+            <article class="glass-soft border border-white/10 rounded-3xl p-6 space-y-4">
+                <div class="flex items-center gap-3">
+                    <span class="h-10 w-10 rounded-2xl bg-emerald-500/30 text-emerald-200 flex items-center justify-center text-lg"><i class="fas fa-person-chalkboard"></i></span>
+                    <div>
+                        <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Faculty</p>
+                        <h2 class="text-2xl font-semibold text-white">Teaching Workbench</h2>
+                    </div>
+                </div>
+                <ul class="text-sm text-slate-300 space-y-2 list-disc list-inside">
+                    <li>Resource uploads for notes, decks, recordings, and assignments.</li>
+                    <li>Assessment composer with AI assistance for question banks.</li>
+                    <li>Attendance capture, meeting scheduling, and link sharing.</li>
+                    <li>Progress panels to track student engagement and submissions.</li>
+                </ul>
+            </article>
+            <article class="glass-soft border border-white/10 rounded-3xl p-6 space-y-4">
+                <div class="flex items-center gap-3">
+                    <span class="h-10 w-10 rounded-2xl bg-pink-500/30 text-pink-200 flex items-center justify-center text-lg"><i class="fas fa-user-graduate"></i></span>
+                    <div>
+                        <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Students</p>
+                        <h2 class="text-2xl font-semibold text-white">Learning Hub</h2>
+                    </div>
+                </div>
+                <ul class="text-sm text-slate-300 space-y-2 list-disc list-inside">
+                    <li>Personalized dashboard with program, semester, and attendance stats.</li>
+                    <li>Timeline view of upcoming classes, meetings, and deadlines.</li>
+                    <li>Smart reminders, AI mentor chat, and deep links to sessions.</li>
+                    <li>Resource library with filters for notes, PPTs, assignments, and recordings.</li>
+                </ul>
+            </article>
+            <article class="glass-soft border border-white/10 rounded-3xl p-6 space-y-4">
+                <div class="flex items-center gap-3">
+                    <span class="h-10 w-10 rounded-2xl bg-cyan-500/30 text-cyan-200 flex items-center justify-center text-lg"><i class="fas fa-robot"></i></span>
+                    <div>
+                        <p class="text-xs uppercase tracking-[0.4em] text-slate-400">AI</p>
+                        <h2 class="text-2xl font-semibold text-white">Intelligence Layer</h2>
+                    </div>
+                </div>
+                <ul class="text-sm text-slate-300 space-y-2 list-disc list-inside">
+                    <li>Gemini 2.5 powered assistant for students and faculty.</li>
+                    <li>Adaptive study plans and micro quizzes based on performance.</li>
+                    <li>Insights on engagement hotspots and at-risk cohorts.</li>
+                    <li>Auto summaries of meetings and class recordings.</li>
+                </ul>
+            </article>
+        </section>
+
+        <section class="space-y-5">
+            <h2 class="text-3xl font-semibold text-white">Security and integrations</h2>
+            <div class="grid gap-6 md:grid-cols-2 text-sm text-slate-300">
+                <div class="glass-soft rounded-3xl border border-white/10 p-6 space-y-3">
+                    <h3 class="text-xl font-semibold text-white">Secure by design</h3>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>Role-based access, audit logs, and session controls.</li>
+                        <li>Encrypted storage for resources and submissions.</li>
+                        <li>Multi-factor and single sign-on ready.</li>
+                    </ul>
+                </div>
+                <div class="glass-soft rounded-3xl border border-white/10 p-6 space-y-3">
+                    <h3 class="text-xl font-semibold text-white">Integrations</h3>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>Jitsi for live meetings and attendance tracking.</li>
+                        <li>CSV/Excel tooling for rapid data migration.</li>
+                        <li>Webhook friendly events for ERP, LMS, or HR systems.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="students" class="glass-soft rounded-3xl border border-white/10 p-6 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Student perspective</p>
+                    <h2 class="text-2xl font-semibold text-white">All learning signals in one place.</h2>
+                </div>
+                <a href="student/dashboard.html" class="px-4 py-2 text-sm font-semibold rounded-2xl border border-white/20 hover:border-white/50 transition">Preview student UI</a>
+            </div>
+            <div class="grid gap-4 md:grid-cols-3 text-sm text-slate-300">
+                <div class="bg-white/5 rounded-2xl p-4">
+                    <p class="font-semibold text-white mb-2">Plan</p>
+                    <p>Classes, assignments, and meetings appear in a single agenda, synced from faculty dashboards.</p>
+                </div>
+                <div class="bg-white/5 rounded-2xl p-4">
+                    <p class="font-semibold text-white mb-2">Act</p>
+                    <p>Download resources, submit work, join Jitsi sessions, and ask the AI mentor for quick help.</p>
+                </div>
+                <div class="bg-white/5 rounded-2xl p-4">
+                    <p class="font-semibold text-white mb-2">Reflect</p>
+                    <p>Review attendance, scores, and AI-generated study advice so nothing slips through the cracks.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="text-center space-y-4">
+            <h2 class="text-3xl font-semibold text-white">See Acadify in action.</h2>
+            <p class="text-slate-300 text-sm max-w-3xl mx-auto">Spin up a pilot workspace, import your first batch of learners, and unlock every dashboard in under 30 minutes.</p>
+            <div class="flex flex-wrap justify-center gap-4 text-sm font-semibold">
+                <a href="register.html" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-sky-500 shadow-lg shadow-indigo-500/30">Start pilot</a>
+                <a href="contact.html" class="px-6 py-3 rounded-2xl border border-white/20 hover:border-white/50 transition">Schedule demo</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="border-t border-white/10 mt-16">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-xs text-slate-500 text-center">
+            <p>&copy; 2025 Acadify. Purpose-built for campuses that care about learner experience.</p>
+        </div>
+    </footer>
+
+    <script>
+        const featureMenuButton = document.getElementById('featureMenuButton');
+        const featureMobileMenu = document.getElementById('featureMobileMenu');
+        featureMenuButton?.addEventListener('click', () => {
+            featureMobileMenu?.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
+

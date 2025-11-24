@@ -1,0 +1,219 @@
+{
+  "students": [
+    {
+      "name": "Alice Johnson",
+      "email": "alice.johnson@example.com",
+      "roll_number": "2024001",
+      "enrollment_number": "EN2024001",
+      "program": "BCA",
+      "semester": "1",
+      "batch": "2024-2027",
+      "section": "A",
+      "phone": "9876543210",
+      "parent_phone": "9876543211",
+      "address": "123 Main St, City",
+      "date_of_birth": "2005-05-15",
+      "blood_group": "O+"
+    },
+    {
+      "name": "Bob Smith",
+      "email": "bob.smith@example.com",
+      "roll_number": "2024002",
+      "enrollment_number": "EN2024002",
+      "program": "BCA",
+      "semester": "1",
+      "batch": "2024-2027",
+      "section": "A",
+      "phone": "9876543212",
+      "parent_phone": "9876543213",
+      "address": "456 Oak Ave, City",
+      "date_of_birth": "2005-08-22",
+      "blood_group": "A+"
+    },
+    {
+      "name": "Carol Davis",
+      "email": "carol.davis@example.com",
+      "roll_number": "2024003",
+      "enrollment_number": "EN2024003",
+      "program": "BCA",
+      "semester": "1",
+      "batch": "2024-2027",
+      "section": "A",
+      "phone": "9876543214",
+      "parent_phone": "9876543215",
+      "address": "789 Pine Rd, City",
+      "date_of_birth": "2005-03-10",
+      "blood_group": "B+"
+    },
+    {
+      "name": "David Wilson",
+      "email": "david.wilson@example.com",
+      "roll_number": "2024004",
+      "enrollment_number": "EN2024004",
+      "program": "BCA",
+      "semester": "1",
+      "batch": "2024-2027",
+      "section": "B",
+      "phone": "9876543216",
+      "parent_phone": "9876543217",
+      "address": "321 Elm St, City",
+      "date_of_birth": "2005-11-30",
+      "blood_group": "AB+"
+    },
+    {
+      "name": "Emma Brown",
+      "email": "emma.brown@example.com",
+      "roll_number": "2024005",
+      "enrollment_number": "EN2024005",
+      "program": "BCA",
+      "semester": "1",
+      "batch": "2024-2027",
+      "section": "B",
+      "phone": "9876543218",
+      "parent_phone": "9876543219",
+      "address": "654 Maple Dr, City",
+      "date_of_birth": "2005-07-18",
+      "blood_group": "O-"
+    }
+  ],
+  "timetable_subjects": [
+    {
+      "name": "Programming in C",
+      "periods_per_week": 4,
+      "type": "lecture"
+    },
+    {
+      "name": "Mathematics-I",
+      "periods_per_week": 4,
+      "type": "lecture"
+    },
+    {
+      "name": "Digital Electronics",
+      "periods_per_week": 3,
+      "type": "lecture"
+    },
+    {
+      "name": "English Communication",
+      "periods_per_week": 3,
+      "type": "lecture"
+    },
+    {
+      "name": "Computer Fundamentals",
+      "periods_per_week": 3,
+      "type": "lecture"
+    },
+    {
+      "name": "C Programming Lab",
+      "periods_per_week": 2,
+      "type": "lab"
+    },
+    {
+      "name": "Digital Electronics Lab",
+      "periods_per_week": 2,
+      "type": "lab"
+    }
+  ],
+  "exam_sample": {
+    "title": "Mid-Term Exam - Programming in C",
+    "description": "Mid-term examination covering topics from Unit 1 to Unit 3",
+    "program": "BCA",
+    "semester": "1",
+    "subject": "Programming in C",
+    "duration": 90,
+    "total_marks": 50,
+    "start_time": "2025-02-15T10:00:00Z",
+    "end_time": "2025-02-15T11:30:00Z",
+    "anti_cheat_enabled": true,
+    "randomize_questions": true,
+    "questions": [
+      {
+        "question_text": "What is the correct syntax to output 'Hello World' in C?",
+        "option_a": "echo('Hello World');",
+        "option_b": "printf('Hello World');",
+        "option_c": "System.out.println('Hello World');",
+        "option_d": "cout << 'Hello World';",
+        "correct_answer": "option_b",
+        "marks": 2
+      },
+      {
+        "question_text": "Which of the following is a valid variable name in C?",
+        "option_a": "2variable",
+        "option_b": "variable-name",
+        "option_c": "variable_name",
+        "option_d": "variable name",
+        "correct_answer": "option_c",
+        "marks": 2
+      },
+      {
+        "question_text": "What is the size of int data type in C (on most systems)?",
+        "option_a": "2 bytes",
+        "option_b": "4 bytes",
+        "option_c": "8 bytes",
+        "option_d": "1 byte",
+        "correct_answer": "option_b",
+        "marks": 2
+      },
+      {
+        "question_text": "Which operator is used to access the address of a variable?",
+        "option_a": "*",
+        "option_b": "&",
+        "option_c": "#",
+        "option_d": "@",
+        "correct_answer": "option_b",
+        "marks": 2
+      },
+      {
+        "question_text": "What is the output of: printf('%d', 5 + 3 * 2);",
+        "option_a": "16",
+        "option_b": "11",
+        "option_c": "13",
+        "option_d": "10",
+        "correct_answer": "option_b",
+        "marks": 2
+      }
+    ]
+  },
+  "report_card_sample": {
+    "student_id": "STU-2024001",
+    "program": "BCA",
+    "semester": "1",
+    "academic_year": "2024-2025",
+    "subjects": [
+      {
+        "name": "Programming in C",
+        "internal_marks": 18,
+        "external_marks": 75,
+        "max_marks": 100,
+        "credits": 4
+      },
+      {
+        "name": "Mathematics-I",
+        "internal_marks": 20,
+        "external_marks": 80,
+        "max_marks": 100,
+        "credits": 4
+      },
+      {
+        "name": "Digital Electronics",
+        "internal_marks": 17,
+        "external_marks": 70,
+        "max_marks": 100,
+        "credits": 3
+      },
+      {
+        "name": "English Communication",
+        "internal_marks": 19,
+        "external_marks": 78,
+        "max_marks": 100,
+        "credits": 3
+      },
+      {
+        "name": "Computer Fundamentals",
+        "internal_marks": 18,
+        "external_marks": 72,
+        "max_marks": 100,
+        "credits": 3
+      }
+    ]
+  }
+}

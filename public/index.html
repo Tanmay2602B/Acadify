@@ -1,144 +1,318 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acadify - Learning Resource Management System</title>
+    <title>Acadify - Learning Resource OS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-100">
-    <!-- Navigation -->
-    <nav class="bg-blue-600 text-white shadow-lg">
-        <div class="container mx-auto px-4 py-3">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-2">
-                    <i class="fas fa-graduation-cap text-2xl"></i>
-                    <h1 class="text-xl font-bold">Acadify</h1>
-                </div>
-                <div class="hidden md:flex space-x-6">
-                    <a href="#" class="hover:text-blue-200">Home</a>
-                    <a href="#" class="hover:text-blue-200">About</a>
-                    <a href="#" class="hover:text-blue-200">Features</a>
-                    <a href="#" class="hover:text-blue-200">Contact</a>
+
+<body class="bg-slate-950 text-slate-100">
+    <!-- Header -->
+    <header class="border-b border-white/10 bg-slate-950/90 backdrop-blur-xl sticky top-0 z-30">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div
+                    class="h-11 w-11 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+                    <i class="fas fa-graduation-cap text-white text-xl"></i>
                 </div>
                 <div>
-                    <a href="login.html" class="bg-white text-blue-600 px-4 py-2 rounded-lg font-semibold hover:bg-blue-100 transition">Login</a>
+                    <p class="text-[10px] uppercase tracking-[0.4em] text-slate-400">Acadify</p>
+                    <p class="text-lg font-semibold">Learning Resource OS</p>
                 </div>
             </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="py-20 bg-gradient-to-r from-blue-500 to-indigo-700 text-white">
-        <div class="container mx-auto px-4 text-center">
-            <h1 class="text-4xl md:text-6xl font-bold mb-6">Transform Your Learning Experience</h1>
-            <p class="text-xl mb-8 max-w-2xl mx-auto">Acadify is a complete Learning Resource Management System designed for students, faculty, and administrators.</p>
-            <div class="flex justify-center space-x-4">
-                <a href="login.html" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-100 transition">Get Started</a>
-                <a href="#features" class="bg-transparent border-2 border-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition">Learn More</a>
+            <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-300">
+                <a href="index.html" class="hover:text-white transition">Home</a>
+                <a href="about.html" class="hover:text-white transition">About</a>
+                <a href="features.html" class="hover:text-white transition">Features</a>
+                <a href="contact.html" class="hover:text-white transition">Contact</a>
+            </nav>
+            <div class="flex items-center gap-3">
+                <a href="register.html"
+                    class="hidden sm:inline-flex px-4 py-2 rounded-xl border border-white/20 text-sm font-semibold hover:border-white/50 transition">Create
+                    account</a>
+                <a href="login.html"
+                    class="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-sky-500 text-sm font-semibold shadow-lg shadow-indigo-500/30">Log
+                    in</a>
+                <button id="menuToggle" class="md:hidden text-xl"><i class="fas fa-bars"></i></button>
             </div>
         </div>
-    </section>
+        <div id="mobileMenu" class="md:hidden border-t border-white/10 bg-slate-950/95 hidden">
+            <nav class="px-6 py-4 flex flex-col gap-3 text-sm font-semibold text-slate-300">
+                <a href="index.html" class="hover:text-white transition">Home</a>
+                <a href="about.html" class="hover:text-white transition">About</a>
+                <a href="features.html" class="hover:text-white transition">Features</a>
+                <a href="contact.html" class="hover:text-white transition">Contact</a>
+            </nav>
+        </div>
+    </header>
 
-    <!-- Features Section -->
-    <section id="features" class="py-20 bg-white">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12">Key Features</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Admin Features -->
-                <div class="bg-gray-50 p-6 rounded-lg shadow-md">
-                    <div class="text-blue-600 text-3xl mb-4">
-                        <i class="fas fa-user-shield"></i>
+    <main>
+        <!-- Hero Section -->
+        <section class="bg-gradient-to-br from-indigo-600 via-purple-600 to-slate-900 text-white">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 grid gap-12 lg:grid-cols-2 items-center">
+                <div>
+                    <p class="uppercase text-xs tracking-[0.5em] text-white/70 mb-4">Academics in focus</p>
+                    <h1 class="text-4xl md:text-5xl font-semibold leading-tight mb-6">Operate your entire learning
+                        ecosystem from one intelligent workspace.</h1>
+                    <p class="text-lg text-white/80 mb-8 max-w-xl">Acadify brings admins, faculty, students, resources,
+                        timetables, AI mentors, and live meetings into a single glass dashboard so every cohort stays
+                        aligned.</p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="login.html"
+                            class="px-6 py-3 rounded-2xl bg-white text-slate-900 font-semibold shadow-lg shadow-white/20">Launch
+                            console</a>
+                        <a href="features.html"
+                            class="px-6 py-3 rounded-2xl border border-white/40 font-semibold hover:bg-white/10 transition">Explore
+                            features</a>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Admin Dashboard</h3>
-                    <ul class="list-disc list-inside text-gray-600 space-y-1">
-                        <li>Manage programs and semesters</li>
-                        <li>Assign subjects and faculty</li>
-                        <li>Upload student data</li>
-                        <li>Automatic ID generation</li>
-                        <li>Timetable management</li>
-                    </ul>
                 </div>
 
-                <!-- Faculty Features -->
-                <div class="bg-gray-50 p-6 rounded-lg shadow-md">
-                    <div class="text-blue-600 text-3xl mb-4">
-                        <i class="fas fa-chalkboard-teacher"></i>
+                <!-- Live Summary Card -->
+                <div
+                    class="relative bg-gradient-to-br from-white/15 via-white/10 to-white/5 backdrop-blur-2xl rounded-3xl border border-white/30 p-8 space-y-6 shadow-2xl overflow-hidden">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 animate-pulse">
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Faculty Dashboard</h3>
-                    <ul class="list-disc list-inside text-gray-600 space-y-1">
-                        <li>Upload notes, PPTs, assignments</li>
-                        <li>Mark attendance</li>
-                        <li>Conduct online exams</li>
-                        <li>Schedule meetings via Jitsi</li>
-                        <li>Create announcements</li>
-                    </ul>
-                </div>
 
-                <!-- Student Features -->
-                <div class="bg-gray-50 p-6 rounded-lg shadow-md">
-                    <div class="text-blue-600 text-3xl mb-4">
-                        <i class="fas fa-user-graduate"></i>
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <p class="text-sm text-white/70 uppercase tracking-[0.4em] font-semibold">Live Platform
+                                    Summary</p>
+                                <p class="text-xs text-emerald-300 mt-1 flex items-center gap-2">
+                                    <span class="inline-block w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                                    <span id="sync-time">Synced just now</span>
+                                </p>
+                            </div>
+                            <button onclick="fetchStats()"
+                                class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-semibold transition-all duration-300 hover:scale-105">
+                                <i class="fas fa-sync-alt mr-2"></i>Refresh
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <!-- Students Card -->
+                            <div
+                                class="group relative rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 p-5 border border-emerald-400/30 hover:border-emerald-400/60 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-emerald-500/20">
+                                <div class="absolute top-3 right-3 text-emerald-300/30 text-3xl">
+                                    <i class="fas fa-user-graduate"></i>
+                                </div>
+                                <p class="text-xs text-emerald-200/80 uppercase tracking-widest font-semibold mb-2">
+                                    Students</p>
+                                <p id="students-count" class="text-4xl font-bold text-white mb-1">Loading...</p>
+                                <p class="text-xs text-emerald-200/70 flex items-center gap-1">
+                                    <i class="fas fa-check-circle text-xs"></i>
+                                    Enrolled students
+                                </p>
+                            </div>
+
+                            <!-- Faculty Card -->
+                            <div
+                                class="group relative rounded-2xl bg-gradient-to-br from-sky-500/20 to-sky-600/10 p-5 border border-sky-400/30 hover:border-sky-400/60 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-sky-500/20">
+                                <div class="absolute top-3 right-3 text-sky-300/30 text-3xl">
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                </div>
+                                <p class="text-xs text-sky-200/80 uppercase tracking-widest font-semibold mb-2">Faculty
+                                </p>
+                                <p id="faculty-count" class="text-4xl font-bold text-white mb-1">Loading...</p>
+                                <p class="text-xs text-sky-200/70 flex items-center gap-1">
+                                    <i class="fas fa-user-check text-xs"></i>
+                                    Active mentors
+                                </p>
+                            </div>
+
+                            <!-- Resources Card -->
+                            <div
+                                class="group relative rounded-2xl bg-gradient-to-br from-indigo-500/20 to-indigo-600/10 p-5 border border-indigo-400/30 hover:border-indigo-400/60 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-indigo-500/20">
+                                <div class="absolute top-3 right-3 text-indigo-300/30 text-3xl">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                                <p class="text-xs text-indigo-200/80 uppercase tracking-widest font-semibold mb-2">
+                                    Resources</p>
+                                <p id="resources-count" class="text-4xl font-bold text-white mb-1">Loading...</p>
+                                <p class="text-xs text-indigo-200/70 flex items-center gap-1">
+                                    <i class="fas fa-file-alt text-xs"></i>
+                                    Notes, decks, labs
+                                </p>
+                            </div>
+
+                            <!-- Meetings Card -->
+                            <div
+                                class="group relative rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 p-5 border border-amber-400/30 hover:border-amber-400/60 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-amber-500/20">
+                                <div class="absolute top-3 right-3 text-amber-300/30 text-3xl">
+                                    <i class="fas fa-video"></i>
+                                </div>
+                                <p class="text-xs text-amber-200/80 uppercase tracking-widest font-semibold mb-2">
+                                    Meetings</p>
+                                <p id="meetings-count" class="text-4xl font-bold text-white mb-1">Loading...</p>
+                                <p class="text-xs text-amber-200/70 flex items-center gap-1">
+                                    <i class="fas fa-calendar-week text-xs"></i>
+                                    Scheduled this week
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Student Dashboard</h3>
-                    <ul class="list-disc list-inside text-gray-600 space-y-1">
-                        <li>Access learning resources</li>
-                        <li>Submit assignments</li>
-                        <li>Join online lectures</li>
-                        <li>Take secure exams</li>
-                        <li>AI-powered learning assistant</li>
-                    </ul>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- AI Features -->
-    <section class="py-20 bg-gray-100">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12">AI-Powered Learning</h2>
-            <div class="flex flex-col md:flex-row items-center">
-                <div class="md:w-1/2 mb-8 md:mb-0">
-                    <img src="https://placehold.co/500x300" alt="AI Assistant" class="rounded-lg shadow-lg">
+        <!-- Features Section -->
+        <section id="features" class="py-16 bg-slate-950">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <p class="text-xs uppercase tracking-[0.5em] text-slate-400">Role-specific consoles</p>
+                    <h2 class="text-3xl font-semibold text-white">Workflows for every stakeholder</h2>
                 </div>
-                <div class="md:w-1/2 md:pl-12">
-                    <h3 class="text-2xl font-bold mb-4">Gemini 2.5 Flash API Integration</h3>
-                    <p class="text-gray-600 mb-4">Our AI assistant helps students with their learning journey by providing:</p>
-                    <ul class="list-disc list-inside text-gray-600 space-y-2">
-                        <li>Instant answers to academic questions</li>
-                        <li>Personalized study recommendations</li>
-                        <li>Quiz and exam preparation assistance</li>
-                        <li>Plagiarism detection for assignments</li>
-                        <li>Learning progress tracking</li>
-                    </ul>
+                <div class="grid gap-6 md:grid-cols-3">
+                    <article class="bg-white/5 rounded-3xl p-6 border border-white/10 hover:border-white/20 transition">
+                        <div class="text-3xl text-indigo-300 mb-4"><i class="fas fa-user-shield"></i></div>
+                        <h3 class="text-xl font-semibold mb-3">Admin Control</h3>
+                        <ul class="text-sm text-slate-300 space-y-2 list-disc list-inside">
+                            <li>Program builder with versioning</li>
+                            <li>Advanced timetable and room matrix</li>
+                            <li>Audit friendly import/export hub</li>
+                        </ul>
+                    </article>
+                    <article class="bg-white/5 rounded-3xl p-6 border border-white/10 hover:border-white/20 transition">
+                        <div class="text-3xl text-emerald-300 mb-4"><i class="fas fa-chalkboard-teacher"></i></div>
+                        <h3 class="text-xl font-semibold mb-3">Faculty Workbench</h3>
+                        <ul class="text-sm text-slate-300 space-y-2 list-disc list-inside">
+                            <li>Live class planner and Jitsi link sharing</li>
+                            <li>AI assisted assessment composer</li>
+                            <li>Resource publishing with analytics</li>
+                        </ul>
+                    </article>
+                    <article class="bg-white/5 rounded-3xl p-6 border border-white/10 hover:border-white/20 transition">
+                        <div class="text-3xl text-pink-300 mb-4"><i class="fas fa-user-graduate"></i></div>
+                        <h3 class="text-xl font-semibold mb-3">Student Hub</h3>
+                        <ul class="text-sm text-slate-300 space-y-2 list-disc list-inside">
+                            <li>Personalized dashboard timeline</li>
+                            <li>Smart reminders and meeting sync</li>
+                            <li>AI mentor, resources, submissions</li>
+                        </ul>
+                    </article>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-16 bg-slate-900">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <p class="text-xs uppercase tracking-[0.5em] text-slate-400 mb-4">Ready to modernize?</p>
+                <h2 class="text-3xl font-semibold text-white mb-6">Deploy Acadify in under a week.</h2>
+                <p class="text-slate-300 text-sm max-w-2xl mx-auto mb-8">Pick a starter template, import your records,
+                    and hand over dashboards to admins, faculty, and students. Our team can assist with custom modules
+                    and single sign-on.</p>
+                <div class="flex flex-wrap gap-4 justify-center">
+                    <a href="register.html"
+                        class="px-6 py-3 rounded-2xl bg-white text-slate-900 font-semibold shadow-lg shadow-white/20">Start
+                        free pilot</a>
+                    <a href="contact.html"
+                        class="px-6 py-3 rounded-2xl border border-white/20 font-semibold hover:border-white/50 transition">Talk
+                        to solutions team</a>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-10">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-6 md:mb-0">
-                    <div class="flex items-center space-x-2">
-                        <i class="fas fa-graduation-cap text-2xl"></i>
-                        <h2 class="text-xl font-bold">Acadify</h2>
+    <footer class="bg-slate-900 border-t border-white/5">
+        <div
+            class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+            <div>
+                <div class="flex items-center gap-3">
+                    <div
+                        class="h-10 w-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-pink-500 flex items-center justify-center text-white">
+                        <i class="fas fa-graduation-cap"></i>
                     </div>
-                    <p class="mt-2 text-gray-400">A complete Learning Resource Management System</p>
+                    <p class="text-lg font-semibold">Acadify</p>
                 </div>
-                <div class="flex space-x-6">
-                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin-in"></i></a>
-                </div>
+                <p class="text-slate-400 text-sm mt-3 max-w-sm">Learning Resource Management built for universities,
+                    bootcamps, and training teams that need clarity across programs.</p>
             </div>
-            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; 2025 Acadify. All rights reserved.</p>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm text-slate-300">
+                <div>
+                    <p class="font-semibold text-white mb-3">Platform</p>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="hover:text-white transition">About</a></li>
+                        <li><a href="features.html" class="hover:text-white transition">Features</a></li>
+                        <li><a href="contact.html" class="hover:text-white transition">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="font-semibold text-white mb-3">Resources</p>
+                    <ul class="space-y-2">
+                        <li><a href="README.md" class="hover:text-white transition">Docs</a></li>
+                        <li><a href="register.html" class="hover:text-white transition">Create account</a></li>
+                        <li><a href="login.html" class="hover:text-white transition">Log in</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="font-semibold text-white mb-3">Social</p>
+                    <div class="flex gap-3 text-lg">
+                        <a href="#" class="text-slate-500 hover:text-white transition"><i
+                                class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-slate-500 hover:text-white transition"><i
+                                class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-slate-500 hover:text-white transition"><i
+                                class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
             </div>
         </div>
+        <div class="border-t border-white/5 py-6 text-center text-xs text-slate-500">
+            <p>&copy; 2025 Acadify. All rights reserved.</p>
+        </div>
     </footer>
+
+    <script>
+        const toggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        toggle?.addEventListener('click', () => {
+            mobileMenu?.classList.toggle('hidden');
+        });
+
+        // Fetch and display real-time statistics
+        async function fetchStats() {
+            try {
+                const response = await fetch('/api/public/stats');
+                const data = await response.json();
+
+                // Format numbers with commas
+                const formatNumber = (num) => {
+                    if (num >= 1000) {
+                        return (num / 1000).toFixed(1) + 'K';
+                    }
+                    return num.toLocaleString();
+                };
+
+                // Update the DOM
+                document.getElementById('students-count').textContent = formatNumber(data.students);
+                document.getElementById('faculty-count').textContent = formatNumber(data.faculty);
+                document.getElementById('resources-count').textContent = formatNumber(data.resources);
+                document.getElementById('meetings-count').textContent = data.meetings;
+
+                // Update sync time
+                document.getElementById('sync-time').textContent = 'Synced just now';
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+                // Show fallback data
+                document.getElementById('students-count').textContent = '0';
+                document.getElementById('faculty-count').textContent = '0';
+                document.getElementById('resources-count').textContent = '0';
+                document.getElementById('meetings-count').textContent = '0';
+            }
+        }
+
+        // Fetch stats on page load
+        fetchStats();
+
+        // Optionally refresh stats every 30 seconds
+        setInterval(fetchStats, 30000);
+    </script>
 </body>
+
 </html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acadify - Quiz Maker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(circle at 25% -10%, rgba(14, 165, 233, 0.3), transparent 45%),
+                radial-gradient(circle at 80% 0%, rgba(236, 72, 153, 0.25), transparent 35%),
+                #020617;
+            min-height: 100vh;
+        }
+
+        .glass-panel {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.55));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 45px rgba(2, 6, 23, 0.55);
+            backdrop-filter: blur(18px);
+        }
+
+        .glass-soft {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+
+<body class="text-slate-100">
+    <header class="sticky top-0 z-30 border-b border-white/10 backdrop-blur-xl bg-slate-900/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div
+                    class="h-11 w-11 rounded-2xl bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500 flex items-center justify-center shadow-lg">
+                    <i class="fas fa-layer-group text-white text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-xs uppercase tracking-[0.35em] text-slate-400">Acadify</p>
+                    <h1 class="text-lg font-semibold">Quiz Maker</h1>
+                </div>
+            </div>
+            <a href="dashboard-enhanced.html"
+                class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-sm font-medium transition">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        <div class="glass-panel rounded-3xl p-6 lg:p-8 space-y-6">
+            <div class="flex items-center justify-between border-b border-white/10 pb-6">
+                <h2 class="text-2xl font-semibold">Create New Assessment</h2>
+                <div class="flex gap-3">
+                    <button onclick="saveQuiz()"
+                        class="px-6 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 font-semibold shadow-lg hover:shadow-emerald-500/20 transition">
+                        <i class="fas fa-save mr-2"></i>Publish Quiz
+                    </button>
+                </div>
+            </div>
+
+            <!-- Basic Info -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="space-y-2">
+                    <label class="text-xs text-slate-400 uppercase tracking-wider">Quiz Title</label>
+                    <input id="quizTitle" type="text" placeholder="e.g. Data Structures Mid-Term"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-sky-400 transition">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs text-slate-400 uppercase tracking-wider">Subject</label>
+                    <input id="quizSubject" type="text" placeholder="e.g. CS101"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-sky-400 transition">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs text-slate-400 uppercase tracking-wider">Program</label>
+                    <select id="quizProgram"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-sky-400 transition">
+                        <option value="">Select Program</option>
+                        <option value="BCA">BCA</option>
+                        <option value="MCA">MCA</option>
+                    </select>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs text-slate-400 uppercase tracking-wider">Semester</label>
+                    <select id="quizSemester"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-sky-400 transition">
+                        <option value="">Select Semester</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs text-slate-400 uppercase tracking-wider">Start Time</label>
+                    <input id="quizStartTime" type="datetime-local"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-sky-400 transition text-slate-300">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs text-slate-400 uppercase tracking-wider">Duration (Minutes)</label>
+                    <input id="quizDuration" type="number" min="5" step="5" placeholder="45"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-sky-400 transition">
+                </div>
+                <div class="col-span-1 md:col-span-2 space-y-2">
+                    <label class="text-xs text-slate-400 uppercase tracking-wider">Description</label>
+                    <input id="quizDescription" type="text" placeholder="Brief instructions for students..."
+                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-sky-400 transition">
+                </div>
+            </div>
+
+            <!-- Questions Builder -->
+            <div class="pt-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-semibold">Questions</h3>
+                    <button onclick="addQuestionField()"
+                        class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-sm font-medium transition border border-white/10">
+                        <i class="fas fa-plus mr-2"></i>Add Question
+                    </button>
+                </div>
+
+                <div id="questionsContainer" class="space-y-6">
+                    <!-- Questions will be injected here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+        if (!token || user.role !== 'faculty') {
+            window.location.href = '../login.html';
+        }
+
+        // Initialize with one question
+        document.addEventListener('DOMContentLoaded', () => {
+            addQuestionField();
+        });
+
+        function addQuestionField() {
+            const container = document.getElementById('questionsContainer');
+            const index = container.children.length + 1;
+            const div = document.createElement('div');
+            div.className = 'glass-soft rounded-2xl p-6 space-y-4 relative group border border-white/5 hover:border-white/10 transition question-card';
+            div.dataset.index = index;
+            div.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-bold text-sky-400 uppercase tracking-wider bg-sky-500/10 px-3 py-1 rounded-lg">Question ${index}</span>
+                        <select class="question-type bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs focus:outline-none focus:border-sky-400 transition" onchange="updateQuestionType(this)">
+                            <option value="radio">Multiple Choice (Single)</option>
+                            <option value="checkbox">Multiple Choice (Multiple)</option>
+                            <option value="text">Short Answer</option>
+                        </select>
+                    </div>
+                    <button onclick="this.closest('.question-card').remove(); updateQuestionNumbers();" class="text-slate-500 hover:text-rose-400 transition p-2">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+                
+                <div class="space-y-3">
+                    <input type="text" placeholder="Enter your question text here..." class="question-text w-full bg-transparent border-b border-white/10 px-2 py-3 text-lg focus:outline-none focus:border-sky-400 transition placeholder-slate-600">
+                    
+                    <div class="flex items-center gap-3">
+                        <label class="cursor-pointer px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition text-xs flex items-center gap-2">
+                            <i class="fas fa-image text-slate-400"></i>
+                            <span class="text-slate-300">Add Image</span>
+                            <input type="file" accept="image/*" class="hidden question-image-input" onchange="previewImage(this)">
+                        </label>
+                        <span class="image-preview-name text-xs text-slate-500 truncate max-w-[200px]"></span>
+                    </div>
+                    <img class="image-preview hidden max-h-40 rounded-lg border border-white/10" />
+                </div>
+                
+                <div class="options-container pt-2 space-y-3">
+                    <!-- Options injected here -->
+                </div>
+            `;
+            container.appendChild(div);
+
+            // Initialize options for default type (radio)
+            updateQuestionType(div.querySelector('.question-type'));
+
+            // Scroll to new question
+            div.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function updateQuestionType(select) {
+            const card = select.closest('.question-card');
+            const type = select.value;
+            const container = card.querySelector('.options-container');
+
+            container.innerHTML = ''; // Clear existing
+
+            if (type === 'text') {
+                container.innerHTML = `
+                    <div class="p-4 rounded-xl bg-white/5 border border-white/10 text-slate-400 text-sm italic">
+                        Students will type their answer in a text box.
+                    </div>
+                    <input type="text" placeholder="Correct Answer (for auto-grading)" class="correct-text w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-emerald-400 transition mt-2">
+                `;
+            } else {
+                // Radio or Checkbox
+                const isRadio = type === 'radio';
+                const inputType = isRadio ? 'radio' : 'checkbox';
+                const nameAttr = `q-${card.dataset.index}`;
+
+                ['A', 'B', 'C', 'D'].forEach(opt => {
+                    container.innerHTML += `
+                        <div class="flex items-center gap-3">
+                            <span class="h-8 w-8 rounded-lg bg-white/5 flex items-center justify-center text-xs font-bold text-slate-400">${opt}</span>
+                            <input type="text" placeholder="Option ${opt}" class="option-input flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-sky-400 transition" data-option="${opt}">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="${inputType}" name="${isRadio ? nameAttr : ''}" value="${opt}" class="correct-selector accent-emerald-500 w-4 h-4">
+                                <span class="text-xs text-slate-400">Correct</span>
+                            </label>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        function previewImage(input) {
+            const card = input.closest('.question-card');
+            const preview = card.querySelector('.image-preview');
+            const nameDisplay = card.querySelector('.image-preview-name');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    nameDisplay.textContent = input.files[0].name;
+                }
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.classList.add('hidden');
+                nameDisplay.textContent = '';
+            }
+        }
+
+        function updateQuestionNumbers() {
+            const questions = document.getElementById('questionsContainer').children;
+            Array.from(questions).forEach((q, idx) => {
+                q.querySelector('span').textContent = `Question ${idx + 1}`;
+                q.dataset.index = idx + 1;
+                // Update radio names to keep groups separate
+                const type = q.querySelector('.question-type').value;
+                if (type === 'radio') {
+                    q.querySelectorAll('input[type="radio"]').forEach(r => r.name = `q-${idx + 1}`);
+                }
+            });
+        }
+
+        async function saveQuiz() {
+            const questions = [];
+            const questionDivs = document.querySelectorAll('#questionsContainer > div');
+            const token = localStorage.getItem('token');
+
+            // Validate Basic Info
+            const title = document.getElementById('quizTitle').value.trim();
+            const subject = document.getElementById('quizSubject').value.trim();
+            const program = document.getElementById('quizProgram').value;
+            const semester = document.getElementById('quizSemester').value;
+            const duration = parseInt(document.getElementById('quizDuration').value);
+            const startTime = document.getElementById('quizStartTime').value;
+            const description = document.getElementById('quizDescription').value.trim();
+
+            if (!title || !subject || !program || !semester || !duration || !startTime) {
+                alert('Please fill in all basic quiz details, including Start Time.');
+                return;
+            }
+
+            // Process Questions
+            for (const div of questionDivs) {
+                const text = div.querySelector('.question-text').value.trim();
+                const type = div.querySelector('.question-type').value;
+                const imageInput = div.querySelector('.question-image-input');
+
+                if (!text) {
+                    alert('Every question must have text.');
+                    return;
+                }
+
+                let imagePath = null;
+                if (imageInput.files.length > 0) {
+                    // Upload image first
+                    const formData = new FormData();
+                    formData.append('image', imageInput.files[0]);
+
+                    try {
+                        const uploadRes = await fetch('/api/exams/upload-image', {
+                            method: 'POST',
+                            headers: { 'Authorization': `Bearer ${token}` },
+                            body: formData
+                        });
+                        const uploadData = await uploadRes.json();
+                        if (uploadRes.ok) {
+                            imagePath = uploadData.filePath;
+                        } else {
+                            console.error('Image upload failed:', uploadData);
+                        }
+                    } catch (e) {
+                        console.error('Image upload error:', e);
+                    }
+                }
+
+                let questionData = {
+                    question_text: text,
+                    type: type,
+                    image: imagePath,
+                    marks: 1 // Default marks
+                };
+
+                if (type === 'text') {
+                    const correct = div.querySelector('.correct-text').value.trim();
+                    if (!correct) {
+                        alert('Please provide a correct answer for the text question.');
+                        return;
+                    }
+                    questionData.correct_answer = correct;
+                    questionData.options = [];
+                } else {
+                    // Radio or Checkbox
+                    const options = [];
+                    const optionInputs = div.querySelectorAll('.option-input');
+                    let correctAnswers = [];
+
+                    optionInputs.forEach(opt => {
+                        if (opt.value.trim()) options.push(opt.value.trim());
+                    });
+
+                    if (options.length < 2) {
+                        alert('Multiple choice questions must have at least 2 options.');
+                        return;
+                    }
+
+                    const correctSelectors = div.querySelectorAll('.correct-selector:checked');
+                    correctSelectors.forEach(sel => {
+                        // Find the corresponding text value. 
+                        // The value of selector is 'A', 'B' etc. We need the actual text.
+                        // But wait, the schema expects options array and correct_answer.
+                        // If options are ["Cat", "Dog"], correct_answer should be "Cat" or index?
+                        // Let's store the actual string value.
+                        const optLetter = sel.value; // A, B, C, D
+                        const optInput = div.querySelector(`.option-input[data-option="${optLetter}"]`);
+                        if (optInput && optInput.value.trim()) {
+                            correctAnswers.push(optInput.value.trim());
+                        }
+                    });
+
+                    if (correctAnswers.length === 0) {
+                        alert('Please select at least one correct answer.');
+                        return;
+                    }
+
+                    questionData.options = options;
+                    questionData.correct_answer = type === 'radio' ? correctAnswers[0] : correctAnswers;
+                }
+
+                questions.push(questionData);
+            }
+
+            const payload = {
+                title,
+                subject,
+                program,
+                semester,
+                duration,
+                start_time: startTime,
+                end_time: new Date(new Date(startTime).getTime() + duration * 60000).toISOString(),
+                description,
+                questions
+            };
+
+            try {
+                const response = await fetch('/api/exams/create', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    alert('Quiz published successfully!');
+                    window.location.href = 'dashboard-enhanced.html'; // Go back to dashboard
+                } else {
+                    const data = await response.json();
+                    alert(data.message || 'Failed to create quiz');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Error creating quiz');
+            }
+        }
+    </script>
+</body>
+
+</html>

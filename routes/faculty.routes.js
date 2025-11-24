@@ -3,7 +3,7 @@ const {
   getDashboardData,
   createAnnouncement
 } = require('../controllers/faculty.controller');
-const { uploadResource, getFacultyResources } = require('../controllers/resource.controller');
+const { uploadResource, getFacultyResources } = require('../controllers/resource.mongo.controller');
 const { authenticate, authorizeFaculty } = require('../middlewares/auth');
 const multer = require('multer');
 

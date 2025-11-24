@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Acadify</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Redirecting...</title>
+    <script>
+        // Redirect to enhanced dashboard
+        window.location.href = 'dashboard-enhanced.html';
+    </script>
 </head>
 <body class="bg-gray-100">
     <!-- Navigation -->
@@ -50,6 +52,26 @@
                         <li>
                             <a href="#" class="block py-2 px-4 rounded-lg hover:bg-gray-100 text-gray-700" id="timetableLink">
                                 <i class="fas fa-calendar-alt mr-2"></i>Timetable
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded-lg hover:bg-gray-100 text-gray-700" id="meetingsLink">
+                                <i class="fas fa-video mr-2"></i>Meetings
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded-lg hover:bg-gray-100 text-gray-700" id="examsLink">
+                                <i class="fas fa-tasks mr-2"></i>Examinations
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded-lg hover:bg-gray-100 text-gray-700" id="quizzesLink">
+                                <i class="fas fa-question-circle mr-2"></i>Quizzes
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded-lg hover:bg-gray-100 text-gray-700" id="announcementsLink">
+                                <i class="fas fa-bullhorn mr-2"></i>Announcements
                             </a>
                         </li>
                         <li>
@@ -245,16 +267,42 @@
                     <div class="bg-white rounded-lg shadow-md p-6 mb-6">
                         <div class="flex justify-between items-center mb-6">
                             <h2 class="text-2xl font-bold text-gray-800">User Management</h2>
-                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold">
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold" id="uploadUsersBtn">
                                 <i class="fas fa-upload mr-2"></i>Upload Users
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Role Management Section -->
+                <div id="rolesSection" class="hidden">
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">Role Management</h2>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold" id="createRoleBtn">
+                                <i class="fas fa-plus mr-2"></i>Create Role
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Permission Management Section -->
+                <div id="permissionsSection" class="hidden">
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">Permission Management</h2>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold" id="createPermissionBtn">
+                                <i class="fas fa-plus mr-2"></i>Create Permission
+                            </button>
+                        </div>
                             </button>
                         </div>
                         
                         <div class="mb-6">
                             <div class="flex border-b">
-                                <button class="py-2 px-4 font-medium text-blue-600 border-b-2 border-blue-600">Students</button>
-                                <button class="py-2 px-4 font-medium text-gray-600 hover:text-gray-800">Faculty</button>
-                                <button class="py-2 px-4 font-medium text-gray-600 hover:text-gray-800">Admin</button>
+                                <button id="studentsTab" class="py-2 px-4 font-medium text-blue-600 border-b-2 border-blue-600">Students</button>
+                                <button id="facultyTab" class="py-2 px-4 font-medium text-gray-600 hover:text-gray-800">Faculty</button>
+                                <button id="adminTab" class="py-2 px-4 font-medium text-gray-600 hover:text-gray-800">Admin</button>
                             </div>
                         </div>
                         
@@ -262,7 +310,7 @@
                             <table class="min-w-full bg-white border border-gray-200">
                                 <thead>
                                     <tr class="bg-gray-100">
-                                        <th class="py-2 px-4 border-b text-left">Student ID</th>
+                                        <th class="py-2 px-4 border-b text-left">User ID</th>
                                         <th class="py-2 px-4 border-b text-left">Name</th>
                                         <th class="py-2 px-4 border-b text-left">Email</th>
                                         <th class="py-2 px-4 border-b text-left">Program</th>
@@ -271,42 +319,544 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td class="py-2 px-4 border-b">STU123456</td>
-                                        <td class="py-2 px-4 border-b">John Doe</td>
-                                        <td class="py-2 px-4 border-b">john@example.com</td>
-                                        <td class="py-2 px-4 border-b">BCA</td>
-                                        <td class="py-2 px-4 border-b">1st</td>
-                                        <td class="py-2 px-4 border-b">
-                                            <button class="text-blue-600 hover:text-blue-800 mr-2">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="text-red-600 hover:text-red-800">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="py-2 px-4 border-b">STU789012</td>
-                                        <td class="py-2 px-4 border-b">Jane Smith</td>
-                                        <td class="py-2 px-4 border-b">jane@example.com</td>
-                                        <td class="py-2 px-4 border-b">MCA</td>
-                                        <td class="py-2 px-4 border-b">2nd</td>
-                                        <td class="py-2 px-4 border-b">
-                                            <button class="text-blue-600 hover:text-blue-800 mr-2">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="text-red-600 hover:text-red-800">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
+                                    <!-- User data will be populated here -->
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
+
+                <!-- Announcements Section -->
+                <div id="announcementsSection" class="hidden">
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">Announcements</h2>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold" id="addAnnouncementBtn">
+                                <i class="fas fa-plus mr-2"></i>Create Announcement
+                            </button>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <div class="flex space-x-4">
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="programFilter">
+                                        Program
+                                    </label>
+                                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="announcementProgramFilter">
+                                        <option value="">All Programs</option>
+                                        <option value="BCA">BCA</option>
+                                        <option value="MCA">MCA</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="semesterFilter">
+                                        Semester
+                                    </label>
+                                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="announcementSemesterFilter">
+                                        <option value="">All Semesters</option>
+                                        <option value="1st">1st</option>
+                                        <option value="2nd">2nd</option>
+                                        <option value="3rd">3rd</option>
+                                        <option value="4th">4th</option>
+                                        <option value="5th">5th</option>
+                                        <option value="6th">6th</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-end">
+                                    <button class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-semibold" id="filterAnnouncementsBtn">
+                                        Filter
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white border border-gray-200">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="py-2 px-4 border-b text-left">Title</th>
+                                        <th class="py-2 px-4 border-b text-left">Content</th>
+                                        <th class="py-2 px-4 border-b text-left">Program</th>
+                                        <th class="py-2 px-4 border-b text-left">Semester</th>
+                                        <th class="py-2 px-4 border-b text-left">Posted By</th>
+                                        <th class="py-2 px-4 border-b text-left">Date</th>
+                                        <th class="py-2 px-4 border-b text-left">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="announcementsBody">
+                                    <!-- Announcements will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meetings Section -->
+                <div id="meetingsSection" class="hidden">
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">Meetings</h2>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold" id="scheduleMeetingBtn">
+                                <i class="fas fa-plus mr-2"></i>Schedule Meeting
+                            </button>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <div class="flex space-x-4">
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="meetingProgramFilter">
+                                        Program
+                                    </label>
+                                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="meetingProgramFilter">
+                                        <option value="">All Programs</option>
+                                        <option value="BCA">BCA</option>
+                                        <option value="MCA">MCA</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="meetingSemesterFilter">
+                                        Semester
+                                    </label>
+                                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="meetingSemesterFilter">
+                                        <option value="">All Semesters</option>
+                                        <option value="1st">1st</option>
+                                        <option value="2nd">2nd</option>
+                                        <option value="3rd">3rd</option>
+                                        <option value="4th">4th</option>
+                                        <option value="5th">5th</option>
+                                        <option value="6th">6th</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-end">
+                                    <button class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-semibold" id="filterMeetingsBtn">
+                                        Filter
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white border border-gray-200">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="py-2 px-4 border-b text-left">Subject</th>
+                                        <th class="py-2 px-4 border-b text-left">Date</th>
+                                        <th class="py-2 px-4 border-b text-left">Time</th>
+                                        <th class="py-2 px-4 border-b text-left">Program</th>
+                                        <th class="py-2 px-4 border-b text-left">Semester</th>
+                                        <th class="py-2 px-4 border-b text-left">Faculty</th>
+                                        <th class="py-2 px-4 border-b text-left">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="meetingsBody">
+                                    <!-- Meetings will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exams Section -->
+                <div id="examsSection" class="hidden">
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">Examinations</h2>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold" id="createExamBtn">
+                                <i class="fas fa-plus mr-2"></i>Create Exam
+                            </button>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <div class="flex space-x-4">
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="examProgramFilter">
+                                        Program
+                                    </label>
+                                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="examProgramFilter">
+                                        <option value="">All Programs</option>
+                                        <option value="BCA">BCA</option>
+                                        <option value="MCA">MCA</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="examSemesterFilter">
+                                        Semester
+                                    </label>
+                                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="examSemesterFilter">
+                                        <option value="">All Semesters</option>
+                                        <option value="1st">1st</option>
+                                        <option value="2nd">2nd</option>
+                                        <option value="3rd">3rd</option>
+                                        <option value="4th">4th</option>
+                                        <option value="5th">5th</option>
+                                        <option value="6th">6th</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-end">
+                                    <button class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-semibold" id="filterExamsBtn">
+                                        Filter
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white border border-gray-200">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="py-2 px-4 border-b text-left">Title</th>
+                                        <th class="py-2 px-4 border-b text-left">Subject</th>
+                                        <th class="py-2 px-4 border-b text-left">Date</th>
+                                        <th class="py-2 px-4 border-b text-left">Time</th>
+                                        <th class="py-2 px-4 border-b text-left">Program</th>
+                                        <th class="py-2 px-4 border-b text-left">Semester</th>
+                                        <th class="py-2 px-4 border-b text-left">Created By</th>
+                                        <th class="py-2 px-4 border-b text-left">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="examsBody">
+                                    <!-- Exams will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quizzes Section -->
+                <div id="quizzesSection" class="hidden">
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">Quizzes</h2>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold" id="createQuizBtn">
+                                <i class="fas fa-plus mr-2"></i>Create Quiz
+                            </button>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <div class="flex space-x-4">
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="quizProgramFilter">
+                                        Program
+                                    </label>
+                                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="quizProgramFilter">
+                                        <option value="">All Programs</option>
+                                        <option value="BCA">BCA</option>
+                                        <option value="MCA">MCA</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="quizSemesterFilter">
+                                        Semester
+                                    </label>
+                                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="quizSemesterFilter">
+                                        <option value="">All Semesters</option>
+                                        <option value="1st">1st</option>
+                                        <option value="2nd">2nd</option>
+                                        <option value="3rd">3rd</option>
+                                        <option value="4th">4th</option>
+                                        <option value="5th">5th</option>
+                                        <option value="6th">6th</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-end">
+                                    <button class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-semibold" id="filterQuizzesBtn">
+                                        Filter
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white border border-gray-200">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="py-2 px-4 border-b text-left">Title</th>
+                                        <th class="py-2 px-4 border-b text-left">Subject</th>
+                                        <th class="py-2 px-4 border-b text-left">Questions</th>
+                                        <th class="py-2 px-4 border-b text-left">Program</th>
+                                        <th class="py-2 px-4 border-b text-left">Semester</th>
+                                        <th class="py-2 px-4 border-b text-left">Created By</th>
+                                        <th class="py-2 px-4 border-b text-left">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="quizzesBody">
+                                    <!-- Quizzes will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timetable Section -->
+                <div id="timetableSection" class="hidden">
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">Timetable Management</h2>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold" id="addTimetableEntryBtn">
+                                <i class="fas fa-plus mr-2"></i>Add Entry
+                            </button>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <div class="flex space-x-4">
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="programFilter">
+                                        Program
+                                    </label>
+                                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="programFilter">
+                                        <option value="">All Programs</option>
+                                        <option value="BCA">BCA</option>
+                                        <option value="MCA">MCA</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="semesterFilter">
+                                        Semester
+                                    </label>
+                                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="semesterFilter">
+                                        <option value="">All Semesters</option>
+                                        <option value="1st">1st</option>
+                                        <option value="2nd">2nd</option>
+                                        <option value="3rd">3rd</option>
+                                        <option value="4th">4th</option>
+                                        <option value="5th">5th</option>
+                                        <option value="6th">6th</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-end">
+                                    <button class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-semibold" id="filterTimetableBtn">
+                                        Filter
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white border border-gray-200">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="py-2 px-4 border-b text-left">Day</th>
+                                        <th class="py-2 px-4 border-b text-left">Time</th>
+                                        <th class="py-2 px-4 border-b text-left">Subject</th>
+                                        <th class="py-2 px-4 border-b text-left">Faculty</th>
+                                        <th class="py-2 px-4 border-b text-left">Program</th>
+                                        <th class="py-2 px-4 border-b text-left">Semester</th>
+                                        <th class="py-2 px-4 border-b text-left">Room</th>
+                                        <th class="py-2 px-4 border-b text-left">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="timetableBody">
+                                    <!-- Timetable entries will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Section -->
+                <div id="reportsSection" class="hidden">
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">Reports</h2>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition cursor-pointer" id="studentReportCard">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Student Reports</h3>
+                                        <p class="text-gray-600 text-sm">Attendance and performance reports for all students</p>
+                                    </div>
+                                    <div class="bg-blue-100 p-2 rounded-full">
+                                        <i class="fas fa-user-graduate text-blue-600"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition cursor-pointer" id="facultyReportCard">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Faculty Reports</h3>
+                                        <p class="text-gray-600 text-sm">Teaching load and performance reports for faculty</p>
+                                    </div>
+                                    <div class="bg-green-100 p-2 rounded-full">
+                                        <i class="fas fa-chalkboard-teacher text-green-600"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition cursor-pointer" id="programReportCard">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Program Reports</h3>
+                                        <p class="text-gray-600 text-sm">Program-wise statistics and analytics</p>
+                                    </div>
+                                    <div class="bg-purple-100 p-2 rounded-full">
+                                        <i class="fas fa-book-open text-purple-600"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Student Report Details -->
+                        <div id="studentReportDetails" class="hidden">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-xl font-semibold text-gray-800">Student Attendance Report</h3>
+                                <button class="text-gray-500 hover:text-gray-700" id="closeStudentReport">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white border border-gray-200">
+                                    <thead>
+                                        <tr class="bg-gray-100">
+                                            <th class="py-2 px-4 border-b text-left">Student ID</th>
+                                            <th class="py-2 px-4 border-b text-left">Name</th>
+                                            <th class="py-2 px-4 border-b text-left">Program</th>
+                                            <th class="py-2 px-4 border-b text-left">Semester</th>
+                                            <th class="py-2 px-4 border-b text-left">Present</th>
+                                            <th class="py-2 px-4 border-b text-left">Total</th>
+                                            <th class="py-2 px-4 border-b text-left">Percentage</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="studentReportBody">
+                                        <!-- Student report data will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- Faculty Report Details -->
+                        <div id="facultyReportDetails" class="hidden">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-xl font-semibold text-gray-800">Faculty Report</h3>
+                                <button class="text-gray-500 hover:text-gray-700" id="closeFacultyReport">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white border border-gray-200">
+                                    <thead>
+                                        <tr class="bg-gray-100">
+                                            <th class="py-2 px-4 border-b text-left">Faculty ID</th>
+                                            <th class="py-2 px-4 border-b text-left">Name</th>
+                                            <th class="py-2 px-4 border-b text-left">Email</th>
+                                            <th class="py-2 px-4 border-b text-left">Total Students</th>
+                                            <th class="py-2 px-4 border-b text-left">Total Subjects</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="facultyReportBody">
+                                        <!-- Faculty report data will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- Program Report Details -->
+                        <div id="programReportDetails" class="hidden">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-xl font-semibold text-gray-800">Program Report</h3>
+                                <button class="text-gray-500 hover:text-gray-700" id="closeProgramReport">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white border border-gray-200">
+                                    <thead>
+                                        <tr class="bg-gray-100">
+                                            <th class="py-2 px-4 border-b text-left">Program Name</th>
+                                            <th class="py-2 px-4 border-b text-left">Duration</th>
+                                            <th class="py-2 px-4 border-b text-left">Total Semesters</th>
+                                            <th class="py-2 px-4 border-b text-left">Total Students</th>
+                                            <th class="py-2 px-4 border-b text-left">Total Faculty</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="programReportBody">
+                                        <!-- Program report data will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Add Timetable Entry Modal -->
+    <div id="addTimetableModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div class="px-6 py-4 border-b">
+                <h3 class="text-lg font-semibold text-gray-800">Add Timetable Entry</h3>
+            </div>
+            <form id="timetableForm" class="px-6 py-4">
+                <input type="hidden" id="timetableId">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="day">
+                        Day
+                    </label>
+                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="day" required>
+                        <option value="">Select Day</option>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="startTime">
+                        Start Time
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="startTime" type="time" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="endTime">
+                        End Time
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="endTime" type="time" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="subject">
+                        Subject
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="subject" type="text" placeholder="Subject name" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="faculty">
+                        Faculty
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="faculty" type="text" placeholder="Faculty name" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="program">
+                        Program
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="program" type="text" placeholder="Program (e.g., BCA, MCA)" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="semester">
+                        Semester
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="semester" type="text" placeholder="Semester (e.g., 1st, 2nd)" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="room">
+                        Room
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="room" type="text" placeholder="Room number" required>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="cancelTimetableBtn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Save
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -330,7 +880,7 @@
             window.location.href = '../login.html';
         });
         
-        // Navigation
+        // Navigation links
         document.getElementById('dashboardLink').addEventListener('click', function(e) {
             e.preventDefault();
             showSection('dashboardSection');
@@ -344,16 +894,821 @@
         document.getElementById('usersLink').addEventListener('click', function(e) {
             e.preventDefault();
             showSection('usersSection');
+            // Load user data when switching to the users section
+            loadUserData('students');
         });
         
+        document.getElementById('meetingsLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showSection('meetingsSection');
+        });
+        
+        document.getElementById('examsLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showSection('examsSection');
+        });
+        
+        document.getElementById('quizzesLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showSection('quizzesSection');
+        });
+        
+        document.getElementById('announcementsLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showSection('announcementsSection');
+            // Load announcements data
+            loadAnnouncementsData();
+        });
+        
+        document.getElementById('timetableLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showSection('timetableSection');
+            // Load timetable data
+            loadTimetableData();
+        });
+        
+        document.getElementById('reportsLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showSection('reportsSection');
+        });
+        
+        // Meetings functionality
+        document.getElementById('scheduleMeetingBtn').addEventListener('click', function() {
+            document.getElementById('meetingForm').reset();
+            document.getElementById('scheduleMeetingModal').classList.remove('hidden');
+            document.getElementById('scheduleMeetingModal').classList.add('flex');
+        });
+        
+        document.getElementById('cancelMeetingBtn').addEventListener('click', function() {
+            document.getElementById('scheduleMeetingModal').classList.add('hidden');
+            document.getElementById('scheduleMeetingModal').classList.remove('flex');
+        });
+        
+        document.getElementById('meetingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // In a real implementation, this would send the form data to the server
+            alert('Meeting scheduled successfully!');
+            document.getElementById('scheduleMeetingModal').classList.add('hidden');
+            document.getElementById('scheduleMeetingModal').classList.remove('flex');
+            // Reload meetings data
+            loadMeetingsData();
+        });
+        
+        // Filter meetings
+        document.getElementById('filterMeetingsBtn').addEventListener('click', function() {
+            const program = document.getElementById('meetingProgramFilter').value;
+            const semester = document.getElementById('meetingSemesterFilter').value;
+            // In a real implementation, this would filter the meetings based on the selected program and semester
+            alert(`Filtering meetings by Program: ${program || 'All'}, Semester: ${semester || 'All'}`);
+            loadMeetingsData(program, semester);
+        });
+        
+        // Exams functionality
+        document.getElementById('createExamBtn').addEventListener('click', function() {
+            document.getElementById('examForm').reset();
+            document.getElementById('createExamModal').classList.remove('hidden');
+            document.getElementById('createExamModal').classList.add('flex');
+        });
+        
+        document.getElementById('cancelExamBtn').addEventListener('click', function() {
+            document.getElementById('createExamModal').classList.add('hidden');
+            document.getElementById('createExamModal').classList.remove('flex');
+        });
+        
+        document.getElementById('examForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // In a real implementation, this would send the form data to the server
+            alert('Exam created successfully!');
+            document.getElementById('createExamModal').classList.add('hidden');
+            document.getElementById('createExamModal').classList.remove('flex');
+            // Reload exams data
+            loadExamsData();
+        });
+        
+        // Filter exams
+        document.getElementById('filterExamsBtn').addEventListener('click', function() {
+            const program = document.getElementById('examProgramFilter').value;
+            const semester = document.getElementById('examSemesterFilter').value;
+            // In a real implementation, this would filter the exams based on the selected program and semester
+            alert(`Filtering exams by Program: ${program || 'All'}, Semester: ${semester || 'All'}`);
+            loadExamsData(program, semester);
+        });
+        
+        // Quizzes functionality
+        document.getElementById('createQuizBtn').addEventListener('click', function() {
+            document.getElementById('quizForm').reset();
+            document.getElementById('createQuizModal').classList.remove('hidden');
+            document.getElementById('createQuizModal').classList.add('flex');
+        });
+        
+        document.getElementById('cancelQuizBtn').addEventListener('click', function() {
+            document.getElementById('createQuizModal').classList.add('hidden');
+            document.getElementById('createQuizModal').classList.remove('flex');
+        });
+        
+        document.getElementById('quizForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // In a real implementation, this would send the form data to the server
+            alert('Quiz created successfully!');
+            document.getElementById('createQuizModal').classList.add('hidden');
+            document.getElementById('createQuizModal').classList.remove('flex');
+            // Reload quizzes data
+            loadQuizzesData();
+        });
+        
+        // Filter quizzes
+        document.getElementById('filterQuizzesBtn').addEventListener('click', function() {
+            const program = document.getElementById('quizProgramFilter').value;
+            const semester = document.getElementById('quizSemesterFilter').value;
+            // In a real implementation, this would filter the quizzes based on the selected program and semester
+            alert(`Filtering quizzes by Program: ${program || 'All'}, Semester: ${semester || 'All'}`);
+            loadQuizzesData(program, semester);
+        });
+        
+        // Announcements functionality
+        document.getElementById('addAnnouncementBtn').addEventListener('click', function() {
+            document.getElementById('announcementForm').reset();
+            document.getElementById('createAnnouncementModal').classList.remove('hidden');
+            document.getElementById('createAnnouncementModal').classList.add('flex');
+        });
+        
+        document.getElementById('cancelAnnouncementBtn').addEventListener('click', function() {
+            document.getElementById('createAnnouncementModal').classList.add('hidden');
+            document.getElementById('createAnnouncementModal').classList.remove('flex');
+        });
+        
+        document.getElementById('announcementForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // In a real implementation, this would send the form data to the server
+            alert('Announcement created successfully!');
+            document.getElementById('createAnnouncementModal').classList.add('hidden');
+            document.getElementById('createAnnouncementModal').classList.remove('flex');
+            // Reload announcements data
+            loadAnnouncementsData();
+        });
+        
+        // Filter announcements
+        document.getElementById('filterAnnouncementsBtn').addEventListener('click', function() {
+            const program = document.getElementById('announcementProgramFilter').value;
+            const semester = document.getElementById('announcementSemesterFilter').value;
+            // In a real implementation, this would filter the announcements based on the selected program and semester
+            alert(`Filtering announcements by Program: ${program || 'All'}, Semester: ${semester || 'All'}`);
+            loadAnnouncementsData(program, semester);
+        });
+        
+        // Edit and Delete announcement functionality
+        function attachAnnouncementActionListeners() {
+            // Edit buttons
+            document.querySelectorAll('#announcementsSection .text-blue-600').forEach(button => {
+                if (button.querySelector('.fa-edit')) {
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const row = this.closest('tr');
+                        const announcementId = row.cells[0].textContent;
+                        alert(`Edit announcement with ID: ${announcementId}`);
+                        // In a real implementation, this would open an edit modal
+                    });
+                }
+            });
+            
+            // Delete buttons
+            document.querySelectorAll('#announcementsSection .text-red-600').forEach(button => {
+                if (button.querySelector('.fa-trash')) {
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const row = this.closest('tr');
+                        const announcementId = row.cells[0].textContent;
+                        if (confirm(`Are you sure you want to delete announcement: ${announcementId}?`)) {
+                            row.remove();
+                            // In a real implementation, this would make an API call to delete the announcement
+                            alert(`Announcement: ${announcementId} deleted successfully!`);
+                        }
+                    });
+                }
+            });
+        }
+        
+        // Load announcements data
+        function loadAnnouncementsData(program = '', semester = '') {
+            const tbody = document.getElementById('announcementsBody');
+            tbody.innerHTML = `
+                <tr>
+                    <td class="py-2 px-4 border-b">Exam Schedule Released</td>
+                    <td class="py-2 px-4 border-b">Check your timetable for upcoming exams</td>
+                    <td class="py-2 px-4 border-b">BCA</td>
+                    <td class="py-2 px-4 border-b">2nd</td>
+                    <td class="py-2 px-4 border-b">Admin</td>
+                    <td class="py-2 px-4 border-b">2025-10-28</td>
+                    <td class="py-2 px-4 border-b">
+                        <button class="text-blue-600 hover:text-blue-800 mr-2">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="py-2 px-4 border-b">Library Access</td>
+                    <td class="py-2 px-4 border-b">Extended library hours during exam week</td>
+                    <td class="py-2 px-4 border-b">MCA</td>
+                    <td class="py-2 px-4 border-b">1st</td>
+                    <td class="py-2 px-4 border-b">Admin</td>
+                    <td class="py-2 px-4 border-b">2025-10-25</td>
+                    <td class="py-2 px-4 border-b">
+                        <button class="text-blue-600 hover:text-blue-800 mr-2">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="py-2 px-4 border-b">Holiday Announcement</td>
+                    <td class="py-2 px-4 border-b">College will be closed on Monday for maintenance</td>
+                    <td class="py-2 px-4 border-b">All</td>
+                    <td class="py-2 px-4 border-b">All</td>
+                    <td class="py-2 px-4 border-b">Admin</td>
+                    <td class="py-2 px-4 border-b">2025-10-20</td>
+                    <td class="py-2 px-4 border-b">
+                        <button class="text-blue-600 hover:text-blue-800 mr-2">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            
+            // Attach event listeners to the new buttons
+            attachAnnouncementActionListeners();
+        }
+        
+        // Load meetings data
+        function loadMeetingsData(program = '', semester = '') {
+            const tbody = document.getElementById('meetingsBody');
+            tbody.innerHTML = `
+                <tr>
+                    <td class="py-2 px-4 border-b">Mathematics Lecture</td>
+                    <td class="py-2 px-4 border-b">2025-11-10</td>
+                    <td class="py-2 px-4 border-b">10:00 - 11:00</td>
+                    <td class="py-2 px-4 border-b">BCA</td>
+                    <td class="py-2 px-4 border-b">1st</td>
+                    <td class="py-2 px-4 border-b">Dr. Smith</td>
+                    <td class="py-2 px-4 border-b">
+                        <button class="text-blue-600 hover:text-blue-800 mr-2">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="py-2 px-4 border-b">Programming Session</td>
+                    <td class="py-2 px-4 border-b">2025-11-12</td>
+                    <td class="py-2 px-4 border-b">14:00 - 15:30</td>
+                    <td class="py-2 px-4 border-b">MCA</td>
+                    <td class="py-2 px-4 border-b">2nd</td>
+                    <td class="py-2 px-4 border-b">Prof. Johnson</td>
+                    <td class="py-2 px-4 border-b">
+                        <button class="text-blue-600 hover:text-blue-800 mr-2">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        // Load exams data
+        function loadExamsData(program = '', semester = '') {
+            const tbody = document.getElementById('examsBody');
+            tbody.innerHTML = `
+                <tr>
+                    <td class="py-2 px-4 border-b">Mid-term Exam</td>
+                    <td class="py-2 px-4 border-b">Mathematics</td>
+                    <td class="py-2 px-4 border-b">2025-11-15</td>
+                    <td class="py-2 px-4 border-b">09:00 - 11:00</td>
+                    <td class="py-2 px-4 border-b">BCA</td>
+                    <td class="py-2 px-4 border-b">1st</td>
+                    <td class="py-2 px-4 border-b">Dr. Smith</td>
+                    <td class="py-2 px-4 border-b">
+                        <button class="text-blue-600 hover:text-blue-800 mr-2">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="py-2 px-4 border-b">Final Exam</td>
+                    <td class="py-2 px-4 border-b">Programming</td>
+                    <td class="py-2 px-4 border-b">2025-11-20</td>
+                    <td class="py-2 px-4 border-b">14:00 - 16:00</td>
+                    <td class="py-2 px-4 border-b">MCA</td>
+                    <td class="py-2 px-4 border-b">2nd</td>
+                    <td class="py-2 px-4 border-b">Prof. Johnson</td>
+                    <td class="py-2 px-4 border-b">
+                        <button class="text-blue-600 hover:text-blue-800 mr-2">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        // Load quizzes data
+        function loadQuizzesData(program = '', semester = '') {
+            const tbody = document.getElementById('quizzesBody');
+            tbody.innerHTML = `
+                <tr>
+                    <td class="py-2 px-4 border-b">Math Quiz 1</td>
+                    <td class="py-2 px-4 border-b">Mathematics</td>
+                    <td class="py-2 px-4 border-b">10</td>
+                    <td class="py-2 px-4 border-b">BCA</td>
+                    <td class="py-2 px-4 border-b">1st</td>
+                    <td class="py-2 px-4 border-b">Dr. Smith</td>
+                    <td class="py-2 px-4 border-b">
+                        <button class="text-blue-600 hover:text-blue-800 mr-2">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="py-2 px-4 border-b">Programming Quiz</td>
+                    <td class="py-2 px-4 border-b">Programming</td>
+                    <td class="py-2 px-4 border-b">15</td>
+                    <td class="py-2 px-4 border-b">MCA</td>
+                    <td class="py-2 px-4 border-b">2nd</td>
+                    <td class="py-2 px-4 border-b">Prof. Johnson</td>
+                    <td class="py-2 px-4 border-b">
+                        <button class="text-blue-600 hover:text-blue-800 mr-2">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        // User Management functionality
+        // Tab switching functionality
+        document.getElementById('studentsTab').addEventListener('click', function(e) {
+            setActiveTab(this, 'students');
+            loadUserData('students');
+        });
+        
+        document.getElementById('facultyTab').addEventListener('click', function(e) {
+            setActiveTab(this, 'faculty');
+            loadUserData('faculty');
+        });
+        
+        document.getElementById('adminTab').addEventListener('click', function(e) {
+            setActiveTab(this, 'admin');
+            loadUserData('admin');
+        });
+        
+        // Upload users functionality
+        document.getElementById('uploadUsersBtn').addEventListener('click', function() {
+            // In a real implementation, this would open a file upload dialog
+            alert('Upload users functionality would be implemented here');
+            // For now, we'll just show a mock success message
+            alert('Users uploaded successfully!');
+        });
+        
+        function setActiveTab(activeTab, userType) {
+            // Remove active class from all tabs
+            const tabs = [document.getElementById('studentsTab'), document.getElementById('facultyTab'), document.getElementById('adminTab')];
+            tabs.forEach(tab => {
+                tab.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+                tab.classList.add('text-gray-600', 'hover:text-gray-800');
+            });
+            
+            // Add active class to clicked tab
+            activeTab.classList.remove('text-gray-600', 'hover:text-gray-800');
+            activeTab.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+        }
+        
+        // Edit and Delete button functionality
+        function attachUserActionListeners() {
+            // Edit buttons
+            document.querySelectorAll('#usersSection .text-blue-600').forEach(button => {
+                if (button.querySelector('.fa-edit')) {
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const row = this.closest('tr');
+                        const userId = row.cells[0].textContent;
+                        alert(`Edit user with ID: ${userId}`);
+                        // In a real implementation, this would open an edit modal
+                    });
+                }
+            });
+            
+            // Delete buttons
+            document.querySelectorAll('#usersSection .text-red-600').forEach(button => {
+                if (button.querySelector('.fa-trash')) {
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const row = this.closest('tr');
+                        const userId = row.cells[0].textContent;
+                        if (confirm(`Are you sure you want to delete user with ID: ${userId}?`)) {
+                            row.remove();
+                            // In a real implementation, this would make an API call to delete the user
+                            alert(`User with ID: ${userId} deleted successfully!`);
+                        }
+                    });
+                }
+            });
+        }
+        
+        // Load user data based on type
+        function loadUserData(type) {
+            const tbody = document.querySelector('#usersSection tbody');
+            
+            if (type === 'students') {
+                tbody.innerHTML = `
+                    <tr>
+                        <td class="py-2 px-4 border-b">STU123456</td>
+                        <td class="py-2 px-4 border-b">John Doe</td>
+                        <td class="py-2 px-4 border-b">john@example.com</td>
+                        <td class="py-2 px-4 border-b">BCA</td>
+                        <td class="py-2 px-4 border-b">1st</td>
+                        <td class="py-2 px-4 border-b">
+                            <button class="text-blue-600 hover:text-blue-800 mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 px-4 border-b">STU789012</td>
+                        <td class="py-2 px-4 border-b">Jane Smith</td>
+                        <td class="py-2 px-4 border-b">jane@example.com</td>
+                        <td class="py-2 px-4 border-b">MCA</td>
+                        <td class="py-2 px-4 border-b">2nd</td>
+                        <td class="py-2 px-4 border-b">
+                            <button class="text-blue-600 hover:text-blue-800 mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            } else if (type === 'faculty') {
+                tbody.innerHTML = `
+                    <tr>
+                        <td class="py-2 px-4 border-b">FAC123456</td>
+                        <td class="py-2 px-4 border-b">Dr. Smith</td>
+                        <td class="py-2 px-4 border-b">smith@example.com</td>
+                        <td class="py-2 px-4 border-b">Computer Science</td>
+                        <td class="py-2 px-4 border-b">-</td>
+                        <td class="py-2 px-4 border-b">
+                            <button class="text-blue-600 hover:text-blue-800 mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 px-4 border-b">FAC789012</td>
+                        <td class="py-2 px-4 border-b">Prof. Johnson</td>
+                        <td class="py-2 px-4 border-b">johnson@example.com</td>
+                        <td class="py-2 px-4 border-b">Mathematics</td>
+                        <td class="py-2 px-4 border-b">-</td>
+                        <td class="py-2 px-4 border-b">
+                            <button class="text-blue-600 hover:text-blue-800 mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            } else if (type === 'admin') {
+                tbody.innerHTML = `
+                    <tr>
+                        <td class="py-2 px-4 border-b">ADM123456</td>
+                        <td class="py-2 px-4 border-b">Admin User</td>
+                        <td class="py-2 px-4 border-b">admin@example.com</td>
+                        <td class="py-2 px-4 border-b">-</td>
+                        <td class="py-2 px-4 border-b">-</td>
+                        <td class="py-2 px-4 border-b">
+                            <button class="text-blue-600 hover:text-blue-800 mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 px-4 border-b">ADM789012</td>
+                        <td class="py-2 px-4 border-b">System Admin</td>
+                        <td class="py-2 px-4 border-b">sysadmin@example.com</td>
+                        <td class="py-2 px-4 border-b">-</td>
+                        <td class="py-2 px-4 border-b">-</td>
+                        <td class="py-2 px-4 border-b">
+                            <button class="text-blue-600 hover:text-blue-800 mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            // Attach event listeners to the new buttons
+            attachUserActionListeners();
+        }
+        
+        // Timetable functionality
+        document.getElementById('addTimetableEntryBtn').addEventListener('click', function() {
+            document.getElementById('timetableForm').reset();
+            document.getElementById('timetableId').value = '';
+            document.getElementById('addTimetableModal').classList.remove('hidden');
+            document.getElementById('addTimetableModal').classList.add('flex');
+        });
+        
+        document.getElementById('cancelTimetableBtn').addEventListener('click', function() {
+            document.getElementById('addTimetableModal').classList.add('hidden');
+            document.getElementById('addTimetableModal').classList.remove('flex');
+        });
+        
+        document.getElementById('timetableForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // In a real implementation, this would send the form data to the server
+            alert('Timetable entry saved successfully!');
+            document.getElementById('addTimetableModal').classList.add('hidden');
+            document.getElementById('addTimetableModal').classList.remove('flex');
+            // Reload timetable data
+            loadTimetableData();
+        });
+        
+        // Report functionality
         function showSection(sectionId) {
             // Hide all sections
             document.getElementById('dashboardSection').classList.add('hidden');
             document.getElementById('programsSection').classList.add('hidden');
             document.getElementById('usersSection').classList.add('hidden');
+            document.getElementById('meetingsSection').classList.add('hidden');
+            document.getElementById('examsSection').classList.add('hidden');
+            document.getElementById('quizzesSection').classList.add('hidden');
+            document.getElementById('announcementsSection').classList.add('hidden');
+            document.getElementById('timetableSection').classList.add('hidden');
+            document.getElementById('reportsSection').classList.add('hidden');
             
             // Show selected section
             document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        document.getElementById('dashboardCard').addEventListener('click', function() {
+            showSection('dashboardSection');
+        });
+        
+        document.getElementById('programsCard').addEventListener('click', function() {
+            showSection('programsSection');
+        });
+        
+        document.getElementById('usersCard').addEventListener('click', function() {
+            showSection('usersSection');
+        });
+        
+        document.getElementById('meetingsCard').addEventListener('click', function() {
+            showSection('meetingsSection');
+        });
+        
+        document.getElementById('examsCard').addEventListener('click', function() {
+            showSection('examsSection');
+        });
+        
+        document.getElementById('quizzesCard').addEventListener('click', function() {
+            showSection('quizzesSection');
+        });
+        
+        document.getElementById('announcementsCard').addEventListener('click', function() {
+            showSection('announcementsSection');
+        });
+        
+        document.getElementById('timetableCard').addEventListener('click', function() {
+            showSection('timetableSection');
+        });
+        
+        document.getElementById('studentReportCard').addEventListener('click', function() {
+            document.getElementById('studentReportDetails').classList.remove('hidden');
+            document.getElementById('facultyReportDetails').classList.add('hidden');
+            document.getElementById('programReportDetails').classList.add('hidden');
+            // Load student report data
+            loadStudentReportData();
+        });
+        
+        document.getElementById('facultyReportCard').addEventListener('click', function() {
+            document.getElementById('studentReportDetails').classList.add('hidden');
+            document.getElementById('facultyReportDetails').classList.remove('hidden');
+            document.getElementById('programReportDetails').classList.add('hidden');
+            // Load faculty report data
+            loadFacultyReportData();
+        });
+        
+        document.getElementById('programReportCard').addEventListener('click', function() {
+            document.getElementById('studentReportDetails').classList.add('hidden');
+            document.getElementById('facultyReportDetails').classList.add('hidden');
+            document.getElementById('programReportDetails').classList.remove('hidden');
+            // Load program report data
+            loadProgramReportData();
+        });
+        
+        document.getElementById('closeStudentReport').addEventListener('click', function() {
+            document.getElementById('studentReportDetails').classList.add('hidden');
+        });
+        
+        document.getElementById('closeFacultyReport').addEventListener('click', function() {
+            document.getElementById('facultyReportDetails').classList.add('hidden');
+        });
+        
+        document.getElementById('closeProgramReport').addEventListener('click', function() {
+            document.getElementById('programReportDetails').classList.add('hidden');
+        });
+        
+        // Mock data loading functions
+        function loadTimetableData() {
+            // In a real implementation, this would fetch data from the server
+            const timetableBody = document.getElementById('timetableBody');
+            timetableBody.innerHTML = `
+                <tr>
+                    <td class="py-2 px-4 border-b">Monday</td>
+                    <td class="py-2 px-4 border-b">10:00 - 11:00</td>
+                    <td class="py-2 px-4 border-b">Mathematics</td>
+                    <td class="py-2 px-4 border-b">Dr. Smith</td>
+                    <td class="py-2 px-4 border-b">BCA</td>
+                    <td class="py-2 px-4 border-b">1st</td>
+                    <td class="py-2 px-4 border-b">Room 101</td>
+                    <td class="py-2 px-4 border-b">
+                        <button class="text-blue-600 hover:text-blue-800 mr-2">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="py-2 px-4 border-b">Tuesday</td>
+                    <td class="py-2 px-4 border-b">14:00 - 15:00</td>
+                    <td class="py-2 px-4 border-b">Programming</td>
+                    <td class="py-2 px-4 border-b">Prof. Johnson</td>
+                    <td class="py-2 px-4 border-b">MCA</td>
+                    <td class="py-2 px-4 border-b">2nd</td>
+                    <td class="py-2 px-4 border-b">Room 205</td>
+                    <td class="py-2 px-4 border-b">
+                        <button class="text-blue-600 hover:text-blue-800 mr-2">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        function loadStudentReportData() {
+            // In a real implementation, this would fetch data from the server
+            const studentReportBody = document.getElementById('studentReportBody');
+            studentReportBody.innerHTML = `
+                <tr>
+                    <td class="py-2 px-4 border-b">STU123456</td>
+                    <td class="py-2 px-4 border-b">John Doe</td>
+                    <td class="py-2 px-4 border-b">BCA</td>
+                    <td class="py-2 px-4 border-b">1st</td>
+                    <td class="py-2 px-4 border-b">45</td>
+                    <td class="py-2 px-4 border-b">50</td>
+                    <td class="py-2 px-4 border-b">90%</td>
+                </tr>
+                <tr>
+                    <td class="py-2 px-4 border-b">STU789012</td>
+                    <td class="py-2 px-4 border-b">Jane Smith</td>
+                    <td class="py-2 px-4 border-b">MCA</td>
+                    <td class="py-2 px-4 border-b">2nd</td>
+                    <td class="py-2 px-4 border-b">42</td>
+                    <td class="py-2 px-4 border-b">40</td>
+                    <td class="py-2 px-4 border-b">85%</td>
+                </tr>
+            `;
+        }
+        
+        function loadFacultyReportData() {
+            // In a real implementation, this would fetch data from the server
+            const facultyReportBody = document.getElementById('facultyReportBody');
+            facultyReportBody.innerHTML = `
+                <tr>
+                    <td class="py-2 px-4 border-b">FAC123456</td>
+                    <td class="py-2 px-4 border-b">Dr. Smith</td>
+                    <td class="py-2 px-4 border-b">Mathematics</td>
+                    <td class="py-2 px-4 border-b">BCA</td>
+                    <td class="py-2 px-4 border-b">1st</td>
+                    <td class="py-2 px-4 border-b">45</td>
+                    <td class="py-2 px-4 border-b">50</td>
+                    <td class="py-2 px-4 border-b">90%</td>
+                </tr>
+                <tr>
+                    <td class="py-2 px-4 border-b">FAC789012</td>
+                    <td class="py-2 px-4 border-b">Prof. Johnson</td>
+                    <td class="py-2 px-4 border-b">Programming</td>
+                    <td class="py-2 px-4 border-b">MCA</td>
+                    <td class="py-2 px-4 border-b">2nd</td>
+                    <td class="py-2 px-4 border-b">42</td>
+                    <td class="py-2 px-4 border-b">40</td>
+                    <td class="py-2 px-4 border-b">85%</td>
+                </tr>
+            `;
+        }
+        
+        function loadProgramReportData() {
+            // In a real implementation, this would fetch data from the server
+            const programReportBody = document.getElementById('programReportBody');
+            programReportBody.innerHTML = `
+                <tr>
+                    <td class="py-2 px-4 border-b">BCA</td>
+                    <td class="py-2 px-4 border-b">Bachelor of Computer Applications</td>
+                    <td class="py-2 px-4 border-b">1st</td>
+                    <td class="py-2 px-4 border-b">45</td>
+                    <td class="py-2 px-4 border-b">50</td>
+                    <td class="py-2 px-4 border-b">90%</td>
+                </tr>
+                <tr>
+                    <td class="py-2 px-4 border-b">MCA</td>
+                    <td class="py-2 px-4 border-b">Master of Computer Applications</td>
+                    <td class="py-2 px-4 border-b">2nd</td>
+                    <td class="py-2 px-4 border-b">42</td>
+                    <td class="py-2 px-4 border-b">50</td>
+                    <td class="py-2 px-4 border-b">84%</td>
+                </tr>
+            `;
+        }
+        
+        function loadFacultyReportData() {
+            // In a real implementation, this would fetch data from the server
+            const facultyReportBody = document.getElementById('facultyReportBody');
+            facultyReportBody.innerHTML = `
+                <tr>
+                    <td class="py-2 px-4 border-b">FAC123456</td>
+                    <td class="py-2 px-4 border-b">Dr. Smith</td>
+                    <td class="py-2 px-4 border-b">smith@example.com</td>
+                    <td class="py-2 px-4 border-b">120</td>
+                    <td class="py-2 px-4 border-b">3</td>
+                </tr>
+                <tr>
+                    <td class="py-2 px-4 border-b">FAC789012</td>
+                    <td class="py-2 px-4 border-b">Prof. Johnson</td>
+                    <td class="py-2 px-4 border-b">johnson@example.com</td>
+                    <td class="py-2 px-4 border-b">95</td>
+                    <td class="py-2 px-4 border-b">2</td>
+                </tr>
+            `;
+        }
+        
+        function loadProgramReportData() {
+            // In a real implementation, this would fetch data from the server
+            const programReportBody = document.getElementById('programReportBody');
+            programReportBody.innerHTML = `
+                <tr>
+                    <td class="py-2 px-4 border-b">BCA</td>
+                    <td class="py-2 px-4 border-b">3 years</td>
+                    <td class="py-2 px-4 border-b">6</td>
+                    <td class="py-2 px-4 border-b">150</td>
+                    <td class="py-2 px-4 border-b">10</td>
+                </tr>
+                <tr>
+                    <td class="py-2 px-4 border-b">MCA</td>
+                    <td class="py-2 px-4 border-b">2 years</td>
+                    <td class="py-2 px-4 border-b">4</td>
+                    <td class="py-2 px-4 border-b">120</td>
+                    <td class="py-2 px-4 border-b">8</td>
+                </tr>
+            `;
         }
         
         // Fetch dashboard stats
@@ -379,5 +1734,267 @@
         // Initialize dashboard
         fetchDashboardStats();
     </script>
+
+    <!-- Create Announcement Modal -->
+    <div id="createAnnouncementModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div class="px-6 py-4 border-b">
+                <h3 class="text-lg font-semibold text-gray-800">Create Announcement</h3>
+            </div>
+            <form id="announcementForm" class="px-6 py-4">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="announcementTitle">
+                        Title
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="announcementTitle" type="text" placeholder="Announcement title" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="announcementContent">
+                        Content
+                    </label>
+                    <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="announcementContent" placeholder="Announcement content" rows="4" required></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="announcementProgram">
+                        Program (Optional)
+                    </label>
+                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="announcementProgram">
+                        <option value="">All Programs</option>
+                        <option value="BCA">BCA</option>
+                        <option value="MCA">MCA</option>
+                    </select>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="announcementSemester">
+                        Semester (Optional)
+                    </label>
+                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="announcementSemester">
+                        <option value="">All Semesters</option>
+                        <option value="1st">1st</option>
+                        <option value="2nd">2nd</option>
+                        <option value="3rd">3rd</option>
+                        <option value="4th">4th</option>
+                        <option value="5th">5th</option>
+                        <option value="6th">6th</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="cancelAnnouncementBtn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Create
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Schedule Meeting Modal -->
+    <div id="scheduleMeetingModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div class="px-6 py-4 border-b">
+                <h3 class="text-lg font-semibold text-gray-800">Schedule Meeting</h3>
+            </div>
+            <form id="meetingForm" class="px-6 py-4">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="meetingSubject">
+                        Subject
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="meetingSubject" type="text" placeholder="Meeting subject" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="meetingDate">
+                        Date
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="meetingDate" type="date" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="meetingStartTime">
+                        Start Time
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="meetingStartTime" type="time" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="meetingEndTime">
+                        End Time
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="meetingEndTime" type="time" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="meetingProgram">
+                        Program
+                    </label>
+                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="meetingProgram" required>
+                        <option value="">Select Program</option>
+                        <option value="BCA">BCA</option>
+                        <option value="MCA">MCA</option>
+                    </select>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="meetingSemester">
+                        Semester
+                    </label>
+                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="meetingSemester" required>
+                        <option value="">Select Semester</option>
+                        <option value="1st">1st</option>
+                        <option value="2nd">2nd</option>
+                        <option value="3rd">3rd</option>
+                        <option value="4th">4th</option>
+                        <option value="5th">5th</option>
+                        <option value="6th">6th</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="cancelMeetingBtn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Schedule
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Exam Modal -->
+    <div id="createExamModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div class="px-6 py-4 border-b">
+                <h3 class="text-lg font-semibold text-gray-800">Create Exam</h3>
+            </div>
+            <form id="examForm" class="px-6 py-4">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="examTitle">
+                        Title
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="examTitle" type="text" placeholder="Exam title" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="examSubject">
+                        Subject
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="examSubject" type="text" placeholder="Subject" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="examDate">
+                        Date
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="examDate" type="date" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="examStartTime">
+                        Start Time
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="examStartTime" type="time" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="examEndTime">
+                        End Time
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="examEndTime" type="time" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="examDuration">
+                        Duration (minutes)
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="examDuration" type="number" placeholder="Duration in minutes" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="examProgram">
+                        Program
+                    </label>
+                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="examProgram" required>
+                        <option value="">Select Program</option>
+                        <option value="BCA">BCA</option>
+                        <option value="MCA">MCA</option>
+                    </select>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="examSemester">
+                        Semester
+                    </label>
+                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="examSemester" required>
+                        <option value="">Select Semester</option>
+                        <option value="1st">1st</option>
+                        <option value="2nd">2nd</option>
+                        <option value="3rd">3rd</option>
+                        <option value="4th">4th</option>
+                        <option value="5th">5th</option>
+                        <option value="6th">6th</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="cancelExamBtn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Create
+                    </button>
+                </div>
+            </form>
+        </div>
+</body>
+</html>
+
+    <!-- Create Quiz Modal -->
+    <div id="createQuizModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div class="px-6 py-4 border-b">
+                <h3 class="text-lg font-semibold text-gray-800">Create Quiz</h3>
+            </div>
+            <form id="quizForm" class="px-6 py-4">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="quizTitle">
+                        Title
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="quizTitle" type="text" placeholder="Quiz title" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="quizSubject">
+                        Subject
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="quizSubject" type="text" placeholder="Subject" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="quizQuestions">
+                        Number of Questions
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="quizQuestions" type="number" placeholder="Number of questions" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="quizProgram">
+                        Program
+                    </label>
+                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="quizProgram" required>
+                        <option value="">Select Program</option>
+                        <option value="BCA">BCA</option>
+                        <option value="MCA">MCA</option>
+                    </select>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="quizSemester">
+                        Semester
+                    </label>
+                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="quizSemester" required>
+                        <option value="">Select Semester</option>
+                        <option value="1st">1st</option>
+                        <option value="2nd">2nd</option>
+                        <option value="3rd">3rd</option>
+                        <option value="4th">4th</option>
+                        <option value="5th">5th</option>
+                        <option value="6th">6th</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="cancelQuizBtn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Create
+                    </button>
+                </div>
+            </form>
+        </div>
 </body>
 </html>

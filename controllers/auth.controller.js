@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../models/User.mongo');
 const Joi = require('joi');
 
 // Validation schemas

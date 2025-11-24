@@ -1,5 +1,4 @@
-const User = require('../models/User');
-const pool = require('../config/db');
+const User = require('../models/User.mongo');
 
 // Get dashboard statistics
 const getDashboardStats = async (req, res) => {

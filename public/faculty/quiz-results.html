@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acadify - Quiz Results</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(circle at 25% -10%, rgba(14, 165, 233, 0.3), transparent 45%),
+                radial-gradient(circle at 80% 0%, rgba(236, 72, 153, 0.25), transparent 35%),
+                #020617;
+            min-height: 100vh;
+        }
+
+        .glass-panel {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.55));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 45px rgba(2, 6, 23, 0.55);
+            backdrop-filter: blur(18px);
+        }
+
+        .glass-soft {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+
+<body class="text-slate-100">
+    <header class="sticky top-0 z-30 border-b border-white/10 backdrop-blur-xl bg-slate-900/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div
+                    class="h-11 w-11 rounded-2xl bg-gradient-to-br from-sky-500 via-indigo-500 to-purple-500 flex items-center justify-center shadow-lg">
+                    <i class="fas fa-chart-pie text-white text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-xs uppercase tracking-[0.35em] text-slate-400">Acadify</p>
+                    <h1 class="text-lg font-semibold">Quiz Results</h1>
+                </div>
+            </div>
+            <a href="dashboard-enhanced.html"
+                class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-sm font-medium transition">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        <!-- Overview Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass-panel rounded-3xl p-6">
+                <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Total Attempts</p>
+                <h3 class="text-3xl font-bold mt-2">42</h3>
+                <p class="text-xs text-emerald-400 mt-1">+12 from last week</p>
+            </div>
+            <div class="glass-panel rounded-3xl p-6">
+                <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Average Score</p>
+                <h3 class="text-3xl font-bold mt-2">78%</h3>
+                <p class="text-xs text-slate-400 mt-1">Class average</p>
+            </div>
+            <div class="glass-panel rounded-3xl p-6">
+                <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Pass Rate</p>
+                <h3 class="text-3xl font-bold mt-2">92%</h3>
+                <p class="text-xs text-emerald-400 mt-1">Above target</p>
+            </div>
+        </div>
+
+        <!-- Detailed Results Table -->
+        <div class="glass-panel rounded-3xl p-6 lg:p-8 space-y-6">
+            <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-semibold">Student Performance</h2>
+                <div class="flex gap-2">
+                    <button class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-medium transition">
+                        <i class="fas fa-filter mr-2"></i>Filter
+                    </button>
+                    <button
+                        class="px-4 py-2 rounded-xl bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 text-xs font-medium transition border border-emerald-500/30">
+                        <i class="fas fa-download mr-2"></i>Export CSV
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="text-xs uppercase text-slate-400 border-b border-white/10">
+                        <tr>
+                            <th class="px-6 py-4">Student Name</th>
+                            <th class="px-6 py-4">Quiz Title</th>
+                            <th class="px-6 py-4">Date</th>
+                            <th class="px-6 py-4">Score</th>
+                            <th class="px-6 py-4">Status</th>
+                            <th class="px-6 py-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5">
+                        <tr class="hover:bg-white/5 transition">
+                            <td class="px-6 py-4 font-medium">Alex Johnson</td>
+                            <td class="px-6 py-4 text-slate-300">Data Structures Mid-Term</td>
+                            <td class="px-6 py-4 text-slate-400">Oct 24, 2023</td>
+                            <td class="px-6 py-4 font-bold text-emerald-400">95%</td>
+                            <td class="px-6 py-4"><span
+                                    class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs">Passed</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <button class="text-sky-400 hover:text-sky-300">View Details</button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-white/5 transition">
+                            <td class="px-6 py-4 font-medium">Sarah Williams</td>
+                            <td class="px-6 py-4 text-slate-300">Data Structures Mid-Term</td>
+                            <td class="px-6 py-4 text-slate-400">Oct 24, 2023</td>
+                            <td class="px-6 py-4 font-bold text-amber-400">72%</td>
+                            <td class="px-6 py-4"><span
+                                    class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs">Passed</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <button class="text-sky-400 hover:text-sky-300">View Details</button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-white/5 transition">
+                            <td class="px-6 py-4 font-medium">Michael Brown</td>
+                            <td class="px-6 py-4 text-slate-300">Data Structures Mid-Term</td>
+                            <td class="px-6 py-4 text-slate-400">Oct 25, 2023</td>
+                            <td class="px-6 py-4 font-bold text-rose-400">45%</td>
+                            <td class="px-6 py-4"><span
+                                    class="px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 text-xs">Failed</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <button class="text-sky-400 hover:text-sky-300">View Details</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Basic auth check
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+        if (!token || user.role !== 'faculty') {
+            window.location.href = '../login.html';
+        }
+    </script>
+</body>
+
+</html>

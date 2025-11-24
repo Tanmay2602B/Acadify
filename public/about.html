@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acadify - About</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100">
+    <header class="border-b border-white/10 bg-slate-950/95 backdrop-blur-xl sticky top-0 z-30">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2 text-lg font-semibold">
+                <span class="h-9 w-9 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white"><i class="fas fa-graduation-cap"></i></span>
+                <span>Acadify</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-5 text-sm text-slate-300 font-semibold">
+                <a href="index.html" class="hover:text-white transition">Home</a>
+                <a href="features.html" class="hover:text-white transition">Features</a>
+                <a href="contact.html" class="hover:text-white transition">Contact</a>
+            </nav>
+            <button id="mobileMenuButton" class="md:hidden text-xl"><i class="fas fa-bars"></i></button>
+        </div>
+        <nav id="mobileMenu" class="md:hidden hidden border-t border-white/10 px-6 py-4 text-sm font-semibold text-slate-300">
+            <a href="index.html" class="block py-2">Home</a>
+            <a href="features.html" class="block py-2">Features</a>
+            <a href="contact.html" class="block py-2">Contact</a>
+        </nav>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-16">
+        <section>
+            <p class="text-xs uppercase tracking-[0.4em] text-slate-400 mb-3">About Acadify</p>
+            <h1 class="text-4xl font-semibold text-white mb-6">Building the operating system for learning institutions.</h1>
+            <p class="text-slate-300 text-sm leading-6 max-w-3xl">Acadify started as a lightweight resource sharing tool and grew into a comprehensive learning resource management platform for universities, bootcamps, and training teams. We partner with academic leaders to consolidate student records, timetables, faculty workflows, meeting orchestration, and AI guidance into one modern workspace.</p>
+        </section>
+
+        <section class="grid gap-6 md:grid-cols-3">
+            <article class="glass-soft rounded-3xl border border-white/10 p-6">
+                <p class="text-xs text-slate-400 uppercase tracking-[0.4em] mb-2">Mission</p>
+                <h3 class="text-xl font-semibold mb-2">Clarity for every cohort</h3>
+                <p class="text-sm text-slate-300">Give students, faculty, and admins a shared, realtime view of progress, meetings, and learning resources.</p>
+            </article>
+            <article class="glass-soft rounded-3xl border border-white/10 p-6">
+                <p class="text-xs text-slate-400 uppercase tracking-[0.4em] mb-2">Vision</p>
+                <h3 class="text-xl font-semibold mb-2">Human + AI campus</h3>
+                <p class="text-sm text-slate-300">Blend structured academic process with intelligent assistance so every learner gets personalized support.</p>
+            </article>
+            <article class="glass-soft rounded-3xl border border-white/10 p-6">
+                <p class="text-xs text-slate-400 uppercase tracking-[0.4em] mb-2">Promise</p>
+                <h3 class="text-xl font-semibold mb-2">Launch in a week</h3>
+                <p class="text-sm text-slate-300">From CSV imports to meeting automation, Acadify ships with starter kits that help campuses go live quickly.</p>
+            </article>
+        </section>
+
+        <section class="space-y-6">
+            <h2 class="text-3xl font-semibold text-white">Platform milestones</h2>
+            <div class="space-y-4 border-l border-white/10 pl-6">
+                <div>
+                    <p class="text-xs text-slate-500 uppercase tracking-[0.4em] mb-1">2021</p>
+                    <h3 class="text-lg font-semibold text-white">Resource sharing prototype</h3>
+                    <p class="text-sm text-slate-400">Launched the first version to help faculty distribute notes and PPT decks to remote cohorts.</p>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 uppercase tracking-[0.4em] mb-1">2023</p>
+                    <h3 class="text-lg font-semibold text-white">Full LRMS launch</h3>
+                    <p class="text-sm text-slate-400">Added admin automation, timetable generator, AI assistant, and meeting tools to support entire academic cycles.</p>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 uppercase tracking-[0.4em] mb-1">2025</p>
+                    <h3 class="text-lg font-semibold text-white">Learning OS rollout</h3>
+                    <p class="text-sm text-slate-400">Delivered role-based dashboards with glass UI, analytics, and mobile friendly controls for multi-campus deployments.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass-soft border border-white/10 rounded-3xl p-6 space-y-4">
+            <div class="flex flex-col gap-2">
+                <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Deployment models</p>
+                <h2 class="text-2xl font-semibold text-white">Tailored delivery for every institution</h2>
+            </div>
+            <div class="grid gap-5 md:grid-cols-2 text-sm text-slate-300">
+                <div>
+                    <p class="font-semibold text-white mb-2">Self-hosted</p>
+                    <p>Run Acadify on your infrastructure with containerized services, SSO, and data residency controls.</p>
+                </div>
+                <div>
+                    <p class="font-semibold text-white mb-2">Managed cloud</p>
+                    <p>Let our team handle scaling, security updates, and uptime while your admins focus on academic operations.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="text-center space-y-4">
+            <h2 class="text-3xl font-semibold text-white">Want the full tour?</h2>
+            <p class="text-slate-300 text-sm max-w-2xl mx-auto">Jump into the meetings planner, explore faculty dashboards, or message our solutions team for a guided session.</p>
+            <div class="flex flex-wrap justify-center gap-4 text-sm font-semibold">
+                <a href="meetings.html" class="px-5 py-3 rounded-2xl bg-white/10 border border-white/20 hover:border-white/50 transition">Explore meeting tools</a>
+                <a href="contact.html" class="px-5 py-3 rounded-2xl border border-white/20 hover:border-white/50 transition">Talk to us</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="border-t border-white/10 mt-16">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-xs text-slate-500 text-center">
+            <p>&copy; 2025 Acadify. Built for fearless campuses.</p>
+        </div>
+    </footer>
+
+    <script>
+        const mobileButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileButton?.addEventListener('click', () => {
+            mobileMenu?.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acadify - Faculty Workspace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(circle at 25% -10%, rgba(14, 165, 233, 0.3), transparent 45%),
+                radial-gradient(circle at 80% 0%, rgba(236, 72, 153, 0.25), transparent 35%),
+                #020617;
+            min-height: 100vh;
+        }
+
+        .glass-panel {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.55));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 45px rgba(2, 6, 23, 0.55);
+            backdrop-filter: blur(18px);
+        }
+
+        .glass-soft {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-pill {
+            transition: all 0.25s ease;
+        }
+
+        .nav-pill.active {
+            background: linear-gradient(120deg, rgba(59, 130, 246, 0.35), rgba(236, 72, 153, 0.35));
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.35);
+        }
+
+        .content-section.hidden {
+            display: none;
+        }
+
+        .content-section {
+            animation: fade 0.35s ease;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 1023px) {
+            #sidebar {
+                position: fixed;
+                inset: 0 auto 0 0;
+                width: 260px;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                z-index: 40;
+            }
+
+            #sidebar.open {
+                transform: translateX(0);
+            }
+
+            #sidebarScrim {
+                position: fixed;
+                inset: 0;
+                background: rgba(2, 6, 23, 0.7);
+                backdrop-filter: blur(3px);
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.3s ease;
+                z-index: 30;
+            }
+
+            #sidebarScrim.visible {
+                opacity: 1;
+                pointer-events: auto;
+            }
+        }
+
+        .modal {
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+
+<body class="text-slate-100">
+    <div id="sidebarScrim"></div>
+
+    <header class="sticky top-0 z-30 border-b border-white/10 backdrop-blur-xl bg-slate-900/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <button id="menuToggle" class="lg:hidden text-white">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="flex items-center gap-2">
+                    <div
+                        class="h-11 w-11 rounded-2xl bg-gradient-to-br from-sky-500 via-indigo-500 to-purple-500 flex items-center justify-center shadow-lg">
+                        <i class="fas fa-chalkboard-teacher text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs uppercase tracking-[0.35em] text-slate-400">Acadify</p>
+                        <h1 class="text-lg font-semibold">Faculty Workspace</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <span id="userName" class="hidden md:block text-sm font-medium"></span>
+                <button id="logoutBtn"
+                    class="bg-gradient-to-r from-rose-500 to-orange-400 px-4 py-2 rounded-2xl font-semibold text-white shadow-lg shadow-rose-500/30 hover:shadow-rose-500/50 transition">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <aside id="sidebar" class="glass-panel rounded-3xl p-5 lg:sticky lg:top-24 h-fit">
+                <div class="flex items-center justify-between mb-5">
+                    <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Menu</p>
+                    <span class="text-xs text-slate-500">Faculty</span>
+                </div>
+                <nav class="flex flex-col gap-2">
+                    <a href="#"
+                        class="nav-link nav-pill active flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium"
+                        data-section="overview">
+                        <i class="fas fa-gauge-high text-sky-300"></i>Overview
+                    </a>
+                    <a href="#"
+                        class="nav-link nav-pill flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-300"
+                        data-section="students">
+                        <i class="fas fa-user-graduate text-indigo-300"></i>Students
+                    </a>
+                    <a href="#"
+                        class="nav-link nav-pill flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-300"
+                        data-section="resources">
+                        <i class="fas fa-folder-open text-emerald-300"></i>Resources
+                    </a>
+                    <a href="../meetings.html"
+                        class="nav-pill flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-300 hover:bg-white/5 transition">
+                        <i class="fas fa-video text-cyan-300"></i>Meetings
+                    </a>
+                    <a href="#"
+                        class="nav-link nav-pill flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-300"
+                        data-section="settings">
+                        <i class="fas fa-sliders-h text-pink-300"></i>Settings
+                    </a>
+                </nav>
+            </aside>
+
+            <main class="flex-1 space-y-8">
+                <section id="overviewSection" class="content-section space-y-8">
+                    <div class="glass-panel rounded-3xl p-6 lg:p-8 space-y-6">
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Good day</p>
+                                <h2 class="text-2xl lg:text-3xl font-semibold">Teaching Overview</h2>
+                                <p class="text-sm text-slate-400 mt-1">Track classes, students, submissions and meetings
+                                    from a single view.</p>
+                            </div>
+                            <div class="flex flex-wrap gap-3">
+                                <button data-section-target="classes"
+                                    class="glass-soft px-4 py-2 rounded-2xl text-sm font-medium hover:border-white/30 transition">
+                                    <i class="fas fa-video mr-2 text-sky-300"></i>Join live class
+                                </button>
+                                <a href="quizzes.html"
+                                    class="glass-soft px-4 py-2 rounded-2xl text-sm font-medium hover:border-white/30 transition inline-flex items-center">
+                                    <i class="fas fa-plus mr-2 text-amber-300"></i>Create quiz
+                                </a>
+                                <a href="../meetings.html"
+                                    class="glass-soft px-4 py-2 rounded-2xl text-sm font-medium hover:border-white/30 transition inline-flex items-center">
+                                    <i class="fas fa-calendar-check mr-2 text-cyan-300"></i>Meeting planner
+                                </a>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                            <article
+                                class="rounded-3xl p-5 bg-gradient-to-br from-sky-500/70 to-sky-400/40 border border-white/20 shadow-lg">
+                                <p class="text-xs uppercase tracking-[0.4em] text-sky-100/80">Students</p>
+                                <p class="text-4xl font-bold mt-2">0</p>
+                                <p class="text-sm text-sky-100/80">Across assigned courses</p>
+                            </article>
+                            <article
+                                class="rounded-3xl p-5 bg-gradient-to-br from-emerald-500/70 to-emerald-400/40 border border-white/20 shadow-lg">
+                                <p class="text-xs uppercase tracking-[0.4em] text-emerald-100/80">Active exams</p>
+                                <p class="text-4xl font-bold mt-2">0</p>
+                                <p class="text-sm text-emerald-100/80">Scheduled this week</p>
+                            </article>
+                            <article
+                                class="rounded-3xl p-5 bg-gradient-to-br from-purple-500/70 to-purple-400/40 border border-white/20 shadow-lg">
+                                <p class="text-xs uppercase tracking-[0.4em] text-purple-100/80">Classes today</p>
+                                <p class="text-4xl font-bold mt-2">0</p>
+                                <p class="text-sm text-purple-100/80">Synchronous + labs</p>
+                            </article>
+                            <article
+                                class="rounded-3xl p-5 bg-gradient-to-br from-amber-500/70 to-amber-400/40 border border-white/20 shadow-lg">
+                                <p class="text-xs uppercase tracking-[0.4em] text-amber-100/80">Pending reviews</p>
+                                <p class="text-4xl font-bold mt-2">0</p>
+                                <p class="text-sm text-amber-100/80">Assignments awaiting feedback</p>
+                            </article>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 glass-panel rounded-3xl p-6 space-y-5">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-semibold">Today's schedule</h3>
+                                <button data-section-target="classes"
+                                    class="text-xs text-slate-400 hover:text-white transition">View planner -></button>
+                            </div>
+                            <div id="todaySchedule" class="space-y-4 text-sm">
+                                <p class="text-slate-500">Fetching timetable...</p>
+                            </div>
+                        </div>
+                        <div class="glass-panel rounded-3xl p-6 space-y-5">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-semibold">Quick actions</h3>
+                                <span class="text-xs text-slate-500">Fast shortcuts</span>
+                            </div>
+                            <div class="space-y-3 text-sm">
+                                <button data-section-target="students"
+                                    class="w-full glass-soft rounded-2xl px-4 py-3 text-left hover:border-white/30 transition">
+                                    <i class="fas fa-upload mr-2 text-indigo-300"></i>Bulk upload roster
+                                </button>
+                                <a href="quizzes.html"
+                                    class="w-full glass-soft rounded-2xl px-4 py-3 text-left hover:border-white/30 transition block">
+                                    <i class="fas fa-file-pen mr-2 text-amber-300"></i>Launch quiz
+                                </a>
+                                <button data-section-target="resources"
+                                    class="w-full glass-soft rounded-2xl px-4 py-3 text-left hover:border-white/30 transition">
+                                    <i class="fas fa-folder-open mr-2 text-emerald-300"></i>Share resources
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="studentsSection" class="content-section hidden space-y-6">
+                    <div
+                        class="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Students</p>
+                            <h2 class="text-2xl font-semibold">Learning Roster</h2>
+                            <p class="text-sm text-slate-400">Track enrolment, attendance and quick actions.</p>
+                        </div>
+                        <button id="bulkUploadBtn"
+                            class="px-5 py-3 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 font-semibold shadow-lg">
+                            <i class="fas fa-cloud-upload-alt mr-2"></i>Bulk upload
+                        </button>
+                    </div>
+                    <div class="glass-panel rounded-3xl p-6 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <select
+                                class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3 focus:outline-none focus:border-sky-300">
+                                <option>All programs</option>
+                                <option>BCA</option>
+                                <option>MCA</option>
+                            </select>
+                            <select
+                                class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3 focus:outline-none focus:border-sky-300">
+                                <option>All semesters</option>
+                                <option>1</option>
+                                <option>2</option>
+                            </select>
+                            <input type="text" placeholder="Search by name or roll number"
+                                class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3 focus:outline-none focus:border-sky-300">
+                            <button
+                                class="rounded-2xl bg-white/10 border border-white/20 hover:border-white/40 transition font-semibold">Filter</button>
+                        </div>
+                        <div class="overflow-hidden rounded-3xl border border-white/10">
+                            <table class="min-w-full text-sm">
+                                <thead class="bg-white/5 text-xs uppercase tracking-wider text-slate-400">
+                                    <tr>
+                                        <th class="px-5 py-3 text-left">Roll</th>
+                                        <th class="px-5 py-3 text-left">Name</th>
+                                        <th class="px-5 py-3 text-left">Program</th>
+                                        <th class="px-5 py-3 text-left">Semester</th>
+                                        <th class="px-5 py-3 text-left">Status</th>
+                                        <th class="px-5 py-3 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentsTableBody" class="bg-white/5 divide-y divide-white/5">
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-6 text-center text-slate-500">No students loaded.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="classesSection" class="content-section hidden space-y-6">
+                    <div
+                        class="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Sessions</p>
+                            <h2 class="text-2xl font-semibold">Live & Upcoming Classes</h2>
+                            <p class="text-sm text-slate-400">Auto-synced from meetings + timetable APIs.</p>
+                        </div>
+                        <button data-modal-open="createMeetingModal"
+                            class="px-5 py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 font-semibold shadow-lg">
+                            <i class="fas fa-video mr-2"></i>Schedule session
+                        </button>
+                    </div>
+                    <div id="meetingsList" class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                        <div class="glass-panel rounded-3xl p-6 text-sm text-slate-400">No meetings loaded.</div>
+                    </div>
+                </section>
+
+                <section id="assignmentsSection" class="content-section hidden space-y-6">
+                    <div
+                        class="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Tasks</p>
+                            <h2 class="text-2xl font-semibold">Assignments</h2>
+                            <p class="text-sm text-slate-400">Upload assignments for students to download.</p>
+                        </div>
+                        <button onclick="document.getElementById('assignmentUploadModal').classList.remove('hidden')"
+                            class="px-5 py-3 rounded-2xl bg-gradient-to-r from-rose-500 to-orange-500 font-semibold shadow-lg">
+                            <i class="fas fa-upload mr-2"></i>Upload Assignment
+                        </button>
+                    </div>
+                    <div id="assignmentsList" class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                        <!-- Assignments will be loaded here -->
+                        <div class="glass-panel rounded-3xl p-6 text-sm text-slate-400">No assignments uploaded yet.
+                        </div>
+                    </div>
+                </section>
+
+                <section id="resourcesSection" class="content-section hidden space-y-6">
+                    <div class="glass-panel rounded-3xl p-6 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Resources</p>
+                                <h2 class="text-2xl font-semibold">Shareable Library</h2>
+                            </div>
+                            <button
+                                class="px-4 py-2 rounded-2xl bg-white/10 border border-white/20 text-sm">Upload</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                            <div class="glass-soft rounded-3xl p-5 space-y-2">
+                                <p class="text-xs text-sky-300 uppercase">Slides</p>
+                                <p class="font-semibold">AI Ethics Primer</p>
+                                <p class="text-xs text-slate-400">Updated 2 days ago</p>
+                            </div>
+                            <div class="glass-soft rounded-3xl p-5 space-y-2">
+                                <p class="text-xs text-emerald-300 uppercase">Worksheet</p>
+                                <p class="font-semibold">Data viz lab</p>
+                                <p class="text-xs text-slate-400">15 resources shared</p>
+                            </div>
+                            <div class="glass-soft rounded-3xl p-5 space-y-2">
+                                <p class="text-xs text-amber-300 uppercase">Recording</p>
+                                <p class="font-semibold">Cloud native AMA</p>
+                                <p class="text-xs text-slate-400">Available until Friday</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="settingsSection" class="content-section hidden space-y-6">
+                    <div class="glass-panel rounded-3xl p-6 space-y-4">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Preferences</p>
+                            <h2 class="text-2xl font-semibold">Teaching Controls</h2>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <label
+                                class="flex items-center justify-between bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+                                <div>
+                                    <p class="font-semibold text-sm">Smart reminders</p>
+                                    <p class="text-xs text-slate-400">Notify 15 mins before classes</p>
+                                </div>
+                                <input type="checkbox" checked class="w-5 h-5 accent-sky-500">
+                            </label>
+                            <label
+                                class="flex items-center justify-between bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+                                <div>
+                                    <p class="font-semibold text-sm">Auto publish resources</p>
+                                    <p class="text-xs text-slate-400">Share lecture decks after class</p>
+                                </div>
+                                <input type="checkbox" checked class="w-5 h-5 accent-sky-500">
+                            </label>
+                            <article
+                                class="rounded-3xl p-5 bg-gradient-to-br from-purple-500/70 to-purple-400/40 border border-white/20 shadow-lg">
+                                <p class="text-xs uppercase tracking-[0.4em] text-purple-100/80">Classes today</p>
+                                <p class="text-4xl font-bold mt-2">0</p>
+                                <p class="text-sm text-purple-100/80">Synchronous + labs</p>
+                            </article>
+                            <article
+                                class="rounded-3xl p-5 bg-gradient-to-br from-amber-500/70 to-amber-400/40 border border-white/20 shadow-lg">
+                                <p class="text-xs uppercase tracking-[0.4em] text-amber-100/80">Pending reviews</p>
+                                <p class="text-4xl font-bold mt-2">0</p>
+                                <p class="text-sm text-amber-100/80">Assignments awaiting feedback</p>
+                            </article>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 glass-panel rounded-3xl p-6 space-y-5">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-semibold">Today's schedule</h3>
+                                <button data-section-target="classes"
+                                    class="text-xs text-slate-400 hover:text-white transition">View planner -></button>
+                            </div>
+                            <div id="todaySchedule" class="space-y-4 text-sm">
+                                <p class="text-slate-500">Fetching timetable...</p>
+                            </div>
+                        </div>
+                        <div class="glass-panel rounded-3xl p-6 space-y-5">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-semibold">Quick actions</h3>
+                                <span class="text-xs text-slate-500">Fast shortcuts</span>
+                            </div>
+                            <div class="space-y-3 text-sm">
+                                <button data-section-target="students"
+                                    class="w-full glass-soft rounded-2xl px-4 py-3 text-left hover:border-white/30 transition">
+                                    <i class="fas fa-upload mr-2 text-indigo-300"></i>Bulk upload roster
+                                </button>
+                                <a href="quizzes.html"
+                                    class="w-full glass-soft rounded-2xl px-4 py-3 text-left hover:border-white/30 transition block">
+                                    <i class="fas fa-file-pen mr-2 text-amber-300"></i>Launch quiz
+                                </a>
+                                <button data-section-target="resources"
+                                    class="w-full glass-soft rounded-2xl px-4 py-3 text-left hover:border-white/30 transition">
+                                    <i class="fas fa-folder-open mr-2 text-emerald-300"></i>Share resources
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="studentsSection" class="content-section hidden space-y-6">
+                    <div
+                        class="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Students</p>
+                            <h2 class="text-2xl font-semibold">Learning Roster</h2>
+                            <p class="text-sm text-slate-400">Track enrolment, attendance and quick actions.</p>
+                        </div>
+                        <button id="bulkUploadBtn"
+                            class="px-5 py-3 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 font-semibold shadow-lg">
+                            <i class="fas fa-cloud-upload-alt mr-2"></i>Bulk upload
+                        </button>
+                    </div>
+                    <div class="glass-panel rounded-3xl p-6 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <select
+                                class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3 focus:outline-none focus:border-sky-300">
+                                <option>All programs</option>
+                                <option>BCA</option>
+                                <option>MCA</option>
+                            </select>
+                            <select
+                                class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3 focus:outline-none focus:border-sky-300">
+                                <option>All semesters</option>
+                                <option>1</option>
+                                <option>2</option>
+                            </select>
+                            <input type="text" placeholder="Search by name or roll number"
+                                class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3 focus:outline-none focus:border-sky-300">
+                            <button
+                                class="rounded-2xl bg-white/10 border border-white/20 hover:border-white/40 transition font-semibold">Filter</button>
+                        </div>
+                        <div class="overflow-hidden rounded-3xl border border-white/10">
+                            <table class="min-w-full text-sm">
+                                <thead class="bg-white/5 text-xs uppercase tracking-wider text-slate-400">
+                                    <tr>
+                                        <th class="px-5 py-3 text-left">Roll</th>
+                                        <th class="px-5 py-3 text-left">Name</th>
+                                        <th class="px-5 py-3 text-left">Program</th>
+                                        <th class="px-5 py-3 text-left">Semester</th>
+                                        <th class="px-5 py-3 text-left">Status</th>
+                                        <th class="px-5 py-3 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentsTableBody" class="bg-white/5 divide-y divide-white/5">
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-6 text-center text-slate-500">No students loaded.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="classesSection" class="content-section hidden space-y-6">
+                    <div
+                        class="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Sessions</p>
+                            <h2 class="text-2xl font-semibold">Live & Upcoming Classes</h2>
+                            <p class="text-sm text-slate-400">Auto-synced from meetings + timetable APIs.</p>
+                        </div>
+                        <button data-modal-open="createMeetingModal"
+                            class="px-5 py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 font-semibold shadow-lg">
+                            <i class="fas fa-video mr-2"></i>Schedule session
+                        </button>
+                    </div>
+                    <div id="meetingsList" class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                        <div class="glass-panel rounded-3xl p-6 text-sm text-slate-400">No meetings loaded.</div>
+                    </div>
+                </section>
+
+                <section id="assignmentsSection" class="content-section hidden space-y-6">
+                    <div
+                        class="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Tasks</p>
+                            <h2 class="text-2xl font-semibold">Assignments</h2>
+                            <p class="text-sm text-slate-400">Upload assignments for students to download.</p>
+                        </div>
+                        <button onclick="document.getElementById('assignmentUploadModal').classList.remove('hidden')"
+                            class="px-5 py-3 rounded-2xl bg-gradient-to-r from-rose-500 to-orange-500 font-semibold shadow-lg">
+                            <i class="fas fa-upload mr-2"></i>Upload Assignment
+                        </button>
+                    </div>
+                    <div id="assignmentsList" class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                        <!-- Assignments will be loaded here -->
+                        <div class="glass-panel rounded-3xl p-6 text-sm text-slate-400">No assignments uploaded yet.
+                        </div>
+                    </div>
+                </section>
+
+                <section id="resourcesSection" class="content-section hidden space-y-6">
+                    <div class="glass-panel rounded-3xl p-6 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Resources</p>
+                                <h2 class="text-2xl font-semibold">Shareable Library</h2>
+                            </div>
+                            <button
+                                class="px-4 py-2 rounded-2xl bg-white/10 border border-white/20 text-sm">Upload</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                            <div class="glass-soft rounded-3xl p-5 space-y-2">
+                                <p class="text-xs text-sky-300 uppercase">Slides</p>
+                                <p class="font-semibold">AI Ethics Primer</p>
+                                <p class="text-xs text-slate-400">Updated 2 days ago</p>
+                            </div>
+                            <div class="glass-soft rounded-3xl p-5 space-y-2">
+                                <p class="text-xs text-emerald-300 uppercase">Worksheet</p>
+                                <p class="font-semibold">Data viz lab</p>
+                                <p class="text-xs text-slate-400">15 resources shared</p>
+                            </div>
+                            <div class="glass-soft rounded-3xl p-5 space-y-2">
+                                <p class="text-xs text-amber-300 uppercase">Recording</p>
+                                <p class="font-semibold">Cloud native AMA</p>
+                                <p class="text-xs text-slate-400">Available until Friday</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="settingsSection" class="content-section hidden space-y-6">
+                    <div class="glass-panel rounded-3xl p-6 space-y-4">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Preferences</p>
+                            <h2 class="text-2xl font-semibold">Teaching Controls</h2>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <label
+                                class="flex items-center justify-between bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+                                <div>
+                                    <p class="font-semibold text-sm">Smart reminders</p>
+                                    <p class="text-xs text-slate-400">Notify 15 mins before classes</p>
+                                </div>
+                                <input type="checkbox" checked class="w-5 h-5 accent-sky-500">
+                            </label>
+                            <label
+                                class="flex items-center justify-between bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+                                <div>
+                                    <p class="font-semibold text-sm">Auto publish resources</p>
+                                    <p class="text-xs text-slate-400">Share lecture decks after class</p>
+                                </div>
+                                <input type="checkbox" checked class="w-5 h-5 accent-sky-500">
+                            </label>
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-xs uppercase tracking-[0.35em] text-slate-400">Do not disturb</label>
+                            <input type="range" min="0" max="24" value="2" class="w-full accent-sky-500">
+                        </div>
+                        <div class="flex gap-3">
+                            <button
+                                class="px-5 py-3 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 font-semibold">Save
+                                Changes</button>
+                        </div>
+                    </div>
+        </div>
+
+        <!-- Quiz Modal -->
+    </div>
+
+    <!-- Create Meeting Modal -->
+    <div id="createMeetingModal" class="modal hidden fixed inset-0 z-50 flex items-center justify-center">
+        <div class="fixed inset-0 bg-black/70"
+            onclick="document.getElementById('createMeetingModal').classList.add('hidden')"></div>
+        <div
+            class="relative bg-slate-900/90 border border-white/10 rounded-3xl p-6 max-w-2xl w-full mx-4 overflow-y-auto max-h-[90vh] space-y-5">
+            <div class="flex items-center justify-between">
+                <h3 class="text-2xl font-semibold">Schedule Class</h3>
+                <button onclick="document.getElementById('createMeetingModal').classList.add('hidden')"
+                    class="text-slate-400 hover:text-white"><i class="fas fa-times text-2xl"></i></button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input id="meetingTitle" type="text" placeholder="Session title"
+                    class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+                <input id="meetingSubject" type="text" placeholder="Subject"
+                    class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+                <select id="meetingProgram" class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+                    <option value="">Program</option>
+                    <option value="BCA">BCA</option>
+                    <option value="MCA">MCA</option>
+                </select>
+                <select id="meetingSemester" class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+                    <option value="">Semester</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                </select>
+                <input id="meetingTime" type="datetime-local"
+                    class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+                <input id="meetingDuration" type="number" min="15" step="5" placeholder="Duration (mins)"
+                    class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+            </div>
+            <textarea id="meetingDescription" rows="4" placeholder="Description / agenda"
+                class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3"></textarea>
+            <div class="flex gap-3">
+                <button onclick="createMeeting()"
+                    class="flex-1 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 py-3 font-semibold">Create
+                    Session</button>
+                <button onclick="document.getElementById('createMeetingModal').classList.add('hidden')"
+                    class="px-5 py-3 rounded-2xl border border-white/20 text-sm">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assignment Upload Modal -->
+    <div id="assignmentUploadModal" class="modal hidden fixed inset-0 z-50 flex items-center justify-center">
+        <div class="fixed inset-0 bg-black/70"
+            onclick="document.getElementById('assignmentUploadModal').classList.add('hidden')"></div>
+        <div
+            class="relative bg-slate-900/90 border border-white/10 rounded-3xl p-6 max-w-2xl w-full mx-4 overflow-y-auto max-h-[90vh] space-y-5">
+            <div class="flex items-center justify-between">
+                <h3 class="text-2xl font-semibold">Upload Assignment</h3>
+                <button onclick="document.getElementById('assignmentUploadModal').classList.add('hidden')"
+                    class="text-slate-400 hover:text-white"><i class="fas fa-times text-2xl"></i></button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input id="assignTitle" type="text" placeholder="Assignment Title"
+                    class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+                <input id="assignSubject" type="text" placeholder="Subject"
+                    class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+                <select id="assignProgram" class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+                    <option value="">Program</option>
+                    <option value="BCA">BCA</option>
+                    <option value="MCA">MCA</option>
+                </select>
+                <select id="assignSemester" class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+                    <option value="">Semester</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                </select>
+                <input id="assignDueDate" type="date" class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+            </div>
+            <textarea id="assignDesc" rows="3" placeholder="Instructions"
+                class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3"></textarea>
+
+            <div class="border-2 border-dashed border-white/10 rounded-2xl p-8 text-center hover:border-sky-500/50 transition cursor-pointer"
+                onclick="document.getElementById('assignFile').click()">
+                <i class="fas fa-cloud-upload-alt text-3xl text-slate-400 mb-3"></i>
+                <p class="text-sm text-slate-300">Click to upload assignment file (PDF, DOCX)</p>
+                <input type="file" id="assignFile" class="hidden">
+                <p id="fileNameDisplay" class="text-xs text-sky-300 mt-2 hidden"></p>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="uploadAssignment()"
+                    class="flex-1 rounded-2xl bg-gradient-to-r from-rose-500 to-orange-500 py-3 font-semibold">Upload</button>
+                <button onclick="document.getElementById('assignmentUploadModal').classList.add('hidden')"
+                    class="px-5 py-3 rounded-2xl border border-white/20 text-sm">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submissions Modal -->
+    <div id="submissionsModal" class="modal hidden fixed inset-0 z-50 flex items-center justify-center">
+        <div class="fixed inset-0 bg-black/70"
+            onclick="document.getElementById('submissionsModal').classList.add('hidden')"></div>
+        <div
+            class="relative bg-slate-900/90 border border-white/10 rounded-3xl p-6 max-w-4xl w-full mx-4 overflow-y-auto max-h-[90vh] space-y-5">
+            <div class="flex items-center justify-between">
+                <h3 class="text-2xl font-semibold" id="submissionsModalTitle">Submissions</h3>
+                <button onclick="document.getElementById('submissionsModal').classList.add('hidden')"
+                    class="text-slate-400 hover:text-white"><i class="fas fa-times text-2xl"></i></button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="text-xs uppercase text-slate-400 border-b border-white/10">
+                        <tr>
+                            <th class="px-5 py-3">Student</th>
+                            <th class="px-5 py-3">Submitted At</th>
+                            <th class="px-5 py-3">File</th>
+                            <th class="px-5 py-3">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="submissionsTableBody" class="divide-y divide-white/5">
+                        <!-- Submissions rendered here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="faculty-dashboard.js"></script>
+</body>
+
+</html>

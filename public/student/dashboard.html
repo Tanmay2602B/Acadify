@@ -1,316 +1,1253 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard - Acadify</title>
+    <title>Acadify - Student Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(circle at top, rgba(59, 130, 246, 0.23), transparent 45%),
+                radial-gradient(circle at 85% 0%, rgba(236, 72, 153, 0.18), transparent 30%),
+                #020617;
+            min-height: 100vh;
+        }
+
+        .glass-panel {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.72), rgba(15, 23, 42, 0.55));
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow: 0 20px 45px rgba(2, 6, 23, 0.55);
+            backdrop-filter: blur(18px);
+        }
+
+        .glass-soft {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-pill {
+            transition: all 0.25s ease;
+        }
+
+        .nav-pill.active {
+            background: linear-gradient(120deg, rgba(59, 130, 246, 0.35), rgba(236, 72, 153, 0.35));
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.35);
+        }
+
+        .content-section.hidden {
+            display: none;
+        }
+
+        .content-section {
+            animation: fade 0.35s ease;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            min-width: 250px;
+            padding: 16px;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toast.success {
+            border-left: 4px solid #10b981;
+        }
+
+        .toast.error {
+            border-left: 4px solid #ef4444;
+        }
+
+        .toast.warning {
+            border-left: 4px solid #f59e0b;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
-    <!-- Navigation -->
-    <nav class="bg-blue-600 text-white shadow-lg">
-        <div class="container mx-auto px-4 py-3">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-2">
-                    <i class="fas fa-graduation-cap text-2xl"></i>
-                    <h1 class="text-xl font-bold">Acadify - Student Dashboard</h1>
+
+<body class="text-slate-100">
+    <header class="sticky top-0 z-30 border-b border-white/10 backdrop-blur-xl bg-slate-900/80">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div
+                    class="h-11 w-11 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+                    <i class="fas fa-graduation-cap text-white text-xl"></i>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <span id="userName" class="hidden md:inline"></span>
-                    <a href="#" id="logoutBtn" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg text-sm font-semibold transition">Logout</a>
+                <div>
+                    <p class="text-xs uppercase tracking-[0.35em] text-slate-400">Acadify</p>
+                    <h1 class="text-lg font-semibold">Student Dashboard</h1>
                 </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="hidden md:flex flex-col text-right">
+                    <span class="text-xs uppercase tracking-[0.4em] text-slate-400">Welcome</span>
+                    <span id="userName" class="font-semibold">Student</span>
+                </div>
+                <button id="logoutBtn"
+                    class="bg-gradient-to-r from-rose-500 to-orange-400 px-4 py-2 rounded-2xl font-semibold text-white shadow-lg shadow-rose-500/30 hover:shadow-rose-500/50 transition">
+                    Logout
+                </button>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <!-- Main Content -->
-    <div class="container mx-auto px-4 py-8">
-        <div class="flex flex-col md:flex-row">
-            <!-- Sidebar -->
-            <div class="md:w-1/4 mb-6 md:mb-0">
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-lg font-bold mb-4 text-gray-800">Navigation</h2>
-                    <ul class="space-y-2">
-                        <li>
-                            <a href="#" class="block py-2 px-4 rounded-lg bg-blue-100 text-blue-700 font-medium" id="dashboardLink">
-                                <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="block py-2 px-4 rounded-lg hover:bg-gray-100 text-gray-700" id="resourcesLink">
-                                <i class="fas fa-book mr-2"></i>Learning Resources
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="block py-2 px-4 rounded-lg hover:bg-gray-100 text-gray-700" id="assignmentsLink">
-                                <i class="fas fa-tasks mr-2"></i>Assignments
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="block py-2 px-4 rounded-lg hover:bg-gray-100 text-gray-700" id="timetableLink">
-                                <i class="fas fa-calendar-alt mr-2"></i>Timetable
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="block py-2 px-4 rounded-lg hover:bg-gray-100 text-gray-700" id="meetingsLink">
-                                <i class="fas fa-video mr-2"></i>Online Classes
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="block py-2 px-4 rounded-lg hover:bg-gray-100 text-gray-700" id="aiChatLink">
-                                <i class="fas fa-robot mr-2"></i>AI Chat Assistant
-                            </a>
-                        </li>
-                    </ul>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <aside class="glass-panel rounded-3xl p-5 lg:w-64 h-fit">
+                <div class="flex items-center justify-between mb-5">
+                    <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Navigate</p>
+                    <span class="text-xs text-slate-500">v2.0</span>
                 </div>
+                <nav class="flex flex-col gap-2">
+                    <a href="#"
+                        class="nav-link nav-pill active flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium"
+                        data-section="overview">
+                        <i class="fas fa-gauge-high text-sky-300"></i>Overview
+                    </a>
+                    <a href="#"
+                        class="nav-link nav-pill flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-300"
+                        data-section="resources">
+                        <i class="fas fa-book-open text-emerald-300"></i>Resources
+                    </a>
+                    <a href="#"
+                        class="nav-link nav-pill flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-300"
+                        data-section="assignments">
+                        <i class="fas fa-tasks text-amber-300"></i>Assignments
+                    </a>
+                    <a href="#"
+                        class="nav-link nav-pill flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-300"
+                        data-section="quiz">
+                        <i class="fas fa-shield-alt text-emerald-300"></i>Quiz Mode
+                    </a>
+                    <a href="#"
+                        class="nav-link nav-pill flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-300"
+                        data-section="timetable">
+                        <i class="fas fa-calendar-week text-purple-300"></i>Timetable
+                    </a>
+                    <a href="#"
+                        class="nav-link nav-pill flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-300"
+                        data-section="meetings">
+                        <i class="fas fa-video text-rose-300"></i>Meetings
+                    </a>
+                    <a href="#"
+                        class="nav-link nav-pill flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-300"
+                        data-section="ai">
+                        <i class="fas fa-robot text-pink-300"></i>AI Mentor
+                    </a>
+                </nav>
+            </aside>
+
+            <main class="flex-1 space-y-8">
+                <section id="overviewSection" class="content-section space-y-8">
+                    <div class="glass-panel rounded-3xl p-6 lg:p-8 space-y-6">
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.4em] text-slate-400">
+                                    Today's pulse</p>
+                                <h2 class="text-2xl lg:text-3xl font-semibold">Learning Overview
+                                </h2>
+                                <p class="text-sm text-slate-400 mt-1">Track progress, next
+                                    classes and recent
+                                    announcements.</p>
+                            </div>
+                            <div class="flex flex-wrap gap-3">
+                                <button
+                                    class="glass-soft px-4 py-2 rounded-2xl text-sm font-medium hover:border-white/30 transition"
+                                    data-section-target="timetable">
+                                    <i class="fas fa-calendar-day mr-2 text-purple-300"></i>View
+                                    schedule
+                                </button>
+                                <button
+                                    class="glass-soft px-4 py-2 rounded-2xl text-sm font-medium hover:border-white/30 transition"
+                                    data-section-target="assignments">
+                                    <i class="fas fa-bell mr-2 text-amber-300"></i>Pending tasks
+                                </button>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4" id="statCards"></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 glass-panel rounded-3xl p-6 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-semibold">Upcoming classes</h3>
+                                <button class="text-xs text-slate-400 hover:text-white transition"
+                                    data-section-target="timetable">See all -></button>
+                            </div>
+                            <div id="classTimeline" class="space-y-4 text-sm">
+                                <p class="text-slate-500">Loading classes...</p>
+                            </div>
+                        </div>
+                        <div class="glass-panel rounded-3xl p-6 space-y-5">
+                            <div>
+                                <h3 class="text-lg font-semibold">Focus board</h3>
+                                <p class="text-xs text-slate-400">Quick reminders for today</p>
+                            </div>
+                            <div id="focusBoard" class="space-y-3 text-sm"></div>
+                        </div>
+                        <div class="glass-panel rounded-3xl p-6 space-y-5">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-semibold">Upcoming meetings</h3>
+                                <button class="text-xs text-indigo-300 hover:text-white transition"
+                                    data-section-target="meetings">Details</button>
+                            </div>
+                            <div id="studentMeetings" class="space-y-3 text-sm">
+                                <div>
+                                    <p class="text-xs uppercase tracking-[0.4em] text-slate-400">
+                                        Connect</p>
+                                    <h2 class="text-2xl font-semibold">Live Sessions</h2>
+                                </div>
+                                <button class="px-4 py-2 rounded-2xl bg-white/10 border border-white/20 text-sm"
+                                    onclick="fetchMeetings()">Refresh</button>
+                            </div>
+                            <div id="meetingsListFull" class="space-y-4">
+                                <p class="text-slate-500">Loading meetings...</p>
+                            </div>
+                        </div>
+                </section>
+
+                <!-- Resources Section -->
+                <section id="resourcesSection" class="content-section hidden space-y-6">
+                    <div class="glass-panel rounded-3xl p-6 lg:p-8 space-y-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.4em] text-slate-400">
+                                    Library</p>
+                                <h2 class="text-2xl font-semibold">Learning Resources</h2>
+                            </div>
+                            <div class="flex gap-2">
+                                <button
+                                    class="resource-filter px-4 py-2 rounded-xl bg-white/20 border border-white/30 text-xs font-medium transition"
+                                    onclick="filterResources('All')" data-type="All">All</button>
+                                <button
+                                    class="resource-filter px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-medium transition hover:bg-white/10"
+                                    onclick="filterResources('Slides')" data-type="Slides">Slides</button>
+                                <button
+                                    class="resource-filter px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-medium transition hover:bg-white/10"
+                                    onclick="filterResources('Notes')" data-type="Notes">Notes</button>
+                                <button
+                                    class="resource-filter px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-medium transition hover:bg-white/10"
+                                    onclick="filterResources('Video')" data-type="Video">Videos</button>
+                            </div>
+                        </div>
+                        <div id="resourceGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <!-- Resources rendered here -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Assignments Section -->
+                <section id="assignmentsSection" class="content-section hidden space-y-6">
+                    <div class="glass-panel rounded-3xl p-6 lg:p-8 space-y-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.4em] text-slate-400">
+                                    Tasks</p>
+                                <h2 class="text-2xl font-semibold">Assignments & Projects</h2>
+                            </div>
+                        </div>
+                        <div id="assignmentList" class="space-y-4">
+                            <!-- Assignments rendered here -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quiz Section -->
+                <section id="quizSection" class="content-section hidden space-y-6">
+                    <div class="glass-panel rounded-3xl p-6 lg:p-8 space-y-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.4em] text-slate-400">
+                                    Assessments</p>
+                                <h2 class="text-2xl font-semibold">Quiz Mode</h2>
+                            </div>
+                        </div>
+                        
+                        <div id="quizList" class="space-y-4">
+                            <!-- Available quizzes will be listed here -->
+                        </div>
+
+                        <div id="activeQuizContainer" class="hidden space-y-6">
+                            <!-- Active quiz interface -->
+                            <div class="flex justify-between items-center bg-slate-800/50 p-4 rounded-xl">
+                                <div>
+                                    <h3 id="quizTitle" class="text-xl font-bold text-white"></h3>
+                                    <p id="quizTimer" class="text-lg font-mono text-amber-400 font-bold"></p>
+                                </div>
+                                <div class="text-right">
+                                    <span id="questionProgress" class="text-slate-400 text-sm"></span>
+                                </div>
+                            </div>
+                            
+                            <div id="quizQuestionContainer" class="glass-soft p-6 rounded-2xl">
+                                <!-- Question content injected here -->
+                            </div>
+
+                            <div class="flex justify-between mt-6">
+                                <button id="prevQuestionBtn" class="px-6 py-2 rounded-xl bg-slate-700 text-white hover:bg-slate-600 transition hidden">Previous</button>
+                                <button id="nextQuestionBtn" class="px-6 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-500 transition">Next</button>
+                                <button id="submitQuizBtn" class="px-6 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-500 transition hidden">Submit Quiz</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Timetable Section -->
+                <section id="timetableSection" class="content-section hidden space-y-6">
+                    <div class="glass-panel rounded-3xl p-6 lg:p-8 space-y-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.4em] text-slate-400">
+                                    Schedule</p>
+                                <h2 class="text-2xl font-semibold">Weekly Timetable</h2>
+                            </div>
+                            <button onclick="downloadTimetable()"
+                                class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-medium transition">
+                                <i class="fas fa-download mr-2"></i>Download
+                            </button>
+                        </div>
+
+                        <div class="flex gap-2 overflow-x-auto pb-2">
+                            <button
+                                class="day-tab px-4 py-2 rounded-xl bg-white/20 text-white text-xs font-medium transition whitespace-nowrap"
+                                onclick="renderTimetable('Monday')" data-day="Monday">Mon</button>
+                            <button
+                                class="day-tab px-4 py-2 rounded-xl bg-white/5 text-slate-400 text-xs font-medium transition whitespace-nowrap"
+                                onclick="renderTimetable('Tuesday')" data-day="Tuesday">Tue</button>
+                            <button
+                                class="day-tab px-4 py-2 rounded-xl bg-white/5 text-slate-400 text-xs font-medium transition whitespace-nowrap"
+                                onclick="renderTimetable('Wednesday')" data-day="Wednesday">Wed</button>
+                            <button
+                                class="day-tab px-4 py-2 rounded-xl bg-white/5 text-slate-400 text-xs font-medium transition whitespace-nowrap"
+                                onclick="renderTimetable('Thursday')" data-day="Thursday">Thu</button>
+                            <button
+                                class="day-tab px-4 py-2 rounded-xl bg-white/5 text-slate-400 text-xs font-medium transition whitespace-nowrap"
+                                onclick="renderTimetable('Friday')" data-day="Friday">Fri</button>
+                            <button
+                                class="day-tab px-4 py-2 rounded-xl bg-white/5 text-slate-400 text-xs font-medium transition whitespace-nowrap"
+                                onclick="renderTimetable('Saturday')" data-day="Saturday">Sat</button>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="text-xs uppercase text-slate-400 border-b border-white/10">
+                                    <tr>
+                                        <th class="px-5 py-3">Day</th>
+                                        <th class="px-5 py-3">Time</th>
+                                        <th class="px-5 py-3">Subject</th>
+                                        <th class="px-5 py-3">Faculty</th>
+                                        <th class="px-5 py-3">Room</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="timetableBody" class="divide-y divide-white/5">
+                                    <!-- Timetable rendered here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Meetings Section -->
+                <section id="meetingsSection" class="content-section hidden space-y-6">
+                    <div class="glass-panel rounded-3xl p-6 lg:p-8 space-y-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.4em] text-slate-400">
+                                    Connect</p>
+                                <h2 class="text-2xl font-semibold">Live Sessions</h2>
+                            </div>
+                            <button class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-medium transition"
+                                onclick="fetchMeetings()">
+                                <i class="fas fa-sync-alt mr-2"></i>Refresh
+                            </button>
+                        </div>
+                        <div id="meetingsListFull" class="space-y-4">
+                            <!-- Meetings rendered here -->
+                        </div>
+                    </div>
+                </section>
+
+                <section id="aiSection" class="content-section hidden space-y-6">
+                    <div class="glass-panel rounded-3xl p-6 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.4em] text-slate-400">AI Mentor</p>
+                                <h2 class="text-2xl font-semibold">Gemini 2.5 Flash Assistant</h2>
+                            </div>
+                            <span class="text-xs text-emerald-300">Online</span>
+                        </div>
+                        <div id="chatWindow" class="h-96 overflow-y-auto space-y-4 pr-1"></div>
+                        <form id="aiForm" class="flex gap-3">
+                            <input id="aiPrompt" type="text" placeholder="Ask anything about your syllabus..."
+                                class="flex-1 bg-white/5 border border-white/10 rounded-2xl px-4 py-3 focus:outline-none focus:border-sky-300">
+                            <button
+                                class="px-6 py-3 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 font-semibold">Send</button>
+                        </form>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div id="uploadModal"
+        class="fixed inset-0 z-50 hidden bg-slate-900/80 backdrop-blur-sm flex items-center justify-center">
+        <div class="glass-panel p-6 rounded-3xl max-w-md w-full mx-4 space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-semibold">Upload Assignment</h3>
+                <button onclick="closeUploadModal()" class="text-slate-400 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-
-            <!-- Main Content Area -->
-            <div class="md:w-3/4 md:pl-6">
-                <!-- Dashboard Overview -->
-                <div id="dashboardSection">
-                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                        <h2 class="text-2xl font-bold mb-6 text-gray-800">Dashboard Overview</h2>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                            <div class="bg-blue-50 rounded-lg p-6 border border-blue-100">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <p class="text-blue-800 font-semibold">Program</p>
-                                        <p class="text-xl font-bold text-blue-600 mt-2" id="programName">BCA</p>
-                                    </div>
-                                    <div class="bg-blue-100 p-3 rounded-full">
-                                        <i class="fas fa-graduation-cap text-blue-600 text-xl"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-green-50 rounded-lg p-6 border border-green-100">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <p class="text-green-800 font-semibold">Semester</p>
-                                        <p class="text-xl font-bold text-green-600 mt-2" id="semesterName">1st</p>
-                                    </div>
-                                    <div class="bg-green-100 p-3 rounded-full">
-                                        <i class="fas fa-book-open text-green-600 text-xl"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-purple-50 rounded-lg p-6 border border-purple-100">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <p class="text-purple-800 font-semibold">Attendance</p>
-                                        <p class="text-xl font-bold text-purple-600 mt-2" id="attendanceRate">85%</p>
-                                    </div>
-                                    <div class="bg-purple-100 p-3 rounded-full">
-                                        <i class="fas fa-user-check text-purple-600 text-xl"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="bg-white border border-gray-200 rounded-lg p-6">
-                                <h3 class="text-lg font-semibold mb-4 text-gray-800">Recent Announcements</h3>
-                                <div class="space-y-4">
-                                    <div class="border-b border-gray-100 pb-3">
-                                        <p class="font-medium text-gray-800">Exam Schedule Released</p>
-                                        <p class="text-sm text-gray-600">Check your timetable for upcoming exams</p>
-                                        <p class="text-xs text-gray-500 mt-1">2 days ago</p>
-                                    </div>
-                                    
-                                    <div class="border-b border-gray-100 pb-3">
-                                        <p class="font-medium text-gray-800">Library Access</p>
-                                        <p class="text-sm text-gray-600">Extended library hours during exam week</p>
-                                        <p class="text-xs text-gray-500 mt-1">1 week ago</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-white border border-gray-200 rounded-lg p-6">
-                                <h3 class="text-lg font-semibold mb-4 text-gray-800">Upcoming Classes</h3>
-                                <div class="space-y-4">
-                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                        <div>
-                                            <p class="font-medium text-gray-800">Introduction to Programming</p>
-                                            <p class="text-sm text-gray-600">Room 201</p>
-                                        </div>
-                                        <div class="text-right">
-                                            <p class="text-sm font-medium text-gray-800">Today</p>
-                                            <p class="text-xs text-gray-600">10:00 AM</p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                        <div>
-                                            <p class="font-medium text-gray-800">Mathematics</p>
-                                            <p class="text-sm text-gray-600">Room 105</p>
-                                        </div>
-                                        <div class="text-right">
-                                            <p class="text-sm font-medium text-gray-800">Tomorrow</p>
-                                            <p class="text-xs text-gray-600">2:00 PM</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Learning Resources Section -->
-                <div id="resourcesSection" class="hidden">
-                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                        <div class="flex justify-between items-center mb-6">
-                            <h2 class="text-2xl font-bold text-gray-800">Learning Resources</h2>
-                        </div>
-                        
-                        <div class="mb-6">
-                            <div class="flex border-b">
-                                <button class="py-2 px-4 font-medium text-blue-600 border-b-2 border-blue-600">All Resources</button>
-                                <button class="py-2 px-4 font-medium text-gray-600 hover:text-gray-800">Notes</button>
-                                <button class="py-2 px-4 font-medium text-gray-600 hover:text-gray-800">PPTs</button>
-                                <button class="py-2 px-4 font-medium text-gray-600 hover:text-gray-800">Assignments</button>
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition">
-                                <div class="bg-blue-50 p-4">
-                                    <div class="flex justify-between items-start">
-                                        <div>
-                                            <h3 class="font-semibold text-gray-800">Introduction to Programming</h3>
-                                            <p class="text-sm text-gray-600">Notes</p>
-                                        </div>
-                                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">PDF</span>
-                                    </div>
-                                </div>
-                                <div class="p-4">
-                                    <p class="text-sm text-gray-600 mb-4">Basic concepts of programming with examples</p>
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-xs text-gray-500">Uploaded 2 days ago</span>
-                                        <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                            <i class="fas fa-download mr-1"></i> Download
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition">
-                                <div class="bg-green-50 p-4">
-                                    <div class="flex justify-between items-start">
-                                        <div>
-                                            <h3 class="font-semibold text-gray-800">Data Structures</h3>
-                                            <p class="text-sm text-gray-600">PPT</p>
-                                        </div>
-                                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">PPTX</span>
-                                    </div>
-                                </div>
-                                <div class="p-4">
-                                    <p class="text-sm text-gray-600 mb-4">Detailed presentation on data structures</p>
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-xs text-gray-500">Uploaded 1 week ago</span>
-                                        <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                            <i class="fas fa-download mr-1"></i> Download
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AI Chat Assistant Section -->
-                <div id="aiChatSection" class="hidden">
-                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                        <h2 class="text-2xl font-bold mb-6 text-gray-800">AI Learning Assistant</h2>
-                        
-                        <div class="border border-gray-200 rounded-lg h-96 flex flex-col">
-                            <div class="p-4 border-b border-gray-200 bg-gray-50">
-                                <h3 class="font-semibold text-gray-800">Gemini 2.5 Flash AI Assistant</h3>
-                            </div>
-                            
-                            <div class="flex-1 p-4 overflow-y-auto bg-gray-50">
-                                <div class="mb-4">
-                                    <div class="inline-block bg-blue-100 rounded-lg p-3 max-w-xs md:max-w-md">
-                                        <p class="text-gray-800">Hello! I'm your AI learning assistant. How can I help you with your studies today?</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-4 text-right">
-                                    <div class="inline-block bg-green-100 rounded-lg p-3 max-w-xs md:max-w-md">
-                                        <p class="text-gray-800">Can you explain data structures?</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-4">
-                                    <div class="inline-block bg-blue-100 rounded-lg p-3 max-w-xs md:max-w-md">
-                                        <p class="text-gray-800">Certainly! Data structures are ways of organizing and storing data in a computer so that it can be accessed and modified efficiently. Common data structures include arrays, linked lists, stacks, queues, trees, and graphs.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="p-4 border-t border-gray-200">
-                                <div class="flex">
-                                    <input type="text" class="flex-1 border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ask me anything about your studies...">
-                                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-lg font-semibold">
-                                        <i class="fas fa-paper-plane"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <p id="uploadModalTitle" class="text-sm text-slate-400">Select a file to upload.</p>
+            <div class="border-2 border-dashed border-white/20 rounded-2xl p-8 text-center hover:border-sky-500/50 transition cursor-pointer"
+                onclick="document.getElementById('fileInput').click()">
+                <i class="fas fa-cloud-upload-alt text-3xl text-slate-500 mb-3"></i>
+                <p class="text-sm text-slate-400">Click to browse files</p>
+                <input type="file" id="fileInput" class="hidden" onchange="handleFileSelect(this)">
             </div>
+            <div id="selectedFile" class="hidden text-sm text-emerald-300 bg-emerald-500/10 px-3 py-2 rounded-xl">
+            </div>
+            <button onclick="confirmUpload()"
+                class="w-full py-3 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 font-semibold">
+                Upload Assignment
+            </button>
         </div>
     </div>
 
     <script>
-        // Check if user is logged in
-        const token = localStorage.getItem('token');
-        const user = JSON.parse(localStorage.getItem('user'));
-        
-        if (!token || !user || user.role !== 'student') {
-            window.location.href = '../login.html';
-        }
-        
-        // Display user name
-        document.getElementById('userName').textContent = user.name;
-        
-        // Logout functionality
-        document.getElementById('logoutBtn').addEventListener('click', function(e) {
-            e.preventDefault();
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = '../login.html';
-        });
-        
-        // Navigation
-        document.getElementById('dashboardLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            showSection('dashboardSection');
-        });
-        
-        document.getElementById('resourcesLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            showSection('resourcesSection');
-        });
-        
-        document.getElementById('aiChatLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            showSection('aiChatSection');
-        });
-        
-        function showSection(sectionId) {
-            // Hide all sections
-            document.getElementById('dashboardSection').classList.add('hidden');
-            document.getElementById('resourcesSection').classList.add('hidden');
-            document.getElementById('aiChatSection').classList.add('hidden');
+        // --- Global State ---
+        let currentSection = 'overview';
+        let resources = [];
+        let assignments = [];
+        let meetings = [];
+        let currentAssignmentId = null;
+        let selectedFile = null;
+
+        // --- Quiz State ---
+        let currentQuiz = null;
+        let currentQuestions = [];
+        let userAnswers = {}; // { questionId: answer }
+        let quizTimerInterval = null;
+        let currentQuestionIndex = 0;
+        let quizStartTime = null;
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/index.html';
+                return;
+            }
+
+            // Setup Navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const section = link.dataset.section;
+                    showSection(section);
+                });
+            });
+
+            // Setup Section Targets (buttons)
+            document.querySelectorAll('[data-section-target]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const section = btn.dataset.sectionTarget;
+                    showSection(section);
+                });
+            });
+
+            // Initial Load
+            loadUserData();
+            renderStats();
+            renderClasses();
+            renderFocus();
+            fetchMeetings(); // Load meetings initially
             
-            // Show selected section
-            document.getElementById(sectionId).classList.remove('hidden');
+            // AI Chat
+            document.getElementById('aiForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const prompt = document.getElementById('aiPrompt').value;
+                if (prompt) {
+                    addMessage('user', prompt);
+                    document.getElementById('aiPrompt').value = '';
+                    // Mock AI response
+                    setTimeout(() => {
+                        addMessage('ai', "I'm analyzing your syllabus... (AI integration pending)");
+                    }, 1000);
+                }
+            });
+
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.clear();
+                window.location.href = '/index.html';
+            });
+        });
+
+        function loadUserData() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            document.getElementById('userName').textContent = user.name || 'Student';
+        }
+
+        function showSection(section) {
+            // Update Nav
+            document.querySelectorAll('.nav-link').forEach(l => {
+                l.classList.remove('active', 'text-white');
+                l.classList.add('text-slate-300');
+                if (l.dataset.section === section) {
+                    l.classList.add('active', 'text-white');
+                    l.classList.remove('text-slate-300');
+                }
+            });
+
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden'));
+
+            // Show target section
+            const target = document.getElementById(`${section}Section`);
+            if (target) target.classList.remove('hidden');
+
+            currentSection = section;
+
+            // Load specific data
+            if (section === 'resources') loadResources();
+            if (section === 'assignments') loadAssignments();
+            if (section === 'timetable') renderTimetable('Monday');
+            if (section === 'meetings') fetchMeetings();
+            if (section === 'quiz') loadExams();
+        }
+
+        // --- Toast Notification System ---
+        function showToast(message, type = 'info') {
+            let container = document.querySelector('.toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            let icon = '';
+            if (type === 'success') icon = '<i class="fas fa-check-circle text-emerald-400"></i>';
+            if (type === 'error') icon = '<i class="fas fa-times-circle text-rose-400"></i>';
+            if (type === 'warning') icon = '<i class="fas fa-exclamation-triangle text-amber-400"></i>';
+
+            toast.innerHTML = `${icon}<span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // --- Quiz Logic ---
+
+        async function loadExams() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/exams/student/list', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                
+                const quizList = document.getElementById('quizList');
+                quizList.innerHTML = '';
+
+                if (data.exams && data.exams.length > 0) {
+                    data.exams.forEach(exam => {
+                        const now = new Date();
+                        const startTime = new Date(exam.startTime);
+                        const endTime = new Date(exam.endTime);
+                        
+                        let status = '';
+                        let actionBtn = '';
+
+                        if (now < startTime) {
+                            status = `<span class="text-amber-400 text-xs">Starts: ${startTime.toLocaleString()}</span>`;
+                            actionBtn = `<button class="px-4 py-2 rounded-xl bg-slate-700 text-slate-400 cursor-not-allowed" disabled>Upcoming</button>`;
+                        } else if (now >= startTime && now <= endTime) {
+                            status = `<span class="text-emerald-400 text-xs">Active until: ${endTime.toLocaleString()}</span>`;
+                            actionBtn = `<button onclick="startSafeQuiz('${exam._id}')" class="px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-500 transition">Start Quiz</button>`;
+                        } else {
+                            status = `<span class="text-rose-400 text-xs">Ended: ${endTime.toLocaleString()}</span>`;
+                            actionBtn = `<button class="px-4 py-2 rounded-xl bg-slate-700 text-slate-400 cursor-not-allowed" disabled>Expired</button>`;
+                        }
+
+                        const div = document.createElement('div');
+                        div.className = 'glass-soft p-4 rounded-xl flex justify-between items-center';
+                        div.innerHTML = `
+                            <div>
+                                <h4 class="font-semibold text-lg">${exam.title}</h4>
+                                <p class="text-sm text-slate-400">${exam.description || 'No description'}</p>
+                                <div class="mt-1">${status}</div>
+                            </div>
+                            <div>${actionBtn}</div>
+                        `;
+                        quizList.appendChild(div);
+                    });
+                } else {
+                    quizList.innerHTML = '<p class="text-slate-400">No quizzes available at the moment.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading exams:', error);
+                showToast('Failed to load quizzes', 'error');
+            }
+        }
+
+        async function startSafeQuiz(examId) {
+            try {
+                // Enter Fullscreen
+                if (document.documentElement.requestFullscreen) {
+                    await document.documentElement.requestFullscreen();
+                }
+
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/exams/${examId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!response.ok) throw new Error('Failed to fetch quiz details');
+                
+                const data = await response.json();
+                currentQuiz = data.exam;
+                currentQuestions = currentQuiz.questions;
+                userAnswers = {};
+                currentQuestionIndex = 0;
+                quizStartTime = new Date();
+
+                // UI Setup
+                document.getElementById('quizList').classList.add('hidden');
+                document.getElementById('activeQuizContainer').classList.remove('hidden');
+                document.getElementById('quizTitle').textContent = currentQuiz.title;
+
+                // Timer Setup
+                const durationMs = currentQuiz.duration * 60 * 1000;
+                const endTime = new Date(quizStartTime.getTime() + durationMs);
+                
+                updateTimerDisplay(endTime);
+                quizTimerInterval = setInterval(() => {
+                    const now = new Date();
+                    if (now >= endTime) {
+                        submitSafeQuiz(true); // Auto submit
+                    } else {
+                        updateTimerDisplay(endTime);
+                    }
+                }, 1000);
+
+                // Anti-cheat listeners
+                window.addEventListener('blur', handleCheatAttempt);
+                document.addEventListener('visibilitychange', handleCheatAttempt);
+
+                renderQuizQuestion();
+            } catch (error) {
+                console.error('Error starting quiz:', error);
+                showToast('Failed to start quiz', 'error');
+            }
+        }
+
+        function updateTimerDisplay(endTime) {
+            const now = new Date();
+            const diff = endTime - now;
+            const minutes = Math.floor(diff / 60000);
+            const seconds = Math.floor((diff % 60000) / 1000);
+            document.getElementById('quizTimer').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function handleCheatAttempt() {
+            if (currentQuiz) {
+                showToast('Warning: Tab switching is detected and recorded!', 'warning');
+                // Ideally send this to backend
+            }
+        }
+
+        function renderQuizQuestion() {
+            const question = currentQuestions[currentQuestionIndex];
+            const container = document.getElementById('quizQuestionContainer');
+            const total = currentQuestions.length;
+            
+            document.getElementById('questionProgress').textContent = `Question ${currentQuestionIndex + 1} of ${total}`;
+
+            let inputHtml = '';
+            
+            if (question.type === 'radio') {
+                inputHtml = `<div class="space-y-3">
+                    ${question.options.map((opt, idx) => `
+                        <label class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 cursor-pointer transition">
+                            <input type="radio" name="q_${question._id}" value="${idx}" 
+                                ${userAnswers[question._id] === idx.toString() ? 'checked' : ''}
+                                class="form-radio text-indigo-500 focus:ring-indigo-500 bg-slate-700 border-slate-600">
+                            <span>${opt}</span>
+                        </label>
+                    `).join('')}
+                </div>`;
+            } else if (question.type === 'checkbox') {
+                // For checkbox, userAnswers[question._id] should be an array
+                const currentAns = userAnswers[question._id] || [];
+                inputHtml = `<div class="space-y-3">
+                    ${question.options.map((opt, idx) => `
+                        <label class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 cursor-pointer transition">
+                            <input type="checkbox" name="q_${question._id}" value="${idx}"
+                                ${currentAns.includes(idx.toString()) ? 'checked' : ''}
+                                class="form-checkbox text-indigo-500 focus:ring-indigo-500 bg-slate-700 border-slate-600">
+                            <span>${opt}</span>
+                        </label>
+                    `).join('')}
+                </div>`;
+            } else if (question.type === 'text') {
+                inputHtml = `
+                    <textarea class="w-full bg-slate-900 border border-slate-700 rounded-xl p-4 text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                        rows="4" placeholder="Type your answer here..."
+                        onchange="saveTextAnswer('${question._id}', this.value)">${userAnswers[question._id] || ''}</textarea>
+                `;
+            }
+
+            let imageHtml = '';
+            if (question.image) {
+                imageHtml = `<img src="${question.image}" class="max-w-full h-auto max-h-64 rounded-xl mb-4 border border-white/10">`;
+            }
+
+            container.innerHTML = `
+                <h4 class="text-xl font-medium mb-4">${question.text}</h4>
+                ${imageHtml}
+                ${inputHtml}
+            `;
+
+            // Setup navigation buttons
+            const prevBtn = document.getElementById('prevQuestionBtn');
+            const nextBtn = document.getElementById('nextQuestionBtn');
+            const submitBtn = document.getElementById('submitQuizBtn');
+
+            prevBtn.classList.toggle('hidden', currentQuestionIndex === 0);
+            
+            if (currentQuestionIndex === total - 1) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+
+            // Bind events for radio/checkbox to save state immediately
+            if (question.type === 'radio') {
+                container.querySelectorAll(`input[name="q_${question._id}"]`).forEach(input => {
+                    input.addEventListener('change', (e) => {
+                        userAnswers[question._id] = e.target.value;
+                    });
+                });
+            } else if (question.type === 'checkbox') {
+                container.querySelectorAll(`input[name="q_${question._id}"]`).forEach(input => {
+                    input.addEventListener('change', (e) => {
+                        const val = e.target.value;
+                        if (!userAnswers[question._id]) userAnswers[question._id] = [];
+                        
+                        if (e.target.checked) {
+                            userAnswers[question._id].push(val);
+                        } else {
+                            userAnswers[question._id] = userAnswers[question._id].filter(v => v !== val);
+                        }
+                    });
+                });
+            }
+        }
+
+        function saveTextAnswer(qId, val) {
+            userAnswers[qId] = val;
+        }
+
+        // Navigation Handlers
+        document.getElementById('prevQuestionBtn').addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuizQuestion();
+            }
+        });
+
+        document.getElementById('nextQuestionBtn').addEventListener('click', () => {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                renderQuizQuestion();
+            }
+        });
+
+        document.getElementById('submitQuizBtn').addEventListener('click', () => submitSafeQuiz(false));
+
+        async function submitSafeQuiz(autoSubmit = false) {
+            clearInterval(quizTimerInterval);
+            
+            // Exit fullscreen
+            if (document.fullscreenElement) {
+                document.exitFullscreen().catch(err => console.log(err));
+            }
+
+            // Remove listeners
+            window.removeEventListener('blur', handleCheatAttempt);
+            document.removeEventListener('visibilitychange', handleCheatAttempt);
+
+            try {
+                const token = localStorage.getItem('token');
+                
+                // Format answers for backend
+                // Backend expects: [ { questionId, answer } ]
+                // answer can be string (radio/text) or array (checkbox)
+                const formattedAnswers = Object.keys(userAnswers).map(qId => ({
+                    questionId: qId,
+                    answer: userAnswers[qId]
+                }));
+
+                const response = await fetch('/api/exams/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        examId: currentQuiz._id,
+                        answers: formattedAnswers
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showToast(autoSubmit ? 'Time is up! Quiz submitted automatically.' : 'Quiz submitted successfully!', 'success');
+                    
+                    // Reset UI
+                    document.getElementById('activeQuizContainer').classList.add('hidden');
+                    document.getElementById('quizList').classList.remove('hidden');
+                    loadExams(); // Refresh list
+                } else {
+                    showToast(result.message || 'Submission failed', 'error');
+                }
+            } catch (error) {
+                console.error('Error submitting quiz:', error);
+                showToast('Error submitting quiz. Please contact support.', 'error');
+            }
+        }
+
+        // --- Assignments ---
+        async function loadAssignments() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/assignments/student', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                assignments = data.assignments || [];
+                renderAssignments();
+            } catch (error) {
+                console.error('Error loading assignments:', error);
+            }
+        }
+
+        function renderAssignments() {
+            const list = document.getElementById('assignmentList');
+            list.innerHTML = '';
+            
+            if (assignments.length === 0) {
+                list.innerHTML = '<p class="text-slate-400">No pending assignments.</p>';
+                return;
+            }
+
+            assignments.forEach(assignment => {
+                const div = document.createElement('div');
+                div.className = 'glass-soft p-4 rounded-2xl flex justify-between items-center';
+                div.innerHTML = `
+                    <div>
+                        <h4 class="font-semibold">${assignment.title}</h4>
+                        <p class="text-xs text-slate-400">Due: ${new Date(assignment.dueDate).toLocaleDateString()}</p>
+                        ${assignment.fileUrl ? `<a href="${assignment.fileUrl}" class="text-xs text-sky-400 hover:underline mt-1 block" download>Download Task File</a>` : ''}
+                    </div>
+                    <button onclick="openUploadModal('${assignment._id}', '${assignment.title}')" 
+                        class="px-4 py-2 rounded-xl bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500 hover:text-white transition text-sm">
+                        Upload
+                    </button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function openUploadModal(id, title) {
+            currentAssignmentId = id;
+            document.getElementById('uploadModalTitle').textContent = `Upload for: ${title}`;
+            document.getElementById('uploadModal').classList.remove('hidden');
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.add('hidden');
+            currentAssignmentId = null;
+            selectedFile = null;
+            document.getElementById('selectedFile').classList.add('hidden');
+        }
+
+        function handleFileSelect(input) {
+            if (input.files.length > 0) {
+                selectedFile = input.files[0];
+                const display = document.getElementById('selectedFile');
+                display.textContent = selectedFile.name;
+                display.classList.remove('hidden');
+            }
+        }
+
+        async function confirmUpload() {
+            if (!selectedFile || !currentAssignmentId) {
+                showToast('Please select a file', 'warning');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            formData.append('assignmentId', currentAssignmentId);
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/assignments/submit', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    showToast('Assignment submitted successfully!', 'success');
+                    closeUploadModal();
+                } else {
+                    showToast('Upload failed', 'error');
+                }
+            } catch (error) {
+                console.error('Error uploading:', error);
+                showToast('Error uploading assignment', 'error');
+            }
+        }
+
+        // --- Resources ---
+        async function loadResources() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/resources/student', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                resources = data.resources || [];
+                renderResources(resources);
+            } catch (error) {
+                console.error('Error loading resources:', error);
+            }
+        }
+
+        function filterResources(type) {
+            document.querySelectorAll('.resource-filter').forEach(btn => {
+                if (btn.dataset.type === type) {
+                    btn.classList.remove('bg-white/5', 'border-white/10');
+                    btn.classList.add('bg-white/20', 'border-white/30');
+                } else {
+                    btn.classList.add('bg-white/5', 'border-white/10');
+                    btn.classList.remove('bg-white/20', 'border-white/30');
+                }
+            });
+
+            if (type === 'All') {
+                renderResources(resources);
+            } else {
+                const filtered = resources.filter(r => r.type === type);
+                renderResources(filtered);
+            }
+        }
+
+        function renderResources(list) {
+            const grid = document.getElementById('resourceGrid');
+            grid.innerHTML = '';
+            
+            if (list.length === 0) {
+                grid.innerHTML = '<p class="text-slate-400 col-span-full">No resources found.</p>';
+                return;
+            }
+
+            list.forEach(res => {
+                let icon = 'fa-file';
+                if (res.type === 'Video') icon = 'fa-video';
+                if (res.type === 'Slides') icon = 'fa-presentation';
+                
+                const div = document.createElement('div');
+                div.className = 'glass-soft p-5 rounded-2xl hover:bg-white/10 transition group';
+                div.innerHTML = `
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="h-10 w-10 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-300">
+                            <i class="fas ${icon}"></i>
+                        </div>
+                        <span class="text-xs px-2 py-1 rounded-lg bg-white/5 text-slate-400">${res.type}</span>
+                    </div>
+                    <h4 class="font-semibold mb-1">${res.title}</h4>
+                    <p class="text-xs text-slate-400 mb-4">${res.description || 'No description'}</p>
+                    <a href="/api/resources/download/${res._id}" class="text-sm text-sky-400 hover:text-sky-300 flex items-center gap-2">
+                        Download <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition"></i>
+                    </a>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        // --- Meetings ---
+        async function fetchMeetings() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/meetings/student', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                meetings = data.meetings || [];
+                renderMeetings();
+            } catch (error) {
+                console.error('Error fetching meetings:', error);
+            }
+        }
+
+        function renderMeetings() {
+            const containerFull = document.getElementById('meetingsListFull');
+            const containerOverview = document.getElementById('studentMeetings');
+            
+            if (containerFull) containerFull.innerHTML = '';
+            if (containerOverview) containerOverview.innerHTML = `
+                <div>
+                    <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Connect</p>
+                    <h2 class="text-2xl font-semibold">Live Sessions</h2>
+                </div>
+                <button class="px-4 py-2 rounded-2xl bg-white/10 border border-white/20 text-sm" onclick="fetchMeetings()">Refresh</button>
+            `;
+
+            const today = new Date().toISOString().split('T')[0];
+            const todaysMeetings = meetings.filter(m => new Date(m.startTime).toISOString().split('T')[0] === today);
+
+            // Render Overview (Today Only)
+            if (containerOverview) {
+                if (todaysMeetings.length === 0) {
+                    const p = document.createElement('p');
+                    p.className = 'text-slate-400 text-sm';
+                    p.textContent = 'No meetings scheduled for today.';
+                    containerOverview.appendChild(p);
+                } else {
+                    todaysMeetings.forEach(meeting => {
+                        const el = createMeetingElement(meeting);
+                        containerOverview.appendChild(el);
+                    });
+                }
+            }
+
+            // Render Full List (All Upcoming)
+            if (containerFull) {
+                if (meetings.length === 0) {
+                    containerFull.innerHTML = '<p class="text-slate-400">No upcoming meetings.</p>';
+                } else {
+                    meetings.forEach(meeting => {
+                        const el = createMeetingElement(meeting);
+                        containerFull.appendChild(el);
+                    });
+                }
+            }
+        }
+
+        function createMeetingElement(meeting) {
+            const div = document.createElement('div');
+            div.className = 'glass-soft p-4 rounded-xl flex items-center justify-between';
+            
+            const startTime = new Date(meeting.startTime).toLocaleString();
+            const isOngoing = meeting.status === 'ongoing';
+
+            div.innerHTML = `
+                <div>
+                    <h4 class="font-semibold">${meeting.title}</h4>
+                    <p class="text-xs text-slate-400">${startTime} • ${meeting.hostName}</p>
+                </div>
+                ${isOngoing 
+                    ? `<button onclick="joinMeeting('${meeting._id}')" class="px-4 py-2 rounded-xl bg-emerald-500 text-white text-xs font-bold animate-pulse">JOIN NOW</button>`
+                    : `<span class="text-xs text-slate-500 bg-slate-800 px-3 py-1 rounded-lg">Scheduled</span>`
+                }
+            `;
+            return div;
+        }
+
+        async function joinMeeting(meetingId) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/meetings/${meetingId}/join`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                
+                if (response.ok && data.meetingUrl) {
+                    window.open(data.meetingUrl, '_blank');
+                } else {
+                    showToast(data.message || 'Cannot join meeting', 'error');
+                }
+            } catch (error) {
+                console.error('Error joining meeting:', error);
+                showToast('Error joining meeting', 'error');
+            }
+        }
+
+        // --- Mock Data Renderers ---
+        function renderStats() {
+            const stats = [
+                { label: 'Attendance', value: '85%', icon: 'fa-user-check', color: 'text-emerald-400' },
+                { label: 'Avg Grade', value: 'A-', icon: 'fa-graduation-cap', color: 'text-indigo-400' },
+                { label: 'Assignments', value: '12/15', icon: 'fa-tasks', color: 'text-amber-400' },
+                { label: 'Credits', value: '18', icon: 'fa-star', color: 'text-pink-400' }
+            ];
+            
+            const container = document.getElementById('statCards');
+            container.innerHTML = stats.map(s => `
+                <div class="glass-soft p-4 rounded-2xl flex items-center gap-4">
+                    <div class="h-10 w-10 rounded-xl bg-white/5 flex items-center justify-center ${s.color}">
+                        <i class="fas ${s.icon}"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400 uppercase tracking-wider">${s.label}</p>
+                        <p class="text-xl font-bold">${s.value}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderClasses() {
+            const classes = [
+                { time: '09:00 AM', subject: 'Advanced Web Dev', room: 'Lab 3' },
+                { time: '11:00 AM', subject: 'Database Systems', room: 'LH 2' },
+                { time: '02:00 PM', subject: 'AI Fundamentals', room: 'LH 5' }
+            ];
+            
+            const container = document.getElementById('classTimeline');
+            container.innerHTML = classes.map(c => `
+                <div class="flex gap-4">
+                    <div class="flex flex-col items-center">
+                        <div class="h-2 w-2 rounded-full bg-indigo-500"></div>
+                        <div class="w-0.5 h-full bg-white/10 my-1"></div>
+                    </div>
+                    <div class="pb-4">
+                        <p class="text-xs text-slate-400">${c.time}</p>
+                        <h4 class="font-medium text-slate-200">${c.subject}</h4>
+                        <p class="text-xs text-slate-500">${c.room}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderFocus() {
+            const items = [
+                'Submit Project Proposal',
+                'Read Chapter 4 for DB',
+                'Register for Hackathon'
+            ];
+            document.getElementById('focusBoard').innerHTML = items.map(i => `
+                <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5">
+                    <div class="h-2 w-2 rounded-full bg-rose-400"></div>
+                    <span class="text-slate-300">${i}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderTimetable(day) {
+            // Update tabs
+            document.querySelectorAll('.day-tab').forEach(btn => {
+                if (btn.dataset.day === day) {
+                    btn.classList.remove('bg-white/5', 'text-slate-400');
+                    btn.classList.add('bg-white/20', 'text-white');
+                } else {
+                    btn.classList.add('bg-white/5', 'text-slate-400');
+                    btn.classList.remove('bg-white/20', 'text-white');
+                }
+            });
+
+            // Mock Timetable Data
+            const timetable = [
+                { time: '09:00 - 10:00', subject: 'Web Development', faculty: 'Dr. Smith', room: 'Lab 1' },
+                { time: '10:00 - 11:00', subject: 'Database', faculty: 'Prof. Doe', room: 'LH 2' },
+                { time: '11:00 - 12:00', subject: 'Break', faculty: '-', room: '-' },
+                { time: '12:00 - 01:00', subject: 'AI', faculty: 'Dr. Alan', room: 'LH 3' }
+            ];
+
+            const tbody = document.getElementById('timetableBody');
+            tbody.innerHTML = timetable.map(t => `
+                <tr class="hover:bg-white/5 transition">
+                    <td class="px-5 py-4 text-slate-400">${day}</td>
+                    <td class="px-5 py-4 font-mono text-xs text-sky-300">${t.time}</td>
+                    <td class="px-5 py-4 font-medium text-white">${t.subject}</td>
+                    <td class="px-5 py-4 text-slate-400">${t.faculty}</td>
+                    <td class="px-5 py-4 text-slate-400">${t.room}</td>
+                </tr>
+            `).join('');
+        }
+
+        function downloadTimetable() {
+            showToast('Downloading timetable...', 'info');
+            // Mock download
+        }
+
+        function addMessage(sender, text) {
+            const div = document.createElement('div');
+            div.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+            div.innerHTML = `
+                <div class="max-w-[80%] p-3 rounded-2xl text-sm ${sender === 'user' ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white/10 text-slate-200 rounded-tl-none'}">
+                    ${text}
+                </div>
+            `;
+            document.getElementById('chatWindow').appendChild(div);
+            document.getElementById('chatWindow').scrollTop = document.getElementById('chatWindow').scrollHeight;
         }
     </script>
 </body>
+
 </html>

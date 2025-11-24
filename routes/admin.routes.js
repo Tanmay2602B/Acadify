@@ -23,6 +23,12 @@ const {
   updateSemester,
   deleteSemester
 } = require('../controllers/admin.controller');
+const { 
+  createTimetableEntry,
+  getTimetable,
+  updateTimetableEntry,
+  deleteTimetableEntry
+} = require('../controllers/timetable.mongo.controller');
 const { authenticate, authorizeAdmin } = require('../middlewares/auth');
 
 const router = express.Router();
@@ -51,6 +57,11 @@ router.delete('/announcements/:id', deleteAnnouncement);
 router.get('/reports/students', generateStudentReport);
 router.get('/reports/faculty', generateFacultyReport);
 router.get('/reports/programs', generateProgramReport);
+
+// Timetable management
+router.post('/timetable', createTimetableEntry);
+router.put('/timetable/:id', updateTimetableEntry);
+router.delete('/timetable/:id', deleteTimetableEntry);
 
 // Program management
 router.post('/programs', createProgram);

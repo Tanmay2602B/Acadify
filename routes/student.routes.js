@@ -4,7 +4,7 @@ const {
   submitAssignment,
   getTimetable
 } = require('../controllers/student.controller');
-const { getStudentResources } = require('../controllers/resource.controller');
+const { getStudentResources } = require('../controllers/resource.mongo.controller');
 const { authenticate, authorizeStudent } = require('../middlewares/auth');
 const multer = require('multer');
 

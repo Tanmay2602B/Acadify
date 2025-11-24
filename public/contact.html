@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acadify - Contact</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100">
+    <header class="border-b border-white/10 bg-slate-950/95 backdrop-blur-xl sticky top-0 z-30">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2 text-lg font-semibold">
+                <span class="h-9 w-9 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white"><i class="fas fa-comment-dots"></i></span>
+                <span>Acadify</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-5 text-sm text-slate-300 font-semibold">
+                <a href="about.html" class="hover:text-white transition">About</a>
+                <a href="features.html" class="hover:text-white transition">Features</a>
+            </nav>
+            <button id="contactMenuButton" class="md:hidden text-xl"><i class="fas fa-bars"></i></button>
+        </div>
+        <nav id="contactMobileMenu" class="md:hidden hidden border-t border-white/10 px-6 py-4 text-sm font-semibold text-slate-300">
+            <a href="index.html" class="block py-2">Home</a>
+            <a href="about.html" class="block py-2">About</a>
+            <a href="features.html" class="block py-2">Features</a>
+        </nav>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-12">
+        <section class="text-center space-y-4">
+            <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Reach out</p>
+            <h1 class="text-4xl font-semibold text-white">We are here to help every step of your rollout.</h1>
+            <p class="text-slate-300 text-sm max-w-3xl mx-auto">Whether you need pricing, deployment guidance, or support for your faculty and students, the Acadify team responds in less than a business day.</p>
+        </section>
+
+        <section class="grid gap-6 md:grid-cols-3">
+            <article class="glass-soft border border-white/10 rounded-3xl p-6 space-y-2">
+                <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Sales</p>
+                <h2 class="text-xl font-semibold text-white">Campus onboarding</h2>
+                <p class="text-sm text-slate-300">deployment@acadify.example</p>
+                <p class="text-xs text-slate-500">Response within 24 hours</p>
+            </article>
+            <article class="glass-soft border border-white/10 rounded-3xl p-6 space-y-2" id="support">
+                <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Support</p>
+                <h2 class="text-xl font-semibold text-white">Faculty & student helpdesk</h2>
+                <p class="text-sm text-slate-300">support@acadify.example</p>
+                <p class="text-xs text-slate-500">Chat + email | 9 AM - 9 PM IST</p>
+            </article>
+            <article class="glass-soft border border-white/10 rounded-3xl p-6 space-y-2">
+                <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Partnerships</p>
+                <h2 class="text-xl font-semibold text-white">Integrations & OEM</h2>
+                <p class="text-sm text-slate-300">partners@acadify.example</p>
+                <p class="text-xs text-slate-500">Custom deployments</p>
+            </article>
+        </section>
+
+        <section class="glass-soft border border-white/10 rounded-3xl p-6 space-y-6">
+            <div class="flex flex-col gap-2">
+                <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Message us</p>
+                <h2 class="text-2xl font-semibold text-white">Tell us about your campus</h2>
+            </div>
+            <form class="grid gap-4 md:grid-cols-2">
+                <div class="flex flex-col space-y-2">
+                    <label for="name" class="text-xs uppercase tracking-[0.4em] text-slate-400">Full name</label>
+                    <input id="name" type="text" placeholder="Jane Doe" class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3 focus:outline-none focus:border-indigo-400" required>
+                </div>
+                <div class="flex flex-col space-y-2">
+                    <label for="email" class="text-xs uppercase tracking-[0.4em] text-slate-400">Email</label>
+                    <input id="email" type="email" placeholder="you@university.edu" class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3 focus:outline-none focus:border-indigo-400" required>
+                </div>
+                <div class="flex flex-col space-y-2 md:col-span-2">
+                    <label for="message" class="text-xs uppercase tracking-[0.4em] text-slate-400">Message</label>
+                    <textarea id="message" rows="5" placeholder="Share your requirements, timelines, or integration questions." class="bg-white/5 border border-white/10 rounded-2xl px-4 py-3 focus:outline-none focus:border-indigo-400" required></textarea>
+                </div>
+                <div class="md:col-span-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <p class="text-xs text-slate-500">Submitting this form will create a support ticket. We reply with next steps fast.</p>
+                    <button type="submit" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 font-semibold shadow-lg shadow-indigo-500/30">Send message</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="grid gap-6 md:grid-cols-2 text-sm text-slate-300">
+            <div class="glass-soft rounded-3xl border border-white/10 p-6 space-y-3">
+                <h3 class="text-xl font-semibold text-white">Office hours</h3>
+                <p>Monday to Saturday · 9 AM - 9 PM IST</p>
+                <p>Dedicated customer success manager for enterprise campuses.</p>
+            </div>
+            <div class="glass-soft rounded-3xl border border-white/10 p-6 space-y-3">
+                <h3 class="text-xl font-semibold text-white">Need help right now?</h3>
+                <p>Visit the troubleshooting guide, view deployment docs, or ping us on chat from your admin dashboard.</p>
+                <div class="flex gap-3">
+                    <a href="TROUBLESHOOTING.md" class="px-4 py-2 rounded-2xl border border-white/20 hover:border-white/50 transition text-xs font-semibold">View troubleshooting guide</a>
+                    <a href="README.md" class="px-4 py-2 rounded-2xl bg-white/10 border border-white/20 text-xs font-semibold hover:border-white/50 transition">Read docs</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="border-t border-white/10 mt-16">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-xs text-slate-500 text-center">
+            <p>&copy; 2025 Acadify. Your command center for learning operations.</p>
+        </div>
+    </footer>
+
+    <script>
+        const contactButton = document.getElementById('contactMenuButton');
+        const contactMenu = document.getElementById('contactMobileMenu');
+        contactButton?.addEventListener('click', () => {
+            contactMenu?.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
+

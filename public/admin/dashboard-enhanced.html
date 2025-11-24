@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acadify - Admin Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(circle at top, rgba(99, 102, 241, 0.25), transparent 45%),
+                radial-gradient(circle at 20% 20%, rgba(14, 165, 233, 0.18), transparent 35%),
+                #020617;
+            min-height: 100vh;
+        }
+
+        .glass-panel {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.65), rgba(15, 23, 42, 0.5));
+            border: 1px solid rgba(226, 232, 240, 0.15);
+            box-shadow: 0 20px 45px rgba(2, 6, 23, 0.45);
+            backdrop-filter: blur(16px);
+        }
+
+        .glass-soft {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-pill {
+            transition: all 0.25s ease;
+        }
+
+        .nav-pill.active {
+            background: linear-gradient(120deg, rgba(99, 102, 241, 0.35), rgba(236, 72, 153, 0.35));
+            box-shadow: 0 10px 30px rgba(79, 70, 229, 0.35);
+        }
+
+        .pulse-dot {
+            animation: pulse 3s ease infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 0.4;
+                transform: scale(0.8);
+            }
+        }
+
+        .content-section {
+            opacity: 1;
+            transition: opacity 0.25s ease;
+        }
+
+        .content-section.hidden {
+            display: none;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 1023px) {
+            #sidebar {
+                position: fixed;
+                inset: 0 auto 0 0;
+                width: 280px;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                z-index: 40;
+            }
+
+            #sidebar.open {
+                transform: translateX(0);
+            }
+
+            #sidebarScrim {
+                position: fixed;
+                inset: 0;
+                background: rgba(2, 6, 23, 0.65);
+                backdrop-filter: blur(4px);
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.3s ease;
+                z-index: 30;
+            }
+
+            #sidebarScrim.visible {
+                opacity: 1;
+                pointer-events: auto;
+            }
+        }
+    </style>
+</head>
+
+<body class="text-slate-100">
+    <div id="sidebarScrim"></div>
+
+    <header class="sticky top-0 z-30 border-b border-white/10 backdrop-blur-xl bg-slate-900/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <button id="menuToggle" class="lg:hidden text-slate-100 hover:text-white transition">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="flex items-center gap-3">
+                    <div
+                        class="h-11 w-11 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+                        <i class="fas fa-shield-alt text-xl text-white"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs uppercase tracking-[0.35em] text-slate-400">Acadify</p>
+                        <h1 class="text-lg font-semibold">Admin Control Center</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="notificationBtn"
+                    class="relative p-2 rounded-xl glass-soft hover:border-white/30 transition">
+                    <i class="fas fa-bell text-lg"></i>
+                    <span id="notifCount"
+                        class="pulse-dot absolute -top-1 -right-1 bg-pink-500 text-white text-[10px] font-semibold rounded-full px-1.5 py-0.5 hidden">0</span>
+                </button>
+                <div class="hidden md:flex items-center gap-3 glass-soft px-3 py-2 rounded-2xl">
+                    <div>
+                        <p class="text-[11px] uppercase tracking-[0.25em] text-slate-400">Welcome</p>
+                        <p id="userName" class="font-medium text-sm">Admin</p>
+                    </div>
+                </div>
+                <button id="logoutBtn"
+                    class="bg-gradient-to-r from-rose-500 to-orange-400 px-4 py-2 rounded-2xl font-semibold text-white shadow-lg shadow-rose-500/30 hover:shadow-rose-500/50 transition">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <aside id="sidebar" class="glass-panel rounded-3xl p-5 lg:sticky lg:top-28 h-fit">
+                <div class="flex items-center justify-between mb-6">
+                    <p class="text-sm uppercase tracking-[0.4em] text-slate-400">Navigation</p>
+                    <span class="text-xs text-slate-400">v2.0</span>
+                </div>
+                <nav class="flex flex-col gap-2">
+                    <a href="#"
+                        class="nav-link nav-pill active flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium"
+                        data-section="dashboard">
+                        <i class="fas fa-gauge-high text-indigo-300"></i>
+                        Dashboard
+                    </a>
+                    <a href="#"
+                        class="nav-link nav-pill flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-300"
+                        data-section="faculty">
+                        <i class="fas fa-chalkboard-teacher text-sky-300"></i>
+                        Faculty Management
+                    </a>
+                    <a href="#"
+                        class="nav-link nav-pill flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-300"
+                        data-section="students">
+                        <i class="fas fa-user-graduate text-pink-300"></i>
+                        Student Management
+                    </a>
+                    <a href="#"
+                        class="nav-link nav-pill flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-300"
+                        data-section="timetable">
+                        <i class="fas fa-calendar-week text-purple-300"></i>
+                        Timetable
+                    </a>
+                    <a href="#"
+                        class="nav-link nav-pill flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-300"
+                        data-section="meetings">
+                        <i class="fas fa-video text-cyan-300"></i>
+                        Meetings
+                    </a>
+                    <a href="#"
+                        class="nav-link nav-pill flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-300"
+                        data-section="reports">
+                        <i class="fas fa-chart-line text-amber-300"></i>
+                        Reports
+                    </a>
+                    <a href="#"
+                        class="nav-link nav-pill flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-300"
+                        data-section="settings">
+                        <i class="fas fa-sliders-h text-pink-300"></i>
+                        Settings
+                    </a>
+                </nav>
+            </aside>
+
+            <main class="flex-1 space-y-8">
+                <!-- Dashboard Section -->
+                <section id="dashboardSection" class="content-section space-y-8">
+                    <div class="glass-panel rounded-3xl p-6 lg:p-8">
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+                            <div>
+                                <p class="text-sm uppercase tracking-[0.35em] text-slate-400">Live Overview</p>
+                                <h2 class="text-2xl lg:text-3xl font-semibold">Operations Pulse</h2>
+                                <p class="text-slate-400 text-sm mt-1">Realtime signal across programs, people &
+                                    resources.</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                            <article
+                                class="rounded-3xl p-5 bg-gradient-to-br from-indigo-500/70 to-indigo-400/40 border border-white/20 shadow-lg shadow-indigo-900/40">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <p class="text-xs uppercase tracking-[0.4em] text-indigo-100/80">Students</p>
+                                        <p id="totalStudents" class="text-4xl font-bold mt-2">0</p>
+                                        <span class="text-sm text-indigo-100/80">Active enrollments</span>
+                                    </div>
+                                    <div class="h-12 w-12 rounded-2xl bg-white/20 flex items-center justify-center">
+                                        <i class="fas fa-user-graduate text-2xl"></i>
+                                    </div>
+                                </div>
+                            </article>
+                            <article
+                                class="rounded-3xl p-5 bg-gradient-to-br from-emerald-500/70 to-emerald-400/40 border border-white/20 shadow-lg shadow-emerald-900/30">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <p class="text-xs uppercase tracking-[0.4em] text-emerald-100/80">Faculty</p>
+                                        <p id="totalFaculty" class="text-4xl font-bold mt-2">0</p>
+                                        <span class="text-sm text-emerald-100/80">Verified mentors</span>
+                                    </div>
+                                    <div class="h-12 w-12 rounded-2xl bg-white/20 flex items-center justify-center">
+                                        <i class="fas fa-chalkboard-teacher text-2xl"></i>
+                                    </div>
+                                </div>
+                            </article>
+                            <article
+                                class="rounded-3xl p-5 bg-gradient-to-br from-purple-500/70 to-purple-400/40 border border-white/20 shadow-lg shadow-purple-900/30">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <p class="text-xs uppercase tracking-[0.4em] text-purple-100/80">Programs</p>
+                                        <p id="totalPrograms" class="text-4xl font-bold mt-2">0</p>
+                                        <span class="text-sm text-purple-100/80">Academic tracks</span>
+                                    </div>
+                                    <div class="h-12 w-12 rounded-2xl bg-white/20 flex items-center justify-center">
+                                        <i class="fas fa-book text-2xl"></i>
+                                    </div>
+                                </div>
+                            </article>
+                            <article
+                                class="rounded-3xl p-5 bg-gradient-to-br from-amber-500/70 to-amber-400/40 border border-white/20 shadow-lg shadow-amber-900/30">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <p class="text-xs uppercase tracking-[0.4em] text-amber-100/80">Courses</p>
+                                        <p id="totalCourses" class="text-4xl font-bold mt-2">0</p>
+                                        <span class="text-sm text-amber-100/80">Curriculum items</span>
+                                    </div>
+                                    <div class="h-12 w-12 rounded-2xl bg-white/20 flex items-center justify-center">
+                                        <i class="fas fa-graduation-cap text-2xl"></i>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Faculty Section -->
+                <section id="facultySection" class="content-section hidden space-y-6">
+                    <div
+                        class="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Directory</p>
+                            <h2 class="text-2xl font-semibold">Faculty Management</h2>
+                            <p class="text-sm text-slate-400">Manage faculty profiles and access.</p>
+                        </div>
+                        <button onclick="openUserModal('faculty')"
+                            class="px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-sky-500 font-semibold text-white shadow-lg shadow-indigo-900/40">
+                            <i class="fas fa-user-plus mr-2"></i>Add Faculty
+                        </button>
+                    </div>
+                    <div class="glass-panel rounded-3xl p-6 space-y-4">
+                        <div class="overflow-hidden rounded-3xl border border-white/10">
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full text-left text-sm">
+                                    <thead class="bg-white/5 uppercase text-xs tracking-wide text-slate-400">
+                                        <tr>
+                                            <th class="px-6 py-3">Name</th>
+                                            <th class="px-6 py-3">Email</th>
+                                            <th class="px-6 py-3">Department</th>
+                                            <th class="px-6 py-3">Status</th>
+                                            <th class="px-6 py-3 text-right">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="facultyTableBody" class="divide-y divide-white/5 bg-white/5">
+                                        <tr>
+                                            <td colspan="5" class="px-6 py-6 text-center text-slate-400">Loading
+                                                faculty...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Students Section -->
+                <section id="studentsSection" class="content-section hidden space-y-6">
+                    <div
+                        class="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Directory</p>
+                            <h2 class="text-2xl font-semibold">Student Management</h2>
+                            <p class="text-sm text-slate-400">Manage student profiles and enrollments.</p>
+                        </div>
+                        <button onclick="openUserModal('student')"
+                            class="px-5 py-3 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 font-semibold text-white shadow-lg shadow-pink-900/40">
+                            <i class="fas fa-user-plus mr-2"></i>Add Student
+                        </button>
+                    </div>
+                    <div class="glass-panel rounded-3xl p-6 space-y-4">
+                        <div class="overflow-hidden rounded-3xl border border-white/10">
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full text-left text-sm">
+                                    <thead class="bg-white/5 uppercase text-xs tracking-wide text-slate-400">
+                                        <tr>
+                                            <th class="px-6 py-3">Name</th>
+                                            <th class="px-6 py-3">Email</th>
+                                            <th class="px-6 py-3">Program</th>
+                                            <th class="px-6 py-3">Semester</th>
+                                            <th class="px-6 py-3">Status</th>
+                                            <th class="px-6 py-3 text-right">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="studentsTableBody" class="divide-y divide-white/5 bg-white/5">
+                                        <tr>
+                                            <td colspan="6" class="px-6 py-6 text-center text-slate-400">Loading
+                                                students...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Timetable Section -->
+                <section id="timetableSection" class="content-section hidden space-y-6">
+                    <div class="glass-panel rounded-3xl p-6">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Scheduling</p>
+                            <h2 class="text-2xl font-semibold">Timetable Management</h2>
+                            <p class="text-sm text-slate-400">Monitor slots, rooms, and schedules.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Meetings Section -->
+                <section id="meetingsSection" class="content-section hidden space-y-6">
+                    <div class="glass-panel rounded-3xl p-6">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Virtual Classroom</p>
+                            <h2 class="text-2xl font-semibold">Meetings Management</h2>
+                            <p class="text-sm text-slate-400">Schedule and manage virtual meetings.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Reports Section -->
+                <section id="reportsSection" class="content-section hidden space-y-6">
+                    <div class="glass-panel rounded-3xl p-6">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Insights</p>
+                            <h2 class="text-2xl font-semibold">Performance Reports</h2>
+                            <p class="text-sm text-slate-400">Visualize enrollment, attendance & engagement.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings Section -->
+                <section id="settingsSection" class="content-section hidden space-y-6">
+                    <div class="glass-panel rounded-3xl p-6">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Preferences</p>
+                            <h2 class="text-2xl font-semibold">Workspace Controls</h2>
+                            <p class="text-sm text-slate-400">Refine alerts, security, appearance.</p>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- User Creation Modal -->
+    <div id="userModal"
+        class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-panel rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-semibold">Create New User</h3>
+                    <button id="closeModal" class="text-slate-400 hover:text-white">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <form id="userForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Full Name *</label>
+                            <input type="text" id="userNameInput"
+                                class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 focus:outline-none focus:border-indigo-300"
+                                placeholder="Enter full name" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Email *</label>
+                            <input type="email" id="userEmailInput"
+                                class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 focus:outline-none focus:border-indigo-300"
+                                placeholder="Enter email" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Date of Birth *</label>
+                            <input type="date" id="userDOBInput"
+                                class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 focus:outline-none focus:border-indigo-300"
+                                required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Phone</label>
+                            <input type="tel" id="userPhoneInput"
+                                class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 focus:outline-none focus:border-indigo-300"
+                                placeholder="Enter phone number">
+                        </div>
+                        <div id="programField">
+                            <label class="block text-sm font-medium mb-2">Program *</label>
+                            <select id="userProgramInput"
+                                class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 focus:outline-none focus:border-indigo-300"
+                                required>
+                                <option value="">Select program</option>
+                                <option value="BCA">BCA</option>
+                                <option value="MCA">MCA</option>
+                                <option value="BSc">BSc</option>
+                            </select>
+                        </div>
+                        <div id="semesterField" class="hidden">
+                            <label class="block text-sm font-medium mb-2">Semester *</label>
+                            <select id="userSemesterInput"
+                                class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 focus:outline-none focus:border-indigo-300">
+                                <option value="">Select semester</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                            </select>
+                        </div>
+                        <div id="departmentField" class="hidden">
+                            <label class="block text-sm font-medium mb-2">Department *</label>
+                            <select id="userDepartmentInput"
+                                class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 focus:outline-none focus:border-indigo-300">
+                                <option value="">Select department</option>
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Information Technology">Information Technology</option>
+                                <option value="Mathematics">Mathematics</option>
+                                <option value="Physics">Physics</option>
+                            </select>
+                        </div>
+                        <div id="designationField" class="hidden">
+                            <label class="block text-sm font-medium mb-2">Designation</label>
+                            <input type="text" id="userDesignationInput"
+                                class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 focus:outline-none focus:border-indigo-300"
+                                placeholder="e.g., Professor, Assistant Professor">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-3 pt-4">
+                        <button type="button" id="cancelUserBtn"
+                            class="px-5 py-3 rounded-2xl border border-white/20 text-sm hover:border-white/40 transition">Cancel</button>
+                        <button type="submit"
+                            class="px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-sky-500 font-semibold">Create
+                            User</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin-dashboard.js"></script>
+</body>
+
+</html>

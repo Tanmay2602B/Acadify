@@ -1,0 +1,11 @@
+name,email,program,semester,batch,section,phone,parent_phone,address,date_of_birth,blood_group
+Alice Johnson,alice.johnson@example.com,BCA,1,2024-2027,A,9876543210,9876543211,123 Main Street,2005-05-15,O+
+Bob Smith,bob.smith@example.com,BCA,1,2024-2027,A,9876543212,9876543213,456 Oak Avenue,2005-08-22,A+
+Carol Davis,carol.davis@example.com,BCA,1,2024-2027,B,9876543214,9876543215,789 Pine Road,2005-03-10,B+
+David Wilson,david.wilson@example.com,BCA,1,2024-2027,B,9876543216,9876543217,321 Elm Street,2005-11-30,AB+
+Emma Brown,emma.brown@example.com,BCA,1,2024-2027,A,9876543218,9876543219,654 Maple Drive,2005-07-18,O-
+Frank Miller,frank.miller@example.com,BCA,2,2023-2026,A,9876543220,9876543221,987 Cedar Lane,2004-02-14,A-
+Grace Lee,grace.lee@example.com,BCA,2,2023-2026,A,9876543222,9876543223,147 Birch Court,2004-09-05,B-
+Henry Taylor,henry.taylor@example.com,BCA,2,2023-2026,B,9876543224,9876543225,258 Spruce Way,2004-12-20,AB-
+Ivy Anderson,ivy.anderson@example.com,BCA,3,2022-2025,A,9876543226,9876543227,369 Willow Path,2003-04-08,O+
+Jack Thomas,jack.thomas@example.com,BCA,3,2022-2025,A,9876543228,9876543229,741 Ash Boulevard,2003-06-25,A+
