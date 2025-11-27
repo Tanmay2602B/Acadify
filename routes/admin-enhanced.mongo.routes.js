@@ -45,4 +45,7 @@ router.get('/programs/list', authenticate, authorizeAdmin, getAllPrograms);
 router.put('/programs/:id', authenticate, authorizeAdmin, updateProgram);
 router.delete('/programs/:id', authenticate, authorizeAdmin, deleteProgram);
 
+// Public program route (for faculty/student dropdowns)
+router.get('/programs/public', getAllPrograms);
+
 module.exports = router;

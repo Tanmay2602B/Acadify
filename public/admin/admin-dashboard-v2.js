@@ -34,12 +34,12 @@ document.querySelectorAll('.nav-link').forEach(link => {
         e.preventDefault();
         const section = e.currentTarget.dataset.section;
         showSection(section);
-        
+
         document.querySelectorAll('.nav-link').forEach(l => {
             l.classList.remove('sidebar-active');
         });
         e.currentTarget.classList.add('sidebar-active');
-        
+
         if (window.innerWidth < 1024) {
             document.getElementById('sidebar').classList.remove('active');
         }
@@ -52,7 +52,7 @@ function showSection(sectionName) {
         section.classList.add('hidden');
     });
     document.getElementById(sectionName + 'Section').classList.remove('hidden');
-    
+
     if (sectionName === 'dashboard') loadDashboardData();
     if (sectionName === 'students') loadStudents();
     if (sectionName === 'faculty') loadFaculty();
@@ -105,7 +105,7 @@ async function loadDashboardData() {
             const data = await studentsRes.json();
             document.getElementById('totalStudents').textContent = data.students?.length || 0;
         }
-        
+
         const facultyRes = await fetch('/api/admin/faculty', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -113,7 +113,7 @@ async function loadDashboardData() {
             const data = await facultyRes.json();
             document.getElementById('totalFaculty').textContent = (data.faculty || data.users || []).length;
         }
-        
+
         const programs = JSON.parse(localStorage.getItem('programs') || '[]');
         document.getElementById('totalPrograms').textContent = programs.length;
         document.getElementById('totalCourses').textContent = programs.reduce((sum, p) => sum + (p.semesters || 0), 0);
@@ -125,34 +125,34 @@ async function loadDashboardData() {
 // Load students - RESTRUCTURED
 async function loadStudents() {
     const tbody = document.getElementById('studentsTableBody');
-    
+
     if (!tbody) {
         console.error('❌ Table body element not found!');
         return;
     }
-    
+
     try {
         console.log('🔄 Loading students...');
         tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Loading students...</td></tr>';
-        
+
         const response = await fetch('/api/bulk-students/', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        
+
         if (!response.ok) {
             throw new Error(`API Error: ${response.status}`);
         }
-        
+
         const data = await response.json();
         allStudents = data.students || [];
-        
+
         console.log(`✅ Loaded ${allStudents.length} students from API`);
-        
+
         if (allStudents.length === 0) {
             tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">No students found</td></tr>';
             return;
         }
-        
+
         // Build HTML string
         let html = '';
         for (let i = 0; i < allStudents.length; i++) {
@@ -200,21 +200,21 @@ async function loadStudents() {
                 </tr>
             `;
         }
-        
+
         // Set HTML all at once
         tbody.innerHTML = html;
-        
+
         // Verify
         const rowCount = tbody.querySelectorAll('tr').length;
         console.log(`✅ Displayed ${rowCount} rows in table`);
-        
+
         if (rowCount !== allStudents.length) {
             console.warn(`⚠️ Mismatch: Expected ${allStudents.length} but got ${rowCount} rows`);
         }
-        
+
         populateProgramFilters();
         showToast(`Loaded ${allStudents.length} students`, 'success');
-        
+
     } catch (error) {
         console.error('❌ Error loading students:', error);
         tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-4 text-center text-red-500">Error: ${error.message}</td></tr>`;
@@ -225,19 +225,19 @@ async function loadStudents() {
 // Display students - RESTRUCTURED
 function displayStudents(students) {
     const tbody = document.getElementById('studentsTableBody');
-    
+
     if (!tbody) {
         console.error('❌ Table body not found!');
         return;
     }
-    
+
     console.log(`📋 Displaying ${students.length} students...`);
-    
+
     if (students.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">No students found</td></tr>';
         return;
     }
-    
+
     // Build HTML string
     let html = '';
     for (let i = 0; i < students.length; i++) {
@@ -285,9 +285,9 @@ function displayStudents(students) {
             </tr>
         `;
     }
-    
+
     tbody.innerHTML = html;
-    
+
     const rowCount = tbody.querySelectorAll('tr').length;
     console.log(`✅ Displayed ${rowCount} rows`);
 }
@@ -297,25 +297,25 @@ function applyStudentFilters() {
     const searchTerm = document.getElementById('studentSearch').value.toLowerCase();
     const programFilter = document.getElementById('studentProgramFilter').value;
     const semesterFilter = document.getElementById('studentSemesterFilter').value;
-    
+
     let filtered = allStudents;
-    
+
     if (searchTerm) {
-        filtered = filtered.filter(s => 
-            s.name?.toLowerCase().includes(searchTerm) || 
+        filtered = filtered.filter(s =>
+            s.name?.toLowerCase().includes(searchTerm) ||
             s.email?.toLowerCase().includes(searchTerm) ||
             s.roll_number?.toLowerCase().includes(searchTerm)
         );
     }
-    
+
     if (programFilter) {
         filtered = filtered.filter(s => s.program === programFilter);
     }
-    
+
     if (semesterFilter) {
         filtered = filtered.filter(s => s.semester === parseInt(semesterFilter));
     }
-    
+
     displayStudents(filtered);
 }
 
@@ -355,12 +355,12 @@ function handleFileSelect(file) {
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'text/csv'
     ];
-    
+
     if (!validTypes.includes(file.type)) {
         showToast('Please select a valid Excel or CSV file', 'error');
         return;
     }
-    
+
     selectedFile = file;
     document.getElementById('fileName').textContent = file.name;
     document.getElementById('fileSize').textContent = (file.size / 1024).toFixed(2) + ' KB';
@@ -380,10 +380,10 @@ async function uploadBulkStudents() {
         showToast('Please select a file first', 'error');
         return;
     }
-    
+
     const formData = new FormData();
     formData.append('file', selectedFile);
-    
+
     try {
         // Step 1: Upload and parse file
         showToast('Uploading file...', 'info');
@@ -392,21 +392,21 @@ async function uploadBulkStudents() {
             headers: { 'Authorization': `Bearer ${token}` },
             body: formData
         });
-        
+
         if (!response.ok) {
             const error = await response.json();
             showToast(error.message || 'Upload failed', 'error');
             return;
         }
-        
+
         const data = await response.json();
         const studentsToImport = data.preview || [];
-        
+
         if (studentsToImport.length === 0) {
             showToast('No valid students found in file', 'error');
             return;
         }
-        
+
         // Step 2: Confirm and save students to database
         showToast(`Saving ${studentsToImport.length} students...`, 'info');
         const confirmResponse = await fetch('/api/bulk-students/confirm', {
@@ -417,16 +417,16 @@ async function uploadBulkStudents() {
             },
             body: JSON.stringify({ students: studentsToImport })
         });
-        
+
         if (confirmResponse.ok) {
             const result = await confirmResponse.json();
-            
+
             // Log detailed results
             console.log('=== BULK UPLOAD RESULTS ===');
             console.log('Total:', result.total);
             console.log('Successful:', result.successful);
             console.log('Failed:', result.failed);
-            
+
             if (result.errors && result.errors.length > 0) {
                 console.log('\n❌ Failed Students:');
                 result.errors.forEach((err, idx) => {
@@ -434,7 +434,7 @@ async function uploadBulkStudents() {
                     console.log(`   Error: ${err.error}`);
                 });
             }
-            
+
             if (result.results && result.results.length > 0) {
                 console.log('\n✅ Successfully Added:');
                 result.results.forEach((student, idx) => {
@@ -442,13 +442,13 @@ async function uploadBulkStudents() {
                     console.log(`   User ID: ${student.user_id}`);
                     console.log(`   Password: ${student.password}`);
                 });
-                
+
                 // Auto-download credentials as CSV
                 downloadCredentials(result.results);
             }
-            
+
             showToast(`Successfully added ${result.successful} students! ${result.failed > 0 ? `(${result.failed} failed - check console)` : 'Credentials downloaded!'}`, result.failed > 0 ? 'warning' : 'success');
-            
+
             hideModal('bulkUploadModal');
             clearFile();
             loadStudents();
@@ -467,13 +467,13 @@ async function uploadBulkStudents() {
 // Download student credentials as CSV
 function downloadCredentials(students) {
     if (!students || students.length === 0) return;
-    
+
     // Create CSV content
     let csvContent = 'Name,Email,User ID,Password,Program,Semester\n';
     students.forEach(student => {
         csvContent += `"${student.name}","${student.email}","${student.user_id}","${student.password}","${student.program || ''}","${student.semester || ''}"\n`;
     });
-    
+
     // Create and download file
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = window.URL.createObjectURL(blob);
@@ -484,15 +484,15 @@ function downloadCredentials(students) {
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
-    
+
     console.log('📥 Credentials downloaded as CSV');
 }
 
 function downloadTemplate() {
     const csvContent = 'name,email,roll_number,program,semester\n' +
-                      'John Doe,john@example.com,BCA001,BCA,1\n' +
-                      'Jane Smith,jane@example.com,BCA002,BCA,1';
-    
+        'John Doe,john@example.com,BCA001,BCA,1\n' +
+        'Jane Smith,jane@example.com,BCA002,BCA,1';
+
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -511,11 +511,11 @@ async function loadPrograms() {
                 'Authorization': `Bearer ${token}`
             }
         });
-        
+
         if (response.ok) {
             const data = await response.json();
             allPrograms = data.programs || [];
-            
+
             // Also save to localStorage for offline access
             localStorage.setItem('programs', JSON.stringify(allPrograms));
         } else {
@@ -523,11 +523,11 @@ async function loadPrograms() {
             const stored = localStorage.getItem('programs');
             allPrograms = stored ? JSON.parse(stored) : [];
         }
-        
+
         if (!Array.isArray(allPrograms)) {
             allPrograms = [];
         }
-        
+
         displayPrograms(allPrograms);
         populateProgramFilters();
     } catch (error) {
@@ -541,11 +541,11 @@ async function loadPrograms() {
 
 function displayPrograms(programs) {
     const container = document.getElementById('programsList');
-    
+
     if (!container) {
         return;
     }
-    
+
     if (!programs || programs.length === 0) {
         container.innerHTML = `
             <div class="col-span-3 text-center py-12">
@@ -556,12 +556,12 @@ function displayPrograms(programs) {
         `;
         return;
     }
-    
+
     // Build HTML for each program
     const programsHTML = [];
     for (let i = 0; i < programs.length; i++) {
         const program = programs[i];
-        
+
         const html = `
             <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
                 <div class="flex justify-between items-start mb-4">
@@ -606,13 +606,13 @@ function displayPrograms(programs) {
         `;
         programsHTML.push(html);
     }
-    
+
     container.innerHTML = programsHTML.join('');
 }
 
 document.getElementById('addProgramForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     const programData = {
         name: document.getElementById('programName').value,
         code: document.getElementById('programCode').value,
@@ -622,7 +622,7 @@ document.getElementById('addProgramForm').addEventListener('submit', async (e) =
         description: document.getElementById('programDescription').value,
         status: 'active'
     };
-    
+
     try {
         // Save to backend
         const response = await fetch('/api/admin-enhanced/programs/create', {
@@ -639,15 +639,15 @@ document.getElementById('addProgramForm').addEventListener('submit', async (e) =
                 description: programData.description
             })
         });
-        
+
         if (response.ok) {
             const data = await response.json();
-            
+
             // Also save to localStorage
             const programs = JSON.parse(localStorage.getItem('programs') || '[]');
             programs.push(data.program || programData);
             localStorage.setItem('programs', JSON.stringify(programs));
-            
+
             showToast('Program added successfully! Available in all dashboards.', 'success');
             hideModal('addProgramModal');
             document.getElementById('addProgramForm').reset();
@@ -666,13 +666,13 @@ document.getElementById('addProgramForm').addEventListener('submit', async (e) =
 
 async function deleteProgram(index) {
     if (!confirm('Are you sure you want to delete this program? This will affect all faculty and students using this program.')) return;
-    
+
     const program = allPrograms[index];
     if (!program || !program.program_id) {
         showToast('Error: Program ID not found', 'error');
         return;
     }
-    
+
     try {
         const response = await fetch(`/api/admin-enhanced/programs/${program.program_id}`, {
             method: 'DELETE',
@@ -680,7 +680,7 @@ async function deleteProgram(index) {
                 'Authorization': `Bearer ${token}`
             }
         });
-        
+
         if (response.ok) {
             showToast('Program deleted successfully! All dashboards will update.', 'success');
             loadPrograms();
@@ -710,12 +710,12 @@ function loadResults() {
 
 function displayPublishedResults(results) {
     const container = document.getElementById('publishedResultsList');
-    
+
     if (results.length === 0) {
         container.innerHTML = '<p class="text-gray-500 text-center py-4">No results published yet</p>';
         return;
     }
-    
+
     container.innerHTML = results.map((result, index) => `
         <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition">
             <div class="flex justify-between items-start">
@@ -734,7 +734,7 @@ function displayPublishedResults(results) {
 
 document.getElementById('publishResultsForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    
+
     const resultData = {
         program: document.getElementById('resultProgram').value,
         semester: document.getElementById('resultSemester').value,
@@ -743,11 +743,11 @@ document.getElementById('publishResultsForm').addEventListener('submit', (e) => 
         publishedAt: new Date().toISOString(),
         publishedBy: user.name
     };
-    
+
     const results = JSON.parse(localStorage.getItem('results') || '[]');
     results.unshift(resultData);
     localStorage.setItem('results', JSON.stringify(results));
-    
+
     showToast('Results published successfully!', 'success');
     document.getElementById('publishResultsForm').reset();
     loadResults();
@@ -755,11 +755,11 @@ document.getElementById('publishResultsForm').addEventListener('submit', (e) => 
 
 function deleteResult(index) {
     if (!confirm('Are you sure you want to delete this result?')) return;
-    
+
     const results = JSON.parse(localStorage.getItem('results') || '[]');
     results.splice(index, 1);
     localStorage.setItem('results', JSON.stringify(results));
-    
+
     showToast('Result deleted successfully!', 'success');
     loadResults();
 }
@@ -767,24 +767,24 @@ function deleteResult(index) {
 function filterResults() {
     const program = document.getElementById('resultsFilterProgram').value;
     const semester = document.getElementById('resultsFilterSemester').value;
-    
+
     let filtered = allResults;
-    
+
     if (program) {
         filtered = filtered.filter(r => r.program === program);
     }
-    
+
     if (semester) {
         filtered = filtered.filter(r => r.semester === semester);
     }
-    
+
     const container = document.getElementById('resultsTable');
-    
+
     if (filtered.length === 0) {
         container.innerHTML = '<p class="text-gray-500 text-center py-4">No results found</p>';
         return;
     }
-    
+
     container.innerHTML = `
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -817,7 +817,7 @@ async function loadFaculty() {
         const response = await fetch('/api/admin/faculty', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        
+
         if (response.ok) {
             const data = await response.json();
             allFaculty = data.faculty || data.users || [];
@@ -834,12 +834,12 @@ async function loadFaculty() {
 
 function displayFaculty(faculty) {
     const tbody = document.getElementById('facultyTableBody');
-    
+
     if (faculty.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No faculty found</td></tr>';
         return;
     }
-    
+
     tbody.innerHTML = faculty.map(f => `
         <tr class="hover:bg-gray-50">
             <td class="px-6 py-4 whitespace-nowrap">
@@ -866,13 +866,16 @@ function displayFaculty(faculty) {
                 </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <button onclick="manageSubjects('${f.user_id}')" class="text-purple-600 hover:text-purple-900 mr-3" title="Manage Subjects">
+                    <i class="fas fa-book"></i>
+                </button>
                 <button onclick="viewFacultyCredentials('${f.faculty_id || f.user_id}')" class="text-green-600 hover:text-green-900 mr-3" title="View ID & Password">
                     <i class="fas fa-key"></i>
                 </button>
                 <button onclick="editFaculty('${f.user_id}')" class="text-blue-600 hover:text-blue-900 mr-3">
                     <i class="fas fa-edit"></i>
                 </button>
-                <button onclick="deleteFaculty('${f.user_id}')" class="text-red-600 hover:text-red-900">
+                <button onclick="deleteFaculty('${f.user_id}')" class="text-red-500 hover:text-red-900">
                     <i class="fas fa-trash"></i>
                 </button>
             </td>
@@ -883,12 +886,12 @@ function displayFaculty(faculty) {
 // Reports
 function generateReport(type) {
     showToast(`Generating ${type} report...`, 'success');
-    
+
     let data = [];
     let filename = '';
     let headers = [];
-    
-    switch(type) {
+
+    switch (type) {
         case 'students':
             data = allStudents;
             filename = 'all_students_report.csv';
@@ -908,7 +911,7 @@ function generateReport(type) {
             showToast('Report type not implemented yet', 'error');
             return;
     }
-    
+
     downloadCSVReport(data, headers, filename, type);
 }
 
@@ -916,23 +919,23 @@ function generateFilteredReport() {
     const program = document.getElementById('reportProgramFilter').value;
     const semester = document.getElementById('reportSemesterFilter').value;
     const reportType = document.getElementById('reportTypeSelect').value;
-    
+
     if (!reportType) {
         showToast('Please select a report type', 'error');
         return;
     }
-    
+
     let data = [];
     let filename = '';
     let headers = [];
     let filterDesc = [];
-    
+
     if (program) filterDesc.push(program);
     if (semester) filterDesc.push(`Sem${semester}`);
-    
+
     const filterSuffix = filterDesc.length > 0 ? '_' + filterDesc.join('_') : '';
-    
-    switch(reportType) {
+
+    switch (reportType) {
         case 'students':
             data = allStudents.filter(s => {
                 if (program && s.program !== program) return false;
@@ -942,7 +945,7 @@ function generateFilteredReport() {
             filename = `students_report${filterSuffix}.csv`;
             headers = ['Name', 'Email', 'Roll Number', 'Program', 'Semester', 'Status'];
             break;
-            
+
         case 'faculty':
             data = allFaculty.filter(f => {
                 if (program && f.department !== program) return false;
@@ -951,7 +954,7 @@ function generateFilteredReport() {
             filename = `faculty_report${filterSuffix}.csv`;
             headers = ['Name', 'Email', 'Department', 'Designation'];
             break;
-            
+
         case 'attendance':
             data = allStudents.filter(s => {
                 if (program && s.program !== program) return false;
@@ -961,7 +964,7 @@ function generateFilteredReport() {
             filename = `attendance_report${filterSuffix}.csv`;
             headers = ['Name', 'Roll Number', 'Program', 'Semester', 'Attendance %'];
             break;
-            
+
         case 'results':
             const results = JSON.parse(localStorage.getItem('results') || '[]');
             data = results.filter(r => {
@@ -972,7 +975,7 @@ function generateFilteredReport() {
             filename = `results_report${filterSuffix}.csv`;
             headers = ['Program', 'Semester', 'Exam Type', 'Year', 'Published Date'];
             break;
-            
+
         case 'programs':
             const programs = JSON.parse(localStorage.getItem('programs') || '[]');
             data = programs.filter(p => {
@@ -983,22 +986,22 @@ function generateFilteredReport() {
             headers = ['Name', 'Code', 'Duration', 'Semesters', 'Department'];
             break;
     }
-    
+
     if (data.length === 0) {
         showToast('No data found for selected filters', 'error');
         return;
     }
-    
+
     showToast(`Generating ${reportType} report with filters...`, 'success');
     downloadCSVReport(data, headers, filename, reportType);
 }
 
 function downloadCSVReport(data, headers, filename, type) {
     let csvContent = headers.join(',') + '\n';
-    
+
     data.forEach(item => {
         let row = [];
-        switch(type) {
+        switch (type) {
             case 'students':
                 row = [
                     item.name || '',
@@ -1047,7 +1050,7 @@ function downloadCSVReport(data, headers, filename, type) {
         }
         csvContent += row.join(',') + '\n';
     });
-    
+
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1055,7 +1058,7 @@ function downloadCSVReport(data, headers, filename, type) {
     a.download = filename;
     a.click();
     window.URL.revokeObjectURL(url);
-    
+
     showToast(`Report downloaded: ${filename}`, 'success');
 }
 
@@ -1069,10 +1072,10 @@ function clearReportFilters() {
 // Export students (all)
 function exportStudents() {
     const csv = 'Name,Email,Roll Number,Program,Semester,Status\n' +
-                allStudents.map(s => 
-                    `${s.name},${s.email},${s.roll_number || s.rollNumber},${s.program},${s.semester},Active`
-                ).join('\n');
-    
+        allStudents.map(s =>
+            `${s.name},${s.email},${s.roll_number || s.rollNumber},${s.program},${s.semester},Active`
+        ).join('\n');
+
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1088,44 +1091,44 @@ function exportFilteredStudents() {
     const searchTerm = document.getElementById('studentSearch').value.toLowerCase();
     const programFilter = document.getElementById('studentProgramFilter').value;
     const semesterFilter = document.getElementById('studentSemesterFilter').value;
-    
+
     // Apply same filters as display
     let filtered = allStudents;
-    
+
     if (searchTerm) {
-        filtered = filtered.filter(s => 
-            s.name?.toLowerCase().includes(searchTerm) || 
+        filtered = filtered.filter(s =>
+            s.name?.toLowerCase().includes(searchTerm) ||
             s.email?.toLowerCase().includes(searchTerm) ||
             s.roll_number?.toLowerCase().includes(searchTerm)
         );
     }
-    
+
     if (programFilter) {
         filtered = filtered.filter(s => s.program === programFilter);
     }
-    
+
     if (semesterFilter) {
         filtered = filtered.filter(s => s.semester === parseInt(semesterFilter));
     }
-    
+
     if (filtered.length === 0) {
         showToast('No students match the current filters', 'error');
         return;
     }
-    
+
     // Build filename with filters
     let filenameParts = ['students'];
     if (programFilter) filenameParts.push(programFilter);
     if (semesterFilter) filenameParts.push(`Sem${semesterFilter}`);
     if (searchTerm) filenameParts.push('filtered');
     const filename = filenameParts.join('_') + '.csv';
-    
+
     // Generate CSV
     const csv = 'Name,Email,Roll Number,Program,Semester,Status\n' +
-                filtered.map(s => 
-                    `${s.name},${s.email},${s.roll_number || s.rollNumber},${s.program},${s.semester},Active`
-                ).join('\n');
-    
+        filtered.map(s =>
+            `${s.name},${s.email},${s.roll_number || s.rollNumber},${s.program},${s.semester},Active`
+        ).join('\n');
+
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1133,13 +1136,13 @@ function exportFilteredStudents() {
     a.download = filename;
     a.click();
     window.URL.revokeObjectURL(url);
-    
+
     // Show success message with details
     let filterDesc = [];
     if (programFilter) filterDesc.push(programFilter);
     if (semesterFilter) filterDesc.push(`Semester ${semesterFilter}`);
     if (searchTerm) filterDesc.push(`Search: "${searchTerm}"`);
-    
+
     const filterText = filterDesc.length > 0 ? ` (${filterDesc.join(', ')})` : '';
     showToast(`Exported ${filtered.length} students${filterText}`, 'success');
 }
@@ -1148,20 +1151,20 @@ function exportFilteredStudents() {
 function populateProgramFilters() {
     // Use allPrograms loaded from API
     const programs = allPrograms || [];
-    
+
     const filters = [
         document.getElementById('studentProgramFilter'),
         document.getElementById('resultProgram'),
         document.getElementById('resultsFilterProgram'),
         document.getElementById('studentProgram')
     ];
-    
+
     filters.forEach(filter => {
         if (filter) {
             const currentValue = filter.value;
             const options = filter.querySelectorAll('option:not(:first-child)');
             options.forEach(opt => opt.remove());
-            
+
             // Add each program as an option
             programs.forEach(program => {
                 const option = document.createElement('option');
@@ -1169,7 +1172,7 @@ function populateProgramFilters() {
                 option.textContent = program.name || program.code;
                 filter.appendChild(option);
             });
-            
+
             filter.value = currentValue;
         }
     });
@@ -1178,11 +1181,11 @@ function populateProgramFilters() {
 function populateResultsFilters() {
     const programs = [...new Set(allResults.map(r => r.program))];
     const filter = document.getElementById('resultsFilterProgram');
-    
+
     if (filter) {
         const options = filter.querySelectorAll('option:not(:first-child)');
         options.forEach(opt => opt.remove());
-        
+
         programs.forEach(program => {
             const option = document.createElement('option');
             option.value = program;
@@ -1213,11 +1216,11 @@ populateProgramFilters(); // Populate program filters on page load
 // Add/Edit Student Form Handler
 document.getElementById('addStudentForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     const form = e.target;
     const isEditMode = form.dataset.editMode === 'true';
     const studentId = form.dataset.studentId;
-    
+
     const studentData = {
         name: document.getElementById('studentName').value,
         email: document.getElementById('studentEmail').value,
@@ -1225,10 +1228,10 @@ document.getElementById('addStudentForm').addEventListener('submit', async (e) =
         program: document.getElementById('studentProgram').value,
         semester: parseInt(document.getElementById('studentSemester').value)
     };
-    
+
     try {
         let response;
-        
+
         if (isEditMode) {
             // Update existing student
             response = await fetch(`/api/bulk-students/${studentId}`, {
@@ -1250,16 +1253,16 @@ document.getElementById('addStudentForm').addEventListener('submit', async (e) =
                 body: JSON.stringify({ students: [studentData] })
             });
         }
-        
+
         if (response.ok) {
             const data = await response.json();
-            
+
             // Show credentials only for new students
             if (!isEditMode && data.results && data.results.length > 0) {
                 const result = data.results[0];
                 alert(`Student added successfully!\n\nCredentials:\nUser ID: ${result.user_id}\nEmail: ${studentData.email}\nPassword: ${result.password}\n\nPlease save these credentials!`);
             }
-            
+
             showToast(isEditMode ? 'Student updated successfully!' : 'Student added successfully!', 'success');
             hideModal('addStudentModal');
             loadStudents();
@@ -1277,11 +1280,11 @@ document.getElementById('addStudentForm').addEventListener('submit', async (e) =
 // Add/Edit Faculty Form Handler
 document.getElementById('addFacultyForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     const form = e.target;
     const isEditMode = form.dataset.editMode === 'true';
     const userId = form.dataset.userId;
-    
+
     const facultyData = {
         name: document.getElementById('facultyName').value,
         email: document.getElementById('facultyEmail').value,
@@ -1289,10 +1292,10 @@ document.getElementById('addFacultyForm').addEventListener('submit', async (e) =
         department: document.getElementById('facultyDepartment').value,
         designation: document.getElementById('facultyDesignation').value
     };
-    
+
     try {
         let response;
-        
+
         if (isEditMode) {
             // Update existing faculty
             response = await fetch(`/api/admin/users/${userId}`, {
@@ -1314,15 +1317,15 @@ document.getElementById('addFacultyForm').addEventListener('submit', async (e) =
                 body: JSON.stringify(facultyData)
             });
         }
-        
+
         if (response.ok) {
             const data = await response.json();
-            
+
             // Show credentials only for new faculty
             if (!isEditMode && data.generatedCredentials) {
                 alert(`Faculty added successfully!\n\nCredentials:\nUser ID: ${data.generatedCredentials.userId}\nEmail: ${facultyData.email}\nPassword: ${data.generatedCredentials.password}\n\nPlease save these credentials!`);
             }
-            
+
             showToast(isEditMode ? 'Faculty updated successfully!' : 'Faculty added successfully!', 'success');
             hideModal('addFacultyModal');
             loadFaculty();
@@ -1344,7 +1347,7 @@ function editStudent(studentId) {
         showToast('Student not found', 'error');
         return;
     }
-    
+
     // Populate form with student data
     document.getElementById('studentName').value = student.name || '';
     document.getElementById('studentEmail').value = student.email || '';
@@ -1352,16 +1355,16 @@ function editStudent(studentId) {
     document.getElementById('studentProgram').value = student.program || '';
     document.getElementById('studentSemester').value = student.semester || '';
     document.getElementById('studentPhone').value = student.phone || '';
-    
+
     // Change form to edit mode
     const form = document.getElementById('addStudentForm');
     form.dataset.editMode = 'true';
     form.dataset.studentId = studentId;
-    
+
     // Change button text
     const submitBtn = form.querySelector('button[type="submit"]');
     submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i>Update Student';
-    
+
     // Show modal
     showAddStudentModal();
 }
@@ -1373,23 +1376,23 @@ function editFaculty(userId) {
         showToast('Faculty not found', 'error');
         return;
     }
-    
+
     // Populate form with faculty data
     document.getElementById('facultyName').value = faculty.name || '';
     document.getElementById('facultyEmail').value = faculty.email || '';
     document.getElementById('facultyDepartment').value = faculty.department || '';
     document.getElementById('facultyDesignation').value = faculty.designation || '';
     document.getElementById('facultyPhone').value = faculty.phone || '';
-    
+
     // Change form to edit mode
     const form = document.getElementById('addFacultyForm');
     form.dataset.editMode = 'true';
     form.dataset.userId = faculty.user_id; // Use user_id (not _id) for updates
-    
+
     // Change button text
     const submitBtn = form.querySelector('button[type="submit"]');
     submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i>Update Faculty';
-    
+
     // Show modal
     showAddFacultyModal();
 }
@@ -1397,13 +1400,13 @@ function editFaculty(userId) {
 // Delete Student
 async function deleteStudent(studentId) {
     if (!confirm('Are you sure you want to delete this student?')) return;
-    
+
     try {
         const response = await fetch(`/api/bulk-students/${studentId}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        
+
         if (response.ok) {
             showToast('Student deleted successfully!', 'success');
             loadStudents();
@@ -1421,13 +1424,13 @@ async function deleteStudent(studentId) {
 // Delete Faculty
 async function deleteFaculty(userId) {
     if (!confirm('Are you sure you want to delete this faculty member?')) return;
-    
+
     try {
         const response = await fetch(`/api/admin/users/${userId}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        
+
         if (response.ok) {
             showToast('Faculty deleted successfully!', 'success');
             loadFaculty();
@@ -1445,7 +1448,7 @@ async function deleteFaculty(userId) {
 // Reset form when modal is closed
 function hideModal(modalId) {
     document.getElementById(modalId).classList.add('hidden');
-    
+
     // Reset forms
     if (modalId === 'addStudentModal') {
         const form = document.getElementById('addStudentForm');
@@ -1455,7 +1458,7 @@ function hideModal(modalId) {
         const submitBtn = form.querySelector('button[type="submit"]');
         submitBtn.innerHTML = '<i class="fas fa-plus mr-2"></i>Add Student';
     }
-    
+
     if (modalId === 'addFacultyModal') {
         const form = document.getElementById('addFacultyForm');
         form.reset();
@@ -1472,28 +1475,28 @@ function checkProgramsInStorage() {
     const programs = localStorage.getItem('programs');
     console.log('=== CHECKING PROGRAMS IN STORAGE ===');
     console.log('Raw localStorage programs:', programs);
-    
+
     if (programs) {
         try {
             const parsed = JSON.parse(programs);
             console.log('Parsed programs:', parsed);
             console.log('Number of programs:', parsed.length);
-            
+
             // Update count in UI
             const countElement = document.getElementById('programCount');
             if (countElement) {
                 countElement.textContent = parsed.length;
             }
-            
+
             // Log each program
             parsed.forEach((p, i) => {
                 console.log(`Program ${i + 1}:`, p.name, '(' + p.code + ')');
             });
-            
+
             // Show alert with summary
-            alert(`Found ${parsed.length} programs in storage:\n\n` + 
-                  parsed.map((p, i) => `${i + 1}. ${p.name} (${p.code})`).join('\n'));
-            
+            alert(`Found ${parsed.length} programs in storage:\n\n` +
+                parsed.map((p, i) => `${i + 1}. ${p.name} (${p.code})`).join('\n'));
+
             // Force reload display
             loadPrograms();
         } catch (e) {
@@ -1526,12 +1529,12 @@ window.addEventListener('load', () => {
 function populateReportFilters() {
     const programs = JSON.parse(localStorage.getItem('programs') || '[]');
     const programCodes = programs.map(p => p.code);
-    
+
     const filter = document.getElementById('reportProgramFilter');
     if (filter) {
         const options = filter.querySelectorAll('option:not(:first-child)');
         options.forEach(opt => opt.remove());
-        
+
         programCodes.forEach(code => {
             const option = document.createElement('option');
             option.value = code;
@@ -1550,12 +1553,12 @@ async function viewStudentCredentials(studentId) {
                 'Authorization': `Bearer ${token}`
             }
         });
-        
+
         if (response.ok) {
             const data = await response.json();
             console.log('Student credentials data:', data); // Debug
             const student = data.credentials.find(s => s.student_id === studentId);
-            
+
             if (student) {
                 const passwordId = 'studentPassword_' + Date.now();
                 const credentialInfo = `
@@ -1588,7 +1591,7 @@ async function viewStudentCredentials(studentId) {
                         </p>
                     </div>
                 `;
-                
+
                 // Create modal
                 const modal = document.createElement('div');
                 modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
@@ -1623,18 +1626,18 @@ async function viewFacultyCredentials(facultyId) {
                 'Authorization': `Bearer ${token}`
             }
         });
-        
+
         if (response.ok) {
             const data = await response.json();
             console.log('Faculty credentials data:', data); // Debug
             console.log('Looking for faculty_id:', facultyId); // Debug
-            
+
             // Try to find by faculty_id or user_id
             let faculty = data.credentials.find(f => f.faculty_id === facultyId);
             if (!faculty) {
                 faculty = data.credentials.find(f => f.user_id === facultyId);
             }
-            
+
             if (faculty) {
                 const passwordId = 'facultyPassword_' + Date.now();
                 const credentialInfo = `
@@ -1666,7 +1669,7 @@ async function viewFacultyCredentials(facultyId) {
                         </p>
                     </div>
                 `;
-                
+
                 // Create modal
                 const modal = document.createElement('div');
                 modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
@@ -1695,11 +1698,136 @@ async function viewFacultyCredentials(facultyId) {
 }
 
 
+// Manage Subjects
+let currentFacultyId = null;
+let currentAssignments = [];
+
+function manageSubjects(userId) {
+    const faculty = allFaculty.find(f => f.user_id === userId);
+    if (!faculty) {
+        showToast('Faculty not found', 'error');
+        return;
+    }
+
+    currentFacultyId = userId;
+    currentAssignments = faculty.teaching_assignments || [];
+
+    // Update modal header
+    document.getElementById('subjectFacultyName').textContent = faculty.name;
+    document.getElementById('subjectFacultyDept').textContent = faculty.department || 'No Department';
+
+    // Populate program dropdown
+    const programSelect = document.getElementById('assignProgram');
+    programSelect.innerHTML = '<option value="">Select Program</option>';
+
+    const programs = JSON.parse(localStorage.getItem('programs') || '[]');
+    programs.forEach(p => {
+        const option = document.createElement('option');
+        option.value = p.code;
+        option.textContent = p.name;
+        programSelect.appendChild(option);
+    });
+
+    // Display current assignments
+    displayAssignments();
+
+    // Show modal
+    document.getElementById('manageSubjectsModal').classList.remove('hidden');
+}
+
+function displayAssignments() {
+    const container = document.getElementById('assignmentsList');
+
+    if (currentAssignments.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 text-center py-4">No subjects assigned yet</p>';
+        return;
+    }
+
+    container.innerHTML = currentAssignments.map((assignment, index) => `
+        <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-200">
+            <div>
+                <p class="font-semibold text-gray-800">${assignment.subject}</p>
+                <p class="text-sm text-gray-600">${assignment.program} - Semester ${assignment.semester}</p>
+            </div>
+            <button onclick="removeAssignment(${index})" class="text-red-500 hover:text-red-700 p-2">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `).join('');
+}
+
+document.getElementById('assignSubjectForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const program = document.getElementById('assignProgram').value;
+    const semester = parseInt(document.getElementById('assignSemester').value);
+    const subject = document.getElementById('assignSubject').value;
+
+    // Check for duplicates
+    const exists = currentAssignments.some(a =>
+        a.program === program &&
+        a.semester === semester &&
+        a.subject.toLowerCase() === subject.toLowerCase()
+    );
+
+    if (exists) {
+        showToast('This subject is already assigned for this program/semester', 'error');
+        return;
+    }
+
+    currentAssignments.push({ program, semester, subject });
+
+    // Save to backend
+    await saveAssignments();
+
+    // Reset form inputs but keep modal open
+    document.getElementById('assignSubject').value = '';
+});
+
+async function removeAssignment(index) {
+    if (!confirm('Remove this subject assignment?')) return;
+
+    currentAssignments.splice(index, 1);
+    await saveAssignments();
+}
+
+async function saveAssignments() {
+    try {
+        const response = await fetch(`/api/admin/users/${currentFacultyId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                teaching_assignments: currentAssignments
+            })
+        });
+
+        if (response.ok) {
+            showToast('Assignments updated successfully', 'success');
+            displayAssignments();
+
+            // Update local data
+            const facultyIndex = allFaculty.findIndex(f => f.user_id === currentFacultyId);
+            if (facultyIndex !== -1) {
+                allFaculty[facultyIndex].teaching_assignments = currentAssignments;
+            }
+        } else {
+            const error = await response.json();
+            showToast(error.message || 'Failed to update assignments', 'error');
+        }
+    } catch (error) {
+        console.error('Error saving assignments:', error);
+        showToast('Error saving assignments', 'error');
+    }
+}
+
 // Toggle password visibility
 function togglePassword(elementId, password) {
     const element = document.getElementById(elementId);
     const button = event.target.closest('button');
-    
+
     if (element.textContent === '••••••••') {
         // Show password
         element.textContent = password;

@@ -1,51 +1,89 @@
 const fs = require('fs');
 const path = require('path');
+const mongoose = require('mongoose');
 const Resource = require('../models/Resource.mongo');
 const User = require('../models/User.mongo');
 
 // Upload resource (Faculty)
 const uploadResource = async (req, res) => {
   try {
-    const { title, description, type, program, semester, subjectId } = req.body;
-    const uploadedBy = req.user.id; // Using MongoDB _id from token
+    console.log('Upload resource request received');
+    console.log('Body:', req.body);
+    console.log('File:', req.file);
+    console.log('User:', req.user);
 
-    let fileUrl = null;
-    let filePath = null;
+    const { title, description, type, program, semester, subject, startDate, dueDate, lateSubmission } = req.body;
+    
+    // Get user ID - try both id and user_id from token
+    const uploadedBy = req.user.id || req.user.user_id;
+    
+    if (!uploadedBy) {
+      console.error('No user ID found in token');
+      return res.status(401).json({ message: 'User authentication failed' });
+    }
+    
+    console.log('Uploaded by:', uploadedBy);
 
-    // Handle local file upload
-    if (req.file) {
-      fileUrl = `/uploads/resources/${req.file.filename}`;
-      filePath = req.file.path;
+    if (!req.file) {
+      console.error('No file in request');
+      return res.status(400).json({ message: 'No file uploaded' });
     }
 
-    const newResource = new Resource({
+    if (!title || !type || !program || !semester || !subject) {
+      console.error('Missing required fields');
+      return res.status(400).json({ message: 'Missing required fields: title, type, program, semester, subject' });
+    }
+
+    const fileUrl = `/uploads/resources/${req.file.filename}`;
+    const filePath = req.file.path;
+
+    console.log('File URL:', fileUrl);
+    console.log('File Path:', filePath);
+
+    // Convert uploadedBy to ObjectId if it's a string
+    let uploadedByObjectId;
+    try {
+      uploadedByObjectId = mongoose.Types.ObjectId.isValid(uploadedBy) 
+        ? new mongoose.Types.ObjectId(uploadedBy) 
+        : uploadedBy;
+    } catch (err) {
+      console.error('Error converting uploadedBy to ObjectId:', err);
+      uploadedByObjectId = uploadedBy;
+    }
+
+    const resourceData = {
       title,
-      description, // Note: Schema doesn't have description, but controller did. I should probably add it or ignore it.
+      description,
       type,
       fileUrl,
       filePath,
-      fileName: req.file ? req.file.originalname : 'resource',
+      fileName: req.file.originalname,
       program,
       semester,
-      subjectId, // Note: Schema doesn't have subjectId, maybe 'subject' string?
-      uploadedBy
-    });
+      subject,
+      uploadedBy: uploadedByObjectId
+    };
 
-    // Schema check: I defined 'subject' in schema, but here it uses 'subjectId'. 
-    // I'll assume 'subject' is passed in body or I should map subjectId to subject.
-    // For now, I'll save 'subjectId' as 'subject' if that's what's intended, or add subjectId to schema.
-    // Let's assume the frontend sends 'subject' or 'subjectId'. 
-    // The previous code used 'subjectId'.
-    // The schema I created has 'subject'.
-    // I will map subjectId to subject for now, or assume title/subject are passed.
-
-    if (req.body.subject) {
-      newResource.subject = req.body.subject;
-    } else if (subjectId) {
-      newResource.subject = subjectId; // Fallback
+    // Add assignment-specific fields if type is assignment
+    if (type === 'assignment') {
+      if (!startDate || !dueDate) {
+        console.error('Missing assignment dates');
+        return res.status(400).json({ message: 'Start date and due date are required for assignments' });
+      }
+      
+      resourceData.startDate = new Date(startDate);
+      resourceData.dueDate = new Date(dueDate);
+      resourceData.lateSubmission = lateSubmission || 'no';
+      
+      console.log('Assignment dates:', { startDate: resourceData.startDate, dueDate: resourceData.dueDate });
     }
 
+    console.log('Creating resource with data:', resourceData);
+
+    const newResource = new Resource(resourceData);
     await newResource.save();
+
+    console.log('Resource saved successfully:', newResource._id);
 
     res.status(201).json({
       message: 'Resource uploaded successfully',
@@ -53,14 +91,14 @@ const uploadResource = async (req, res) => {
     });
   } catch (error) {
     console.error('Error uploading resource:', error);
-    res.status(500).json({ message: 'Failed to upload resource' });
+    res.status(500).json({ message: 'Failed to upload resource', error: error.message });
   }
 };
 
 // Get resources for students
 const getStudentResources = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.id || req.user.user_id;
     const student = await User.findById(userId);
 
     if (!student) {
@@ -84,9 +122,20 @@ const getStudentResources = async (req, res) => {
 // Get faculty resources
 const getFacultyResources = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.id || req.user.user_id;
+    console.log('Fetching resources for user:', userId);
+    
     // Filter resources uploaded by this faculty
     const resources = await Resource.find({ uploadedBy: userId }).sort({ createdAt: -1 });
+    console.log('Found resources:', resources.length);
+    
+    // Log submission counts for assignments
+    resources.forEach(r => {
+      if (r.type === 'assignment') {
+        console.log(`Assignment "${r.title}" has ${r.submissions?.length || 0} submissions`);
+      }
+    });
+    
     res.json({ resources });
   } catch (error) {
     console.error('Error fetching resources:', error);
@@ -98,6 +147,8 @@ const getFacultyResources = async (req, res) => {
 const deleteResource = async (req, res) => {
   try {
     const { id } = req.params;
+    const userId = req.user.id || req.user.user_id;
+    
     const resource = await Resource.findById(id);
 
     if (!resource) {
@@ -105,8 +156,8 @@ const deleteResource = async (req, res) => {
     }
 
     // Check ownership (unless admin)
-    // resource.uploadedBy is an ObjectId, req.user.id is string/ObjectId
-    if (resource.uploadedBy.toString() !== req.user.id && req.user.role !== 'admin') {
+    // resource.uploadedBy is an ObjectId, userId is string/ObjectId
+    if (resource.uploadedBy.toString() !== userId.toString() && req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Unauthorized to delete this resource' });
     }
 

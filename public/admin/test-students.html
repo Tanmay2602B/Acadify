@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Students Display</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-7xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h1 class="text-2xl font-bold mb-4">Student Display Test</h1>
+            <p class="text-gray-600 mb-4">This page tests if students can be loaded and displayed.</p>
+            
+            <div class="flex gap-4 mb-4">
+                <button onclick="testLoad()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                    Load Students
+                </button>
+                <button onclick="clearTable()" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700">
+                    Clear Table
+                </button>
+            </div>
+            
+            <div id="status" class="mb-4 p-4 bg-gray-50 rounded-lg">
+                <p class="font-semibold">Status:</p>
+                <p id="statusText">Click "Load Students" to test</p>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-bold mb-4">Students Table</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full border">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left border">#</th>
+                            <th class="px-6 py-3 text-left border">Name</th>
+                            <th class="px-6 py-3 text-left border">Email</th>
+                            <th class="px-6 py-3 text-left border">Program</th>
+                            <th class="px-6 py-3 text-left border">Semester</th>
+                        </tr>
+                    </thead>
+                    <tbody id="testTableBody" class="divide-y">
+                        <tr>
+                            <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                                No data loaded yet
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="mt-4 p-4 bg-blue-50 rounded-lg">
+                <p class="font-semibold">Row Count: <span id="rowCount">0</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateStatus(message, isError = false) {
+            const statusText = document.getElementById('statusText');
+            statusText.textContent = message;
+            statusText.className = isError ? 'text-red-600' : 'text-green-600';
+            console.log(message);
+        }
+
+        function clearTable() {
+            document.getElementById('testTableBody').innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No data loaded yet</td></tr>';
+            document.getElementById('rowCount').textContent = '0';
+            updateStatus('Table cleared');
+        }
+
+        async function testLoad() {
+            const tbody = document.getElementById('testTableBody');
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                updateStatus('ERROR: No token found. Please log in first.', true);
+                return;
+            }
+            
+            updateStatus('Loading students from API...');
+            tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Loading...</td></tr>';
+            
+            try {
+                const response = await fetch('/api/bulk-students/', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API returned ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const students = data.students || [];
+                
+                updateStatus(`API returned ${students.length} students`);
+                console.log('Students:', students);
+                
+                if (students.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No students found</td></tr>';
+                    return;
+                }
+                
+                // Build HTML
+                let html = '';
+                for (let i = 0; i < students.length; i++) {
+                    const s = students[i];
+                    html += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 border">${i + 1}</td>
+                            <td class="px-6 py-4 border">${s.name || 'N/A'}</td>
+                            <td class="px-6 py-4 border">${s.email || 'N/A'}</td>
+                            <td class="px-6 py-4 border">${s.program || 'N/A'}</td>
+                            <td class="px-6 py-4 border">${s.semester || 'N/A'}</td>
+                        </tr>
+                    `;
+                }
+                
+                tbody.innerHTML = html;
+                
+                // Count rows
+                const rowCount = tbody.querySelectorAll('tr').length;
+                document.getElementById('rowCount').textContent = rowCount;
+                
+                updateStatus(`✅ Successfully displayed ${rowCount} students`);
+                
+                if (rowCount !== students.length) {
+                    updateStatus(`⚠️ WARNING: Expected ${students.length} but displayed ${rowCount}`, true);
+                }
+                
+            } catch (error) {
+                updateStatus(`ERROR: ${error.message}`, true);
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-red-500">Error: ${error.message}</td></tr>`;
+            }
+        }
+    </script>
+</body>
+</html>

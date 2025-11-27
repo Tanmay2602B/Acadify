@@ -8,7 +8,8 @@ const {
   submitExam,
   getExamResults,
   publishExam,
-  uploadQuestionImage
+  uploadQuestionImage,
+  deleteExam
 } = require('../controllers/exam.mongo.controller');
 const { authenticate, authorizeFaculty, authorizeStudent } = require('../middlewares/auth');
 const multer = require('multer');
@@ -54,6 +55,7 @@ router.post('/create', authorizeFaculty, createExam);
 router.post('/upload-image', authorizeFaculty, upload.single('image'), uploadQuestionImage);
 router.post('/:exam_id/questions', authorizeFaculty, addQuestion);
 router.put('/:exam_id/publish', authorizeFaculty, publishExam);
+router.delete('/:exam_id', authorizeFaculty, deleteExam);
 router.get('/faculty', authorizeFaculty, getFacultyExams);
 router.get('/:exam_id/results', getExamResults);
 

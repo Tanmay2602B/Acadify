@@ -4,6 +4,7 @@ const Faculty = require('../models/Faculty.mongo');
 const Program = require('../models/Program.mongo');
 const Resource = require('../models/Resource.mongo');
 const Meeting = require('../models/Meeting.mongo');
+const Credential = require('../models/Credential.mongo');
 const {
     generateFacultyId,
     generateFacultyPassword,
@@ -72,7 +73,10 @@ const createFaculty = async (req, res) => {
             name,
             email,
             password, // Will be hashed by pre-save hook
-            role: 'faculty'
+            role: 'faculty',
+            department,
+            designation,
+            phone
         });
         await user.save();
 
@@ -89,6 +93,16 @@ const createFaculty = async (req, res) => {
             active_status: 'active'
         });
         await faculty.save();
+
+        // Store credentials for admin viewing
+        const credential = new Credential({
+            user_id: facultyId,
+            role: 'faculty',
+            email,
+            created_by: 'admin'
+        });
+        credential.setPassword(password);
+        await credential.save();
 
         res.status(201).json({
             message: 'Faculty created successfully',
@@ -145,15 +159,16 @@ const getFacultyCredentials = async (req, res) => {
 
         const credentials = await Promise.all(facultyList.map(async (fac) => {
             const user = await User.findOne({ user_id: fac.user_id });
-            // Note: In production, you should store original passwords separately
-            // This is a placeholder - you'd need to implement a secure way to retrieve/regenerate passwords
+            const credential = await Credential.findOne({ user_id: fac.user_id });
+            
             return {
                 faculty_id: fac.faculty_id,
                 name: user?.name || 'N/A',
                 email: user?.email || 'N/A',
                 department: fac.department,
-                password: '********', // Placeholder - implement secure password retrieval
-                status: fac.status
+                designation: fac.designation,
+                password: credential ? credential.getPassword() : 'Not Available',
+                status: fac.active_status
             };
         }));
 
@@ -263,6 +278,16 @@ const createStudent = async (req, res) => {
             status: 'active'
         });
         await student.save();
+
+        // Store credentials for admin viewing
+        const credential = new Credential({
+            user_id: studentId,
+            role: 'student',
+            email,
+            created_by: 'admin'
+        });
+        credential.setPassword(password);
+        await credential.save();
 
         res.status(201).json({
             message: 'Student created successfully',
@@ -384,6 +409,8 @@ const getStudentCredentials = async (req, res) => {
 
         const credentials = await Promise.all(students.map(async (stu) => {
             const user = await User.findOne({ user_id: stu.user_id });
+            const credential = await Credential.findOne({ user_id: stu.user_id });
+            
             return {
                 student_id: stu.student_id,
                 roll_number: stu.roll_number,
@@ -391,7 +418,7 @@ const getStudentCredentials = async (req, res) => {
                 email: user?.email || 'N/A',
                 program: stu.program,
                 semester: stu.semester,
-                password: '********' // Placeholder - implement secure password retrieval
+                password: credential ? credential.getPassword() : 'Not Available'
             };
         }));
 

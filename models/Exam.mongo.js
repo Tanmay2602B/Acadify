@@ -35,7 +35,7 @@ const examSchema = new mongoose.Schema({
     required: true
   },
   semester: {
-    type: String,
+    type: mongoose.Schema.Types.Mixed, // Allow both String and Number
     required: true
   },
   subject: {

@@ -11,11 +11,11 @@ const getAIResponse = async (prompt) => {
   try {
     // For text-only input, use the gemini-pro model
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-    
+
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
-    
+
     return text;
   } catch (error) {
     console.error("Error with AI response:", error);
@@ -37,7 +37,7 @@ const getAcademicAIResponse = async (question, subject, level) => {
   4. Further reading suggestions if applicable
   
   Keep the response appropriate for ${level} level students.`;
-  
+
   return await getAIResponse(prompt);
 };
 

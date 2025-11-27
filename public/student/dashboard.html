@@ -1,5 +1,22 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <script>
+        // Redirect to enhanced dashboard
+        window.location.href = 'dashboard-enhanced.html';
+    </script>
+</head>
+<body>
+    <p style="text-align: center; margin-top: 50px;">Redirecting to enhanced dashboard...</p>
+</body>
+</html>
+
+<!-- OLD CODE BELOW - KEPT FOR REFERENCE
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -112,6 +129,46 @@
             to {
                 opacity: 0;
                 transform: translateY(10px);
+            }
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            border-top-left-radius: 2px;
+            width: fit-content;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+
+        .typing-dot:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(0);
+            }
+
+            40% {
+                transform: scale(1);
             }
         }
     </style>
@@ -314,7 +371,7 @@
                                 <h2 class="text-2xl font-semibold">Quiz Mode</h2>
                             </div>
                         </div>
-                        
+
                         <div id="quizList" class="space-y-4">
                             <!-- Available quizzes will be listed here -->
                         </div>
@@ -330,15 +387,19 @@
                                     <span id="questionProgress" class="text-slate-400 text-sm"></span>
                                 </div>
                             </div>
-                            
+
                             <div id="quizQuestionContainer" class="glass-soft p-6 rounded-2xl">
                                 <!-- Question content injected here -->
                             </div>
 
                             <div class="flex justify-between mt-6">
-                                <button id="prevQuestionBtn" class="px-6 py-2 rounded-xl bg-slate-700 text-white hover:bg-slate-600 transition hidden">Previous</button>
-                                <button id="nextQuestionBtn" class="px-6 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-500 transition">Next</button>
-                                <button id="submitQuizBtn" class="px-6 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-500 transition hidden">Submit Quiz</button>
+                                <button id="prevQuestionBtn"
+                                    class="px-6 py-2 rounded-xl bg-slate-700 text-white hover:bg-slate-600 transition hidden">Previous</button>
+                                <button id="nextQuestionBtn"
+                                    class="px-6 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-500 transition">Next</button>
+                                <button id="submitQuizBtn"
+                                    class="px-6 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-500 transition hidden">Submit
+                                    Quiz</button>
                             </div>
                         </div>
                     </div>
@@ -408,7 +469,8 @@
                                     Connect</p>
                                 <h2 class="text-2xl font-semibold">Live Sessions</h2>
                             </div>
-                            <button class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-medium transition"
+                            <button
+                                class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-medium transition"
                                 onclick="fetchMeetings()">
                                 <i class="fas fa-sync-alt mr-2"></i>Refresh
                             </button>
@@ -515,18 +577,53 @@
             renderClasses();
             renderFocus();
             fetchMeetings(); // Load meetings initially
-            
+
             // AI Chat
-            document.getElementById('aiForm').addEventListener('submit', (e) => {
+            document.getElementById('aiForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const prompt = document.getElementById('aiPrompt').value;
-                if (prompt) {
-                    addMessage('user', prompt);
-                    document.getElementById('aiPrompt').value = '';
-                    // Mock AI response
-                    setTimeout(() => {
-                        addMessage('ai', "I'm analyzing your syllabus... (AI integration pending)");
-                    }, 1000);
+                const promptInput = document.getElementById('aiPrompt');
+                const prompt = promptInput.value.trim();
+
+                if (!prompt) return;
+
+                // Add user message
+                addMessage('user', prompt);
+                promptInput.value = '';
+
+                // Show typing indicator
+                showTypingIndicator();
+
+                try {
+                    const token = localStorage.getItem('token');
+                    const response = await fetch('/api/ai/ask', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            question: prompt,
+                            subject: 'General', // Could be dynamic based on context
+                            level: 'intermediate'
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    // Remove typing indicator
+                    removeTypingIndicator();
+
+                    if (response.ok) {
+                        addMessage('ai', data.response, true);
+                    } else {
+                        addMessage('ai', "I'm having trouble connecting right now. Please try again.");
+                        showToast(data.message || 'AI Error', 'error');
+                    }
+                } catch (error) {
+                    removeTypingIndicator();
+                    console.error('AI Error:', error);
+                    addMessage('ai', "Sorry, I encountered a network error. Please check your connection.");
+                    showToast('Network error', 'error');
                 }
             });
 
@@ -537,715 +634,72 @@
             });
         });
 
-        function loadUserData() {
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            document.getElementById('userName').textContent = user.name || 'Student';
-        }
-
-        function showSection(section) {
-            // Update Nav
-            document.querySelectorAll('.nav-link').forEach(l => {
-                l.classList.remove('active', 'text-white');
-                l.classList.add('text-slate-300');
-                if (l.dataset.section === section) {
-                    l.classList.add('active', 'text-white');
-                    l.classList.remove('text-slate-300');
-                }
-            });
-
-            // Hide all sections
-            document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden'));
-
-            // Show target section
-            const target = document.getElementById(`${section}Section`);
-            if (target) target.classList.remove('hidden');
-
-            currentSection = section;
-
-            // Load specific data
-            if (section === 'resources') loadResources();
-            if (section === 'assignments') loadAssignments();
-            if (section === 'timetable') renderTimetable('Monday');
-            if (section === 'meetings') fetchMeetings();
-            if (section === 'quiz') loadExams();
-        }
-
-        // --- Toast Notification System ---
-        function showToast(message, type = 'info') {
-            let container = document.querySelector('.toast-container');
-            if (!container) {
-                container = document.createElement('div');
-                container.className = 'toast-container';
-                document.body.appendChild(container);
-            }
-
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            
-            let icon = '';
-            if (type === 'success') icon = '<i class="fas fa-check-circle text-emerald-400"></i>';
-            if (type === 'error') icon = '<i class="fas fa-times-circle text-rose-400"></i>';
-            if (type === 'warning') icon = '<i class="fas fa-exclamation-triangle text-amber-400"></i>';
-
-            toast.innerHTML = `${icon}<span>${message}</span>`;
-            container.appendChild(toast);
-
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
-        }
-
-        // --- Quiz Logic ---
-
-        async function loadExams() {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await fetch('/api/exams/student/list', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data = await response.json();
-                
-                const quizList = document.getElementById('quizList');
-                quizList.innerHTML = '';
-
-                if (data.exams && data.exams.length > 0) {
-                    data.exams.forEach(exam => {
-                        const now = new Date();
-                        const startTime = new Date(exam.startTime);
-                        const endTime = new Date(exam.endTime);
-                        
-                        let status = '';
-                        let actionBtn = '';
-
-                        if (now < startTime) {
-                            status = `<span class="text-amber-400 text-xs">Starts: ${startTime.toLocaleString()}</span>`;
-                            actionBtn = `<button class="px-4 py-2 rounded-xl bg-slate-700 text-slate-400 cursor-not-allowed" disabled>Upcoming</button>`;
-                        } else if (now >= startTime && now <= endTime) {
-                            status = `<span class="text-emerald-400 text-xs">Active until: ${endTime.toLocaleString()}</span>`;
-                            actionBtn = `<button onclick="startSafeQuiz('${exam._id}')" class="px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-500 transition">Start Quiz</button>`;
-                        } else {
-                            status = `<span class="text-rose-400 text-xs">Ended: ${endTime.toLocaleString()}</span>`;
-                            actionBtn = `<button class="px-4 py-2 rounded-xl bg-slate-700 text-slate-400 cursor-not-allowed" disabled>Expired</button>`;
-                        }
-
-                        const div = document.createElement('div');
-                        div.className = 'glass-soft p-4 rounded-xl flex justify-between items-center';
-                        div.innerHTML = `
-                            <div>
-                                <h4 class="font-semibold text-lg">${exam.title}</h4>
-                                <p class="text-sm text-slate-400">${exam.description || 'No description'}</p>
-                                <div class="mt-1">${status}</div>
-                            </div>
-                            <div>${actionBtn}</div>
-                        `;
-                        quizList.appendChild(div);
-                    });
-                } else {
-                    quizList.innerHTML = '<p class="text-slate-400">No quizzes available at the moment.</p>';
-                }
-            } catch (error) {
-                console.error('Error loading exams:', error);
-                showToast('Failed to load quizzes', 'error');
-            }
-        }
-
-        async function startSafeQuiz(examId) {
-            try {
-                // Enter Fullscreen
-                if (document.documentElement.requestFullscreen) {
-                    await document.documentElement.requestFullscreen();
-                }
-
-                const token = localStorage.getItem('token');
-                const response = await fetch(`/api/exams/${examId}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                if (!response.ok) throw new Error('Failed to fetch quiz details');
-                
-                const data = await response.json();
-                currentQuiz = data.exam;
-                currentQuestions = currentQuiz.questions;
-                userAnswers = {};
-                currentQuestionIndex = 0;
-                quizStartTime = new Date();
-
-                // UI Setup
-                document.getElementById('quizList').classList.add('hidden');
-                document.getElementById('activeQuizContainer').classList.remove('hidden');
-                document.getElementById('quizTitle').textContent = currentQuiz.title;
-
-                // Timer Setup
-                const durationMs = currentQuiz.duration * 60 * 1000;
-                const endTime = new Date(quizStartTime.getTime() + durationMs);
-                
-                updateTimerDisplay(endTime);
-                quizTimerInterval = setInterval(() => {
-                    const now = new Date();
-                    if (now >= endTime) {
-                        submitSafeQuiz(true); // Auto submit
-                    } else {
-                        updateTimerDisplay(endTime);
-                    }
-                }, 1000);
-
-                // Anti-cheat listeners
-                window.addEventListener('blur', handleCheatAttempt);
-                document.addEventListener('visibilitychange', handleCheatAttempt);
-
-                renderQuizQuestion();
-            } catch (error) {
-                console.error('Error starting quiz:', error);
-                showToast('Failed to start quiz', 'error');
-            }
-        }
-
-        function updateTimerDisplay(endTime) {
-            const now = new Date();
-            const diff = endTime - now;
-            const minutes = Math.floor(diff / 60000);
-            const seconds = Math.floor((diff % 60000) / 1000);
-            document.getElementById('quizTimer').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        }
-
-        function handleCheatAttempt() {
-            if (currentQuiz) {
-                showToast('Warning: Tab switching is detected and recorded!', 'warning');
-                // Ideally send this to backend
-            }
-        }
-
-        function renderQuizQuestion() {
-            const question = currentQuestions[currentQuestionIndex];
-            const container = document.getElementById('quizQuestionContainer');
-            const total = currentQuestions.length;
-            
-            document.getElementById('questionProgress').textContent = `Question ${currentQuestionIndex + 1} of ${total}`;
-
-            let inputHtml = '';
-            
-            if (question.type === 'radio') {
-                inputHtml = `<div class="space-y-3">
-                    ${question.options.map((opt, idx) => `
-                        <label class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 cursor-pointer transition">
-                            <input type="radio" name="q_${question._id}" value="${idx}" 
-                                ${userAnswers[question._id] === idx.toString() ? 'checked' : ''}
-                                class="form-radio text-indigo-500 focus:ring-indigo-500 bg-slate-700 border-slate-600">
-                            <span>${opt}</span>
-                        </label>
-                    `).join('')}
-                </div>`;
-            } else if (question.type === 'checkbox') {
-                // For checkbox, userAnswers[question._id] should be an array
-                const currentAns = userAnswers[question._id] || [];
-                inputHtml = `<div class="space-y-3">
-                    ${question.options.map((opt, idx) => `
-                        <label class="flex items-center space-x-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 cursor-pointer transition">
-                            <input type="checkbox" name="q_${question._id}" value="${idx}"
-                                ${currentAns.includes(idx.toString()) ? 'checked' : ''}
-                                class="form-checkbox text-indigo-500 focus:ring-indigo-500 bg-slate-700 border-slate-600">
-                            <span>${opt}</span>
-                        </label>
-                    `).join('')}
-                </div>`;
-            } else if (question.type === 'text') {
-                inputHtml = `
-                    <textarea class="w-full bg-slate-900 border border-slate-700 rounded-xl p-4 text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                        rows="4" placeholder="Type your answer here..."
-                        onchange="saveTextAnswer('${question._id}', this.value)">${userAnswers[question._id] || ''}</textarea>
-                `;
-            }
-
-            let imageHtml = '';
-            if (question.image) {
-                imageHtml = `<img src="${question.image}" class="max-w-full h-auto max-h-64 rounded-xl mb-4 border border-white/10">`;
-            }
-
-            container.innerHTML = `
-                <h4 class="text-xl font-medium mb-4">${question.text}</h4>
-                ${imageHtml}
-                ${inputHtml}
-            `;
-
-            // Setup navigation buttons
-            const prevBtn = document.getElementById('prevQuestionBtn');
-            const nextBtn = document.getElementById('nextQuestionBtn');
-            const submitBtn = document.getElementById('submitQuizBtn');
-
-            prevBtn.classList.toggle('hidden', currentQuestionIndex === 0);
-            
-            if (currentQuestionIndex === total - 1) {
-                nextBtn.classList.add('hidden');
-                submitBtn.classList.remove('hidden');
-            } else {
-                nextBtn.classList.remove('hidden');
-                submitBtn.classList.add('hidden');
-            }
-
-            // Bind events for radio/checkbox to save state immediately
-            if (question.type === 'radio') {
-                container.querySelectorAll(`input[name="q_${question._id}"]`).forEach(input => {
-                    input.addEventListener('change', (e) => {
-                        userAnswers[question._id] = e.target.value;
-                    });
-                });
-            } else if (question.type === 'checkbox') {
-                container.querySelectorAll(`input[name="q_${question._id}"]`).forEach(input => {
-                    input.addEventListener('change', (e) => {
-                        const val = e.target.value;
-                        if (!userAnswers[question._id]) userAnswers[question._id] = [];
-                        
-                        if (e.target.checked) {
-                            userAnswers[question._id].push(val);
-                        } else {
-                            userAnswers[question._id] = userAnswers[question._id].filter(v => v !== val);
-                        }
-                    });
-                });
-            }
-        }
-
-        function saveTextAnswer(qId, val) {
-            userAnswers[qId] = val;
-        }
-
-        // Navigation Handlers
-        document.getElementById('prevQuestionBtn').addEventListener('click', () => {
-            if (currentQuestionIndex > 0) {
-                currentQuestionIndex--;
-                renderQuizQuestion();
-            }
-        });
-
-        document.getElementById('nextQuestionBtn').addEventListener('click', () => {
-            if (currentQuestionIndex < currentQuestions.length - 1) {
-                currentQuestionIndex++;
-                renderQuizQuestion();
-            }
-        });
-
-        document.getElementById('submitQuizBtn').addEventListener('click', () => submitSafeQuiz(false));
-
-        async function submitSafeQuiz(autoSubmit = false) {
-            clearInterval(quizTimerInterval);
-            
-            // Exit fullscreen
-            if (document.fullscreenElement) {
-                document.exitFullscreen().catch(err => console.log(err));
-            }
-
-            // Remove listeners
-            window.removeEventListener('blur', handleCheatAttempt);
-            document.removeEventListener('visibilitychange', handleCheatAttempt);
-
-            try {
-                const token = localStorage.getItem('token');
-                
-                // Format answers for backend
-                // Backend expects: [ { questionId, answer } ]
-                // answer can be string (radio/text) or array (checkbox)
-                const formattedAnswers = Object.keys(userAnswers).map(qId => ({
-                    questionId: qId,
-                    answer: userAnswers[qId]
-                }));
-
-                const response = await fetch('/api/exams/submit', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        examId: currentQuiz._id,
-                        answers: formattedAnswers
-                    })
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    showToast(autoSubmit ? 'Time is up! Quiz submitted automatically.' : 'Quiz submitted successfully!', 'success');
-                    
-                    // Reset UI
-                    document.getElementById('activeQuizContainer').classList.add('hidden');
-                    document.getElementById('quizList').classList.remove('hidden');
-                    loadExams(); // Refresh list
-                } else {
-                    showToast(result.message || 'Submission failed', 'error');
-                }
-            } catch (error) {
-                console.error('Error submitting quiz:', error);
-                showToast('Error submitting quiz. Please contact support.', 'error');
-            }
-        }
-
-        // --- Assignments ---
-        async function loadAssignments() {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await fetch('/api/assignments/student', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data = await response.json();
-                assignments = data.assignments || [];
-                renderAssignments();
-            } catch (error) {
-                console.error('Error loading assignments:', error);
-            }
-        }
-
-        function renderAssignments() {
-            const list = document.getElementById('assignmentList');
-            list.innerHTML = '';
-            
-            if (assignments.length === 0) {
-                list.innerHTML = '<p class="text-slate-400">No pending assignments.</p>';
-                return;
-            }
-
-            assignments.forEach(assignment => {
-                const div = document.createElement('div');
-                div.className = 'glass-soft p-4 rounded-2xl flex justify-between items-center';
-                div.innerHTML = `
-                    <div>
-                        <h4 class="font-semibold">${assignment.title}</h4>
-                        <p class="text-xs text-slate-400">Due: ${new Date(assignment.dueDate).toLocaleDateString()}</p>
-                        ${assignment.fileUrl ? `<a href="${assignment.fileUrl}" class="text-xs text-sky-400 hover:underline mt-1 block" download>Download Task File</a>` : ''}
-                    </div>
-                    <button onclick="openUploadModal('${assignment._id}', '${assignment.title}')" 
-                        class="px-4 py-2 rounded-xl bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500 hover:text-white transition text-sm">
-                        Upload
-                    </button>
-                `;
-                list.appendChild(div);
-            });
-        }
-
-        function openUploadModal(id, title) {
-            currentAssignmentId = id;
-            document.getElementById('uploadModalTitle').textContent = `Upload for: ${title}`;
-            document.getElementById('uploadModal').classList.remove('hidden');
-        }
-
-        function closeUploadModal() {
-            document.getElementById('uploadModal').classList.add('hidden');
-            currentAssignmentId = null;
-            selectedFile = null;
-            document.getElementById('selectedFile').classList.add('hidden');
-        }
-
-        function handleFileSelect(input) {
-            if (input.files.length > 0) {
-                selectedFile = input.files[0];
-                const display = document.getElementById('selectedFile');
-                display.textContent = selectedFile.name;
-                display.classList.remove('hidden');
-            }
-        }
-
-        async function confirmUpload() {
-            if (!selectedFile || !currentAssignmentId) {
-                showToast('Please select a file', 'warning');
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('file', selectedFile);
-            formData.append('assignmentId', currentAssignmentId);
-
-            try {
-                const token = localStorage.getItem('token');
-                const response = await fetch('/api/assignments/submit', {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` },
-                    body: formData
-                });
-
-                if (response.ok) {
-                    showToast('Assignment submitted successfully!', 'success');
-                    closeUploadModal();
-                } else {
-                    showToast('Upload failed', 'error');
-                }
-            } catch (error) {
-                console.error('Error uploading:', error);
-                showToast('Error uploading assignment', 'error');
-            }
-        }
-
-        // --- Resources ---
-        async function loadResources() {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await fetch('/api/resources/student', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data = await response.json();
-                resources = data.resources || [];
-                renderResources(resources);
-            } catch (error) {
-                console.error('Error loading resources:', error);
-            }
-        }
-
-        function filterResources(type) {
-            document.querySelectorAll('.resource-filter').forEach(btn => {
-                if (btn.dataset.type === type) {
-                    btn.classList.remove('bg-white/5', 'border-white/10');
-                    btn.classList.add('bg-white/20', 'border-white/30');
-                } else {
-                    btn.classList.add('bg-white/5', 'border-white/10');
-                    btn.classList.remove('bg-white/20', 'border-white/30');
-                }
-            });
-
-            if (type === 'All') {
-                renderResources(resources);
-            } else {
-                const filtered = resources.filter(r => r.type === type);
-                renderResources(filtered);
-            }
-        }
-
-        function renderResources(list) {
-            const grid = document.getElementById('resourceGrid');
-            grid.innerHTML = '';
-            
-            if (list.length === 0) {
-                grid.innerHTML = '<p class="text-slate-400 col-span-full">No resources found.</p>';
-                return;
-            }
-
-            list.forEach(res => {
-                let icon = 'fa-file';
-                if (res.type === 'Video') icon = 'fa-video';
-                if (res.type === 'Slides') icon = 'fa-presentation';
-                
-                const div = document.createElement('div');
-                div.className = 'glass-soft p-5 rounded-2xl hover:bg-white/10 transition group';
-                div.innerHTML = `
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="h-10 w-10 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-300">
-                            <i class="fas ${icon}"></i>
-                        </div>
-                        <span class="text-xs px-2 py-1 rounded-lg bg-white/5 text-slate-400">${res.type}</span>
-                    </div>
-                    <h4 class="font-semibold mb-1">${res.title}</h4>
-                    <p class="text-xs text-slate-400 mb-4">${res.description || 'No description'}</p>
-                    <a href="/api/resources/download/${res._id}" class="text-sm text-sky-400 hover:text-sky-300 flex items-center gap-2">
-                        Download <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition"></i>
-                    </a>
-                `;
-                grid.appendChild(div);
-            });
-        }
-
-        // --- Meetings ---
-        async function fetchMeetings() {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await fetch('/api/meetings/student', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data = await response.json();
-                meetings = data.meetings || [];
-                renderMeetings();
-            } catch (error) {
-                console.error('Error fetching meetings:', error);
-            }
-        }
-
-        function renderMeetings() {
-            const containerFull = document.getElementById('meetingsListFull');
-            const containerOverview = document.getElementById('studentMeetings');
-            
-            if (containerFull) containerFull.innerHTML = '';
-            if (containerOverview) containerOverview.innerHTML = `
-                <div>
-                    <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Connect</p>
-                    <h2 class="text-2xl font-semibold">Live Sessions</h2>
-                </div>
-                <button class="px-4 py-2 rounded-2xl bg-white/10 border border-white/20 text-sm" onclick="fetchMeetings()">Refresh</button>
-            `;
-
-            const today = new Date().toISOString().split('T')[0];
-            const todaysMeetings = meetings.filter(m => new Date(m.startTime).toISOString().split('T')[0] === today);
-
-            // Render Overview (Today Only)
-            if (containerOverview) {
-                if (todaysMeetings.length === 0) {
-                    const p = document.createElement('p');
-                    p.className = 'text-slate-400 text-sm';
-                    p.textContent = 'No meetings scheduled for today.';
-                    containerOverview.appendChild(p);
-                } else {
-                    todaysMeetings.forEach(meeting => {
-                        const el = createMeetingElement(meeting);
-                        containerOverview.appendChild(el);
-                    });
-                }
-            }
-
-            // Render Full List (All Upcoming)
-            if (containerFull) {
-                if (meetings.length === 0) {
-                    containerFull.innerHTML = '<p class="text-slate-400">No upcoming meetings.</p>';
-                } else {
-                    meetings.forEach(meeting => {
-                        const el = createMeetingElement(meeting);
-                        containerFull.appendChild(el);
-                    });
-                }
-            }
-        }
-
-        function createMeetingElement(meeting) {
+        function addMessage(sender, text, animate = false) {
             const div = document.createElement('div');
-            div.className = 'glass-soft p-4 rounded-xl flex items-center justify-between';
-            
-            const startTime = new Date(meeting.startTime).toLocaleString();
-            const isOngoing = meeting.status === 'ongoing';
+            div.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'} mb-4`;
 
-            div.innerHTML = `
-                <div>
-                    <h4 class="font-semibold">${meeting.title}</h4>
-                    <p class="text-xs text-slate-400">${startTime} • ${meeting.hostName}</p>
-                </div>
-                ${isOngoing 
-                    ? `<button onclick="joinMeeting('${meeting._id}')" class="px-4 py-2 rounded-xl bg-emerald-500 text-white text-xs font-bold animate-pulse">JOIN NOW</button>`
-                    : `<span class="text-xs text-slate-500 bg-slate-800 px-3 py-1 rounded-lg">Scheduled</span>`
-                }
-            `;
-            return div;
-        }
+            const bubble = document.createElement('div');
+            bubble.className = `max-w-[80%] p-3 rounded-2xl text-sm ${sender === 'user' ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white/10 text-slate-200 rounded-tl-none'}`;
 
-        async function joinMeeting(meetingId) {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await fetch(`/api/meetings/${meetingId}/join`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data = await response.json();
-                
-                if (response.ok && data.meetingUrl) {
-                    window.open(data.meetingUrl, '_blank');
-                } else {
-                    showToast(data.message || 'Cannot join meeting', 'error');
-                }
-            } catch (error) {
-                console.error('Error joining meeting:', error);
-                showToast('Error joining meeting', 'error');
-            }
-        }
-
-        // --- Mock Data Renderers ---
-        function renderStats() {
-            const stats = [
-                { label: 'Attendance', value: '85%', icon: 'fa-user-check', color: 'text-emerald-400' },
-                { label: 'Avg Grade', value: 'A-', icon: 'fa-graduation-cap', color: 'text-indigo-400' },
-                { label: 'Assignments', value: '12/15', icon: 'fa-tasks', color: 'text-amber-400' },
-                { label: 'Credits', value: '18', icon: 'fa-star', color: 'text-pink-400' }
-            ];
-            
-            const container = document.getElementById('statCards');
-            container.innerHTML = stats.map(s => `
-                <div class="glass-soft p-4 rounded-2xl flex items-center gap-4">
-                    <div class="h-10 w-10 rounded-xl bg-white/5 flex items-center justify-center ${s.color}">
-                        <i class="fas ${s.icon}"></i>
-                    </div>
-                    <div>
-                        <p class="text-xs text-slate-400 uppercase tracking-wider">${s.label}</p>
-                        <p class="text-xl font-bold">${s.value}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderClasses() {
-            const classes = [
-                { time: '09:00 AM', subject: 'Advanced Web Dev', room: 'Lab 3' },
-                { time: '11:00 AM', subject: 'Database Systems', room: 'LH 2' },
-                { time: '02:00 PM', subject: 'AI Fundamentals', room: 'LH 5' }
-            ];
-            
-            const container = document.getElementById('classTimeline');
-            container.innerHTML = classes.map(c => `
-                <div class="flex gap-4">
-                    <div class="flex flex-col items-center">
-                        <div class="h-2 w-2 rounded-full bg-indigo-500"></div>
-                        <div class="w-0.5 h-full bg-white/10 my-1"></div>
-                    </div>
-                    <div class="pb-4">
-                        <p class="text-xs text-slate-400">${c.time}</p>
-                        <h4 class="font-medium text-slate-200">${c.subject}</h4>
-                        <p class="text-xs text-slate-500">${c.room}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderFocus() {
-            const items = [
-                'Submit Project Proposal',
-                'Read Chapter 4 for DB',
-                'Register for Hackathon'
-            ];
-            document.getElementById('focusBoard').innerHTML = items.map(i => `
-                <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5">
-                    <div class="h-2 w-2 rounded-full bg-rose-400"></div>
-                    <span class="text-slate-300">${i}</span>
-                </div>
-            `).join('');
-        }
-
-        function renderTimetable(day) {
-            // Update tabs
-            document.querySelectorAll('.day-tab').forEach(btn => {
-                if (btn.dataset.day === day) {
-                    btn.classList.remove('bg-white/5', 'text-slate-400');
-                    btn.classList.add('bg-white/20', 'text-white');
-                } else {
-                    btn.classList.add('bg-white/5', 'text-slate-400');
-                    btn.classList.remove('bg-white/20', 'text-white');
-                }
-            });
-
-            // Mock Timetable Data
-            const timetable = [
-                { time: '09:00 - 10:00', subject: 'Web Development', faculty: 'Dr. Smith', room: 'Lab 1' },
-                { time: '10:00 - 11:00', subject: 'Database', faculty: 'Prof. Doe', room: 'LH 2' },
-                { time: '11:00 - 12:00', subject: 'Break', faculty: '-', room: '-' },
-                { time: '12:00 - 01:00', subject: 'AI', faculty: 'Dr. Alan', room: 'LH 3' }
-            ];
-
-            const tbody = document.getElementById('timetableBody');
-            tbody.innerHTML = timetable.map(t => `
-                <tr class="hover:bg-white/5 transition">
-                    <td class="px-5 py-4 text-slate-400">${day}</td>
-                    <td class="px-5 py-4 font-mono text-xs text-sky-300">${t.time}</td>
-                    <td class="px-5 py-4 font-medium text-white">${t.subject}</td>
-                    <td class="px-5 py-4 text-slate-400">${t.faculty}</td>
-                    <td class="px-5 py-4 text-slate-400">${t.room}</td>
-                </tr>
-            `).join('');
-        }
-
-        function downloadTimetable() {
-            showToast('Downloading timetable...', 'info');
-            // Mock download
-        }
-
-        function addMessage(sender, text) {
-            const div = document.createElement('div');
-            div.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
-            div.innerHTML = `
-                <div class="max-w-[80%] p-3 rounded-2xl text-sm ${sender === 'user' ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white/10 text-slate-200 rounded-tl-none'}">
-                    ${text}
-                </div>
-            `;
+            div.appendChild(bubble);
             document.getElementById('chatWindow').appendChild(div);
-            document.getElementById('chatWindow').scrollTop = document.getElementById('chatWindow').scrollHeight;
+
+            // Format text (simple markdown-like)
+            let formattedText = text
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+            if (animate && sender === 'ai') {
+                let i = 0;
+                bubble.innerHTML = '';
+                const speed = 15; // ms per char
+
+                function typeWriter() {
+                    if (i < formattedText.length) {
+                        if (formattedText.charAt(i) === '<') {
+                            let tagEnd = formattedText.indexOf('>', i);
+                            if (tagEnd !== -1) {
+                                bubble.innerHTML += formattedText.substring(i, tagEnd + 1);
+                                i = tagEnd + 1;
+                            } else {
+                                bubble.innerHTML += formattedText.charAt(i);
+                                i++;
+                            }
+                        } else {
+                            bubble.innerHTML += formattedText.charAt(i);
+                            i++;
+                        }
+                        document.getElementById('chatWindow').scrollTop = document.getElementById('chatWindow').scrollHeight;
+                        setTimeout(typeWriter, speed);
+                    }
+                }
+                typeWriter();
+            } else {
+                bubble.innerHTML = formattedText;
+                document.getElementById('chatWindow').scrollTop = document.getElementById('chatWindow').scrollHeight;
+            }
+        }
+
+        function showTypingIndicator() {
+            const chatWindow = document.getElementById('chatWindow');
+            const div = document.createElement('div');
+            div.id = 'typingIndicator';
+            div.className = 'flex justify-start mb-4';
+            div.innerHTML = `
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            chatWindow.appendChild(div);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) indicator.remove();
         }
     </script>
 </body>

@@ -6,9 +6,11 @@ const {
   joinMeeting,
   leaveMeeting,
   getMeetingDetails,
-  endMeeting
+  endMeeting,
+  deleteMeeting,
+  getAllMeetings
 } = require('../controllers/meeting.mongo.controller');
-const { authenticate, authorizeFaculty, authorizeStudent } = require('../middlewares/auth');
+const { authenticate, authorizeFaculty, authorizeStudent, authorizeAdmin } = require('../middlewares/auth');
 
 const router = express.Router();
 
@@ -18,6 +20,10 @@ router.use(authenticate);
 router.post('/', authorizeFaculty, createMeeting);
 router.get('/faculty', authorizeFaculty, getFacultyMeetings);
 router.put('/:meeting_id/end', authorizeFaculty, endMeeting);
+router.delete('/:meeting_id', authorizeFaculty, deleteMeeting);
+
+// Admin routes
+router.get('/admin/all', authorizeAdmin, getAllMeetings);
 
 // Student routes
 router.get('/student', authorizeStudent, getStudentMeetings);

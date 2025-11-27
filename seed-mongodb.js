@@ -10,8 +10,7 @@ const ExamSubmission = require('./models/Exam.mongo').ExamSubmission;
 const Attendance = require('./models/Attendance.mongo');
 const ReportCard = require('./models/ReportCard.mongo');
 const Timetable = require('./models/Timetable.mongo');
-const Resource = require('./models/Resource.mongo').Resource;
-const Submission = require('./models/Resource.mongo').Submission;
+const Resource = require('./models/Resource.mongo');
 const Notification = require('./models/Notification.mongo');
 const Meeting = require('./models/Meeting.mongo');
 
@@ -38,7 +37,6 @@ db.once('open', async () => {
     await ReportCard.deleteMany({});
     await Timetable.deleteMany({});
     await Resource.deleteMany({});
-    await Submission.deleteMany({});
     await Notification.deleteMany({});
     await Meeting.deleteMany({});
     

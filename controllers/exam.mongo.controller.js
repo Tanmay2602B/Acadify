@@ -304,6 +304,41 @@ const publishExam = async (req, res) => {
   }
 };
 
+// Delete exam (Faculty)
+const deleteExam = async (req, res) => {
+  try {
+    const { exam_id } = req.params;
+    
+    // Find exam by MongoDB _id or exam_id
+    const exam = await Exam.findOne({ 
+      $or: [
+        { _id: exam_id },
+        { exam_id: exam_id }
+      ]
+    });
+    
+    if (!exam) {
+      return res.status(404).json({ message: 'Exam not found' });
+    }
+    
+    // Check if the faculty owns this exam
+    if (exam.faculty_id !== req.user.user_id) {
+      return res.status(403).json({ message: 'You are not authorized to delete this exam' });
+    }
+    
+    // Delete associated submissions
+    await ExamSubmission.deleteMany({ exam_id: exam.exam_id });
+    
+    // Delete the exam
+    await Exam.deleteOne({ _id: exam._id });
+    
+    res.json({ message: 'Exam deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting exam:', error);
+    res.status(500).json({ message: 'Failed to delete exam', error: error.message });
+  }
+};
+
 module.exports = {
   createExam,
   addQuestion,
@@ -313,5 +348,6 @@ module.exports = {
   submitExam,
   getExamResults,
   publishExam,
-  uploadQuestionImage
+  uploadQuestionImage,
+  deleteExam
 };

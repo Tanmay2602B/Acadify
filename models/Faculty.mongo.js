@@ -17,7 +17,7 @@ const facultySchema = new mongoose.Schema({
     },
     department: {
         type: String,
-        required: true
+        required: false
     },
     designation: {
         type: String
@@ -49,6 +49,20 @@ const facultySchema = new mongoose.Schema({
         semester: Number,
         day: String,
         time: String
+    }],
+    teaching_assignments: [{
+        program: {
+            type: String,
+            required: true
+        },
+        semester: {
+            type: Number,
+            required: true
+        },
+        subject: {
+            type: String,
+            required: true
+        }
     }],
     active_status: {
         type: String,

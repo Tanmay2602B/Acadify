@@ -4,6 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting to New Dashboard...</title>
+    <script>
+        // Redirect to new enhanced dashboard
+        window.location.href = 'dashboard-new.html';
+    </script>
+</head>
+<body>
+    <p style="text-align: center; margin-top: 50px;">Redirecting to enhanced dashboard...</p>
+</body>
+</html>
+<!--
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acadify - Admin Control</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -495,7 +511,13 @@
         </div>
     </div>
 
-    <script src="admin-dashboard.js"></script>
+    <!-- Force cache refresh with timestamp -->
+    <script>
+        const timestamp = new Date().getTime();
+        const script = document.createElement('script');
+        script.src = 'admin-dashboard.js?v=' + timestamp;
+        document.body.appendChild(script);
+    </script>
 </body>
 
 </html>

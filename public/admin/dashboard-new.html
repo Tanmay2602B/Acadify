@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Acadify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .sidebar-active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu {
+                display: none;
+            }
+
+            .mobile-menu.active {
+                display: block;
+            }
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 9999;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .toast.success {
+            background: #10b981;
+        }
+
+        .toast.error {
+            background: #ef4444;
+        }
+
+        .drag-drop-area {
+            border: 2px dashed #cbd5e1;
+            transition: all 0.3s ease;
+        }
+
+        .drag-drop-area.drag-over {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Top Navigation -->
+    <nav class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-3">
+                    <button id="menuToggle" class="lg:hidden text-white">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <i class="fas fa-user-shield text-2xl"></i>
+                    <h1 class="text-xl font-bold">Acadify Admin</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="userName" class="hidden md:inline font-medium"></span>
+                    <button id="logoutBtn"
+                        class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg text-sm font-semibold transition transform hover:scale-105">
+                        <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-6">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- Sidebar -->
+            <aside id="sidebar" class="lg:w-64 mobile-menu">
+                <div class="bg-white rounded-xl shadow-md p-4 sticky top-24">
+                    <nav class="space-y-2">
+                        <a href="#" class="nav-link sidebar-active flex items-center px-4 py-3 rounded-lg transition"
+                            data-section="dashboard">
+                            <i class="fas fa-tachometer-alt w-6"></i>
+                            <span class="ml-3">Dashboard</span>
+                        </a>
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition"
+                            data-section="students">
+                            <i class="fas fa-user-graduate w-6"></i>
+                            <span class="ml-3">Students</span>
+                        </a>
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition"
+                            data-section="faculty">
+                            <i class="fas fa-chalkboard-teacher w-6"></i>
+                            <span class="ml-3">Faculty</span>
+                        </a>
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition"
+                            data-section="programs">
+                            <i class="fas fa-graduation-cap w-6"></i>
+                            <span class="ml-3">Programs</span>
+                        </a>
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition"
+                            data-section="results">
+                            <i class="fas fa-chart-bar w-6"></i>
+                            <span class="ml-3">Results</span>
+                        </a>
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition"
+                            data-section="reports">
+                            <i class="fas fa-file-alt w-6"></i>
+                            <span class="ml-3">Reports</span>
+                        </a>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1">
+                <!-- Dashboard Section -->
+                <div id="dashboardSection" class="content-section">
+                    <h2 class="text-3xl font-bold mb-6 text-gray-800">Dashboard Overview</h2>
+
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div
+                            class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-blue-100 text-sm">Total Students</p>
+                                    <p class="text-4xl font-bold mt-2" id="totalStudents">0</p>
+                                </div>
+                                <div class="bg-blue-400 bg-opacity-50 p-3 rounded-lg">
+                                    <i class="fas fa-users text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-green-100 text-sm">Total Faculty</p>
+                                    <p class="text-4xl font-bold mt-2" id="totalFaculty">0</p>
+                                </div>
+                                <div class="bg-green-400 bg-opacity-50 p-3 rounded-lg">
+                                    <i class="fas fa-chalkboard-teacher text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-purple-100 text-sm">Programs</p>
+                                    <p class="text-4xl font-bold mt-2" id="totalPrograms">0</p>
+                                </div>
+                                <div class="bg-purple-400 bg-opacity-50 p-3 rounded-lg">
+                                    <i class="fas fa-graduation-cap text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-orange-100 text-sm">Active Courses</p>
+                                    <p class="text-4xl font-bold mt-2" id="totalCourses">0</p>
+                                </div>
+                                <div class="bg-orange-400 bg-opacity-50 p-3 rounded-lg">
+                                    <i class="fas fa-book text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                        <h3 class="text-xl font-bold mb-4 text-gray-800">Quick Actions</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                            <button onclick="showSection('students')"
+                                class="flex flex-col items-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition">
+                                <i class="fas fa-user-plus text-3xl text-blue-600 mb-2"></i>
+                                <span class="text-sm font-medium text-gray-700">Add Student</span>
+                            </button>
+                            <button onclick="showSection('faculty')"
+                                class="flex flex-col items-center p-4 bg-green-50 hover:bg-green-100 rounded-lg transition">
+                                <i class="fas fa-user-tie text-3xl text-green-600 mb-2"></i>
+                                <span class="text-sm font-medium text-gray-700">Add Faculty</span>
+                            </button>
+                            <button onclick="showAddProgramModal()"
+                                class="flex flex-col items-center p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition">
+                                <i class="fas fa-plus-circle text-3xl text-purple-600 mb-2"></i>
+                                <span class="text-sm font-medium text-gray-700">Add Program</span>
+                            </button>
+                            <button onclick="showSection('results')"
+                                class="flex flex-col items-center p-4 bg-orange-50 hover:bg-orange-100 rounded-lg transition">
+                                <i class="fas fa-upload text-3xl text-orange-600 mb-2"></i>
+                                <span class="text-sm font-medium text-gray-700">Publish Results</span>
+                            </button>
+                            <button onclick="showSection('reports')"
+                                class="flex flex-col items-center p-4 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition">
+                                <i class="fas fa-chart-line text-3xl text-indigo-600 mb-2"></i>
+                                <span class="text-sm font-medium text-gray-700">View Reports</span>
+                            </button>
+                            <button onclick="showBulkUploadModal()"
+                                class="flex flex-col items-center p-4 bg-pink-50 hover:bg-pink-100 rounded-lg transition">
+                                <i class="fas fa-file-excel text-3xl text-pink-600 mb-2"></i>
+                                <span class="text-sm font-medium text-gray-700">Bulk Upload</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <h3 class="text-xl font-bold mb-4 text-gray-800">Recent Activity</h3>
+                        <div id="recentActivity" class="space-y-3">
+                            <p class="text-gray-500 text-center py-4">No recent activity</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Students Section -->
+                <div id="studentsSection" class="content-section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">Student Management</h2>
+                        <div class="flex gap-2">
+                            <button onclick="showBulkUploadModal()"
+                                class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-lg">
+                                <i class="fas fa-file-excel mr-2"></i>Bulk Upload
+                            </button>
+                            <button onclick="showAddStudentModal()"
+                                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-lg">
+                                <i class="fas fa-plus mr-2"></i>Add Student
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-md p-4 mb-4">
+                        <div class="flex flex-wrap gap-3 mb-3">
+                            <input type="text" id="studentSearch" placeholder="Search students..."
+                                class="flex-1 min-w-[200px] px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <select id="studentProgramFilter"
+                                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="">All Programs</option>
+                            </select>
+                            <select id="studentSemesterFilter"
+                                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="">All Semesters</option>
+                                <option value="1">Semester 1</option>
+                                <option value="2">Semester 2</option>
+                                <option value="3">Semester 3</option>
+                                <option value="4">Semester 4</option>
+                                <option value="5">Semester 5</option>
+                                <option value="6">Semester 6</option>
+                            </select>
+                            <button onclick="applyStudentFilters()"
+                                class="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">
+                                <i class="fas fa-filter mr-2"></i>Filter
+                            </button>
+                        </div>
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2 text-sm text-blue-800">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>Export will download students based on current filters</span>
+                                </div>
+                                <button onclick="exportFilteredStudents()"
+                                    class="px-6 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition">
+                                    <i class="fas fa-download mr-2"></i>Export Filtered
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            Student</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            Email</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            Program</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            Semester</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentsTableBody" class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">Loading students...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Faculty Section -->
+                <div id="facultySection" class="content-section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">Faculty Management</h2>
+                        <button onclick="showAddFacultyModal()"
+                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-lg">
+                            <i class="fas fa-plus mr-2"></i>Add Faculty
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            Faculty</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            Email</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            Department</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="facultyTableBody" class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">Loading faculty...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Programs Section -->
+                <div id="programsSection" class="content-section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">Program Management</h2>
+                        <div class="flex gap-2">
+                            <button onclick="loadPrograms()"
+                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition">
+                                <i class="fas fa-sync mr-2"></i>Refresh
+                            </button>
+                            <button onclick="showAddProgramModal()"
+                                class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-lg">
+                                <i class="fas fa-plus mr-2"></i>Add Program
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-yellow-800">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>Debug Info:</strong> Total programs in storage: <span id="programCount">0</span>
+                            <button onclick="checkProgramsInStorage()"
+                                class="ml-4 text-blue-600 hover:text-blue-800 underline">Check Storage</button>
+                        </p>
+                    </div>
+
+                    <div id="programsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <p class="text-gray-500 text-center py-8 col-span-3">Loading programs...</p>
+                    </div>
+                </div>
+
+                <!-- Results Section -->
+                <div id="resultsSection" class="content-section hidden">
+                    <h2 class="text-3xl font-bold mb-6 text-gray-800">Publish Results</h2>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <!-- Publish Results Card -->
+                        <div class="bg-white rounded-xl shadow-md p-6">
+                            <h3 class="text-xl font-bold mb-4 text-gray-800">
+                                <i class="fas fa-upload text-orange-600 mr-2"></i>Publish New Results
+                            </h3>
+                            <form id="publishResultsForm" class="space-y-4">
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-2">Program *</label>
+                                    <select id="resultProgram" required
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+                                        <option value="">Select Program</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-2">Semester *</label>
+                                    <select id="resultSemester" required
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+                                        <option value="">Select Semester</option>
+                                        <option value="1">Semester 1</option>
+                                        <option value="2">Semester 2</option>
+                                        <option value="3">Semester 3</option>
+                                        <option value="4">Semester 4</option>
+                                        <option value="5">Semester 5</option>
+                                        <option value="6">Semester 6</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-2">Exam Type *</label>
+                                    <select id="resultExamType" required
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+                                        <option value="">Select Exam Type</option>
+                                        <option value="mid-term">Mid-Term</option>
+                                        <option value="end-term">End-Term</option>
+                                        <option value="internal">Internal Assessment</option>
+                                        <option value="final">Final Exam</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-2">Academic Year *</label>
+                                    <input type="text" id="resultYear" required placeholder="e.g., 2023-2024"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+                                </div>
+                                <button type="submit"
+                                    class="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-lg font-semibold transition">
+                                    <i class="fas fa-check mr-2"></i>Publish Results
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Published Results List -->
+                        <div class="bg-white rounded-xl shadow-md p-6">
+                            <h3 class="text-xl font-bold mb-4 text-gray-800">
+                                <i class="fas fa-list text-blue-600 mr-2"></i>Published Results
+                            </h3>
+                            <div id="publishedResultsList" class="space-y-3 max-h-96 overflow-y-auto">
+                                <p class="text-gray-500 text-center py-4">No results published yet</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results by Program -->
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <h3 class="text-xl font-bold mb-4 text-gray-800">Results by Program & Semester</h3>
+                        <div class="flex gap-3 mb-4">
+                            <select id="resultsFilterProgram"
+                                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+                                <option value="">All Programs</option>
+                            </select>
+                            <select id="resultsFilterSemester"
+                                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+                                <option value="">All Semesters</option>
+                                <option value="1">Semester 1</option>
+                                <option value="2">Semester 2</option>
+                                <option value="3">Semester 3</option>
+                                <option value="4">Semester 4</option>
+                                <option value="5">Semester 5</option>
+                                <option value="6">Semester 6</option>
+                            </select>
+                            <button onclick="filterResults()"
+                                class="px-6 py-2 bg-orange-600 text-white rounded-lg font-semibold hover:bg-orange-700 transition">
+                                <i class="fas fa-filter mr-2"></i>Filter
+                            </button>
+                        </div>
+                        <div id="resultsTable" class="overflow-x-auto">
+                            <p class="text-gray-500 text-center py-4">Select filters to view results</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Section -->
+                <div id="reportsSection" class="content-section hidden">
+                    <h2 class="text-3xl font-bold mb-6 text-gray-800">Reports & Analytics</h2>
+
+                    <!-- Report Filters -->
+                    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                        <h3 class="text-lg font-bold mb-4 text-gray-800">
+                            <i class="fas fa-filter text-blue-600 mr-2"></i>Report Filters
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2">Program</label>
+                                <select id="reportProgramFilter"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                    <option value="">All Programs</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2">Semester</label>
+                                <select id="reportSemesterFilter"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                    <option value="">All Semesters</option>
+                                    <option value="1">Semester 1</option>
+                                    <option value="2">Semester 2</option>
+                                    <option value="3">Semester 3</option>
+                                    <option value="4">Semester 4</option>
+                                    <option value="5">Semester 5</option>
+                                    <option value="6">Semester 6</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2">Report Type</label>
+                                <select id="reportTypeSelect"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Select Report Type</option>
+                                    <option value="students">Student Report</option>
+                                    <option value="faculty">Faculty Report</option>
+                                    <option value="attendance">Attendance Report</option>
+                                    <option value="results">Results Report</option>
+                                    <option value="programs">Programs Report</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex gap-3">
+                            <button onclick="generateFilteredReport()"
+                                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition">
+                                <i class="fas fa-download mr-2"></i>Generate Report
+                            </button>
+                            <button onclick="clearReportFilters()"
+                                class="px-6 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-semibold transition">
+                                <i class="fas fa-times mr-2"></i>Clear Filters
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Quick Report Cards -->
+                    <h3 class="text-lg font-bold mb-4 text-gray-800">Quick Reports (All Data)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition cursor-pointer"
+                            onclick="generateReport('students')">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-users text-2xl text-blue-600"></i>
+                                </div>
+                                <i class="fas fa-download text-gray-400"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-2">All Students</h3>
+                            <p class="text-sm text-gray-600">Complete list of all students</p>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition cursor-pointer"
+                            onclick="generateReport('faculty')">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-chalkboard-teacher text-2xl text-green-600"></i>
+                                </div>
+                                <i class="fas fa-download text-gray-400"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-2">All Faculty</h3>
+                            <p class="text-sm text-gray-600">Complete list of all faculty</p>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition cursor-pointer"
+                            onclick="generateReport('programs')">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-graduation-cap text-2xl text-indigo-600"></i>
+                                </div>
+                                <i class="fas fa-download text-gray-400"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-2">All Programs</h3>
+                            <p class="text-sm text-gray-600">All programs with details</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Bulk Upload Modal -->
+    <div id="bulkUploadModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl p-8 max-w-2xl w-full max-h-screen overflow-y-auto animate-slide-in">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Bulk Upload Students</h3>
+                <button onclick="hideModal('bulkUploadModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Download Template -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 class="font-semibold text-blue-900 mb-2">
+                        <i class="fas fa-info-circle mr-2"></i>Step 1: Download Template
+                    </h4>
+                    <p class="text-sm text-blue-800 mb-3">Download the Excel template and fill in student details</p>
+                    <button onclick="downloadTemplate()"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition">
+                        <i class="fas fa-download mr-2"></i>Download Excel Template
+                    </button>
+                </div>
+
+                <!-- Upload File -->
+                <div>
+                    <h4 class="font-semibold text-gray-900 mb-2">
+                        <i class="fas fa-upload mr-2"></i>Step 2: Upload Filled Template
+                    </h4>
+                    <div id="dropZone"
+                        class="drag-drop-area border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 transition">
+                        <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-4"></i>
+                        <p class="text-gray-600 mb-2">Drag and drop your Excel file here</p>
+                        <p class="text-sm text-gray-500 mb-4">or</p>
+                        <label for="fileInput"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold cursor-pointer inline-block transition">
+                            <i class="fas fa-folder-open mr-2"></i>Browse Files
+                        </label>
+                        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" class="hidden">
+                        <p class="text-xs text-gray-500 mt-4">Supported formats: Excel (.xlsx, .xls), CSV (.csv)</p>
+                    </div>
+                    <div id="fileInfo" class="hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fas fa-file-excel text-green-600 text-2xl mr-3"></i>
+                                <div>
+                                    <p class="font-semibold text-green-900" id="fileName"></p>
+                                    <p class="text-sm text-green-700" id="fileSize"></p>
+                                </div>
+                            </div>
+                            <button onclick="clearFile()" class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload Button -->
+                <div class="flex gap-3">
+                    <button id="uploadBtn" onclick="uploadBulkStudents()" disabled
+                        class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold transition disabled:bg-gray-300 disabled:cursor-not-allowed">
+                        <i class="fas fa-upload mr-2"></i>Upload Students
+                    </button>
+                    <button onclick="hideModal('bulkUploadModal')"
+                        class="px-6 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-semibold transition">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Program Modal -->
+    <div id="addProgramModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl p-8 max-w-2xl w-full max-h-screen overflow-y-auto animate-slide-in">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Add New Program</h3>
+                <button onclick="hideModal('addProgramModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+
+            <form id="addProgramForm" class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Program Name *</label>
+                    <input type="text" id="programName" required placeholder="e.g., Bachelor of Computer Applications"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Program Code *</label>
+                    <input type="text" id="programCode" required placeholder="e.g., BCA"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Duration (Years) *</label>
+                    <input type="number" id="programDuration" required min="1" max="6" value="3"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Total Semesters *</label>
+                    <input type="number" id="programSemesters" required min="2" max="12" value="6"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Department</label>
+                    <input type="text" id="programDepartment" placeholder="e.g., Computer Science"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Description</label>
+                    <textarea id="programDescription" rows="3" placeholder="Brief description of the program"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"></textarea>
+                </div>
+                <div class="flex gap-3 mt-6">
+                    <button type="submit"
+                        class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold transition">
+                        <i class="fas fa-plus mr-2"></i>Add Program
+                    </button>
+                    <button type="button" onclick="hideModal('addProgramModal')"
+                        class="px-6 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-semibold transition">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Student Modal -->
+    <div id="addStudentModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl p-8 max-w-2xl w-full max-h-screen overflow-y-auto animate-slide-in">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Add New Student</h3>
+                <button onclick="hideModal('addStudentModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+
+            <form id="addStudentForm" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Full Name *</label>
+                        <input type="text" id="studentName" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Email *</label>
+                        <input type="email" id="studentEmail" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Roll Number *</label>
+                        <input type="text" id="studentRoll" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Program *</label>
+                        <select id="studentProgram" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <i class="fas fa-plus mr-2"></i>Add Student
+                            </button>
+                            <button type="button" onclick="hideModal('addStudentModal')"
+                                class="px-6 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-semibold transition">
+                                Cancel
+                            </button>
+                    </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Faculty Modal -->
+    <div id="addFacultyModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl p-8 max-w-2xl w-full max-h-screen overflow-y-auto animate-slide-in">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Add New Faculty</h3>
+                <button onclick="hideModal('addFacultyModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+
+            <form id="addFacultyForm" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Full Name *</label>
+                        <input type="text" id="facultyName" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Email *</label>
+                        <input type="email" id="facultyEmail" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Department *</label>
+                        <input type="text" id="facultyDepartment" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Designation</label>
+                        <input type="text" id="facultyDesignation" placeholder="e.g., Professor"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Phone</label>
+                    <input type="tel" id="facultyPhone"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                </div>
+                <div class="flex gap-3 mt-6">
+                    <button type="submit"
+                        class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold transition">
+                        <i class="fas fa-plus mr-2"></i>Add Faculty
+                    </button>
+                    <button type="button" onclick="hideModal('addFacultyModal')"
+                        class="px-6 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-semibold transition">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Manage Subjects Modal -->
+    <div id="manageSubjectsModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl p-8 max-w-2xl w-full max-h-screen overflow-y-auto animate-slide-in">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Manage Teaching Assignments</h3>
+                <button onclick="hideModal('manageSubjectsModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+
+            <div class="mb-6 bg-blue-50 p-4 rounded-lg">
+                <h4 class="font-semibold text-blue-900" id="subjectFacultyName">Faculty Name</h4>
+                <p class="text-sm text-blue-700" id="subjectFacultyDept">Department</p>
+            </div>
+
+            <form id="assignSubjectForm" class="space-y-4 mb-8 border-b pb-8">
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Program</label>
+                        <select id="assignProgram" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select Program</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Semester</label>
+                        <select id="assignSemester" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select Semester</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Subject</label>
+                        <input type="text" id="assignSubject" required placeholder="e.g., C++"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold transition">
+                    <i class="fas fa-plus mr-2"></i>Assign Subject
+                </button>
+            </form>
+
+            <div>
+                <h4 class="font-bold text-gray-800 mb-4">Current Assignments</h4>
+                <div id="assignmentsList" class="space-y-3">
+                    <p class="text-gray-500 text-center py-4">No subjects assigned yet</p>
+                </div>
+            </div>
+
+            <div class="mt-6 text-right">
+                <button onclick="hideModal('manageSubjectsModal')"
+                    class="px-6 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 rounded-lg font-semibold transition">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin-dashboard-v2.js"></script>
+</body>
+
+</html>

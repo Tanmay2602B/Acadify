@@ -372,13 +372,18 @@
                 title,
                 subject,
                 program,
-                semester,
+                semester: parseInt(semester),
                 duration,
+                total_marks: questions.reduce((sum, q) => sum + (q.marks || 1), 0), // Calculate total marks
                 start_time: startTime,
                 end_time: new Date(new Date(startTime).getTime() + duration * 60000).toISOString(),
                 description,
-                questions
+                questions,
+                anti_cheat_enabled: true,
+                randomize_questions: true
             };
+
+            console.log('Creating quiz with payload:', payload); // Debug
 
             try {
                 const response = await fetch('/api/exams/create', {

@@ -3,7 +3,9 @@ const {
   createQuiz,
   submitQuiz,
   getQuizResults,
-  getStudentQuizResult
+  getStudentQuizResult,
+  getAvailableQuizzes,
+  getQuizForTaking
 } = require('../controllers/quiz.mongo.controller');
 const { authenticate, authorizeFaculty, authorizeStudent } = require('../middlewares/auth');
 
@@ -16,6 +18,8 @@ router.post('/', authorizeFaculty, createQuiz);
 router.get('/:exam_id/results', authorizeFaculty, getQuizResults);
 
 // Student routes
+router.get('/available', authorizeStudent, getAvailableQuizzes);
+router.get('/:exam_id/take', authorizeStudent, getQuizForTaking);
 router.post('/:exam_id/submit', authorizeStudent, submitQuiz);
 router.get('/:exam_id/result', authorizeStudent, getStudentQuizResult);
 

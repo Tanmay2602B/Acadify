@@ -18,7 +18,8 @@ const studentSchema = new mongoose.Schema({
   },
   enrollment_number: {
     type: String,
-    unique: true
+    unique: true,
+    sparse: true
   },
   program: {
     type: String,

@@ -1,4 +1,5 @@
 const User = require('../models/User.mongo');
+const Faculty = require('../models/Faculty.mongo');
 const Joi = require('joi');
 
 // Validation schemas
@@ -7,7 +8,10 @@ const registerSchema = Joi.object({
   email: Joi.string().email().required(),
   role: Joi.string().valid('admin', 'faculty', 'student').required(),
   program: Joi.string().optional(),
-  semester: Joi.string().optional()
+  semester: Joi.string().optional(),
+  department: Joi.string().allow('').optional(),
+  designation: Joi.string().allow('').optional(),
+  phone: Joi.string().allow('').optional()
 });
 
 const loginSchema = Joi.object({
@@ -23,35 +27,53 @@ const register = async (req, res) => {
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
-    
-    const { name, email, role, program, semester } = req.body;
-    
+
+    const { name, email, role, program, semester, department, designation, phone } = req.body;
+
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists with this email' });
     }
-    
+
     // Generate random password
     const password = Math.random().toString(36).slice(-8);
-    
+
     // Create user
-    const userData = { 
+    const userData = {
       user_id: generateUserId(role),
-      name, 
-      email, 
-      password, 
-      role, 
-      program, 
-      semester 
+      name,
+      email,
+      password,
+      role,
+      program,
+      semester,
+      department,
+      designation,
+      phone
     };
-    
+
     const user = new User(userData);
     await user.save();
-    
+
+    // If role is faculty, create Faculty profile
+    if (role === 'faculty') {
+      const faculty = new Faculty({
+        faculty_id: user.user_id,
+        user_id: user.user_id,
+        employee_id: user.user_id, // Use user_id as employee_id for now
+        department: department || 'General',
+        designation: designation,
+        phone: phone,
+        status: 'offline',
+        active_status: 'active'
+      });
+      await faculty.save();
+    }
+
     // Generate token
     const token = user.generateToken();
-    
+
     res.status(201).json({
       message: 'User registered successfully',
       token,
@@ -81,24 +103,24 @@ const login = async (req, res) => {
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
-    
+
     const { email, password } = req.body;
-    
+
     // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
-    
+
     // Check password
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
-    
+
     // Generate token
     const token = user.generateToken();
-    
+
     res.json({
       message: 'Logged in successfully',
       token,
@@ -123,7 +145,7 @@ const getProfile = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    
+
     res.json({
       user: {
         id: user._id,
@@ -157,7 +179,7 @@ const generateUserId = (role) => {
     default:
       userIdPrefix = 'USR';
   }
-  
+
   return userIdPrefix + Date.now().toString().slice(-6);
 };
 

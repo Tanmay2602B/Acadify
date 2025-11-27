@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Quiz - Acadify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .question-card {
+            transition: all 0.3s ease;
+        }
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+        }
+        .step-indicator {
+            opacity: 0.5;
+        }
+        .step-indicator.active {
+            opacity: 1;
+            font-weight: bold;
+        }
+        .step-indicator.completed {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="p-6">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="glass rounded-2xl p-6 mb-6 shadow-xl">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800">
+                        <i class="fas fa-clipboard-list text-purple-600 mr-3"></i>Create Quiz
+                    </h1>
+                    <p class="text-gray-600 mt-1">Design your assessment with anti-cheat features</p>
+                </div>
+                <a href="dashboard-enhanced.html" class="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-semibold transition">
+                    <i class="fas fa-arrow-left mr-2"></i>Back
+                </a>
+            </div>
+            
+            <!-- Step Indicator -->
+            <div class="flex justify-center mt-6 space-x-4">
+                <div class="step-indicator active flex items-center" id="step1-indicator">
+                    <div class="w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold mr-2">1</div>
+                    <span class="text-gray-700">Quiz Details</span>
+                </div>
+                <div class="w-16 h-1 bg-gray-300 self-center"></div>
+                <div class="step-indicator flex items-center" id="step2-indicator">
+                    <div class="w-10 h-10 rounded-full bg-gray-300 text-white flex items-center justify-center font-bold mr-2">2</div>
+                    <span class="text-gray-700">Add Questions</span>
+                </div>
+                <div class="w-16 h-1 bg-gray-300 self-center"></div>
+                <div class="step-indicator flex items-center" id="step3-indicator">
+                    <div class="w-10 h-10 rounded-full bg-gray-300 text-white flex items-center justify-center font-bold mr-2">3</div>
+                    <span class="text-gray-700">Review & Publish</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 1: Quiz Basic Info -->
+        <div id="step1" class="step active glass rounded-2xl p-6 mb-6 shadow-xl">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                <i class="fas fa-info-circle text-blue-600 mr-2"></i>Quiz Information
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Quiz Title *</label>
+                    <input type="text" id="quizTitle" placeholder="e.g., Data Structures Mid-Term" 
+                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Subject *</label>
+                    <input type="text" id="quizSubject" placeholder="e.g., Computer Science" 
+                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Program *</label>
+                    <select id="quizProgram" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none">
+                        <option value="">Select Program</option>
+                        <option value="BCA">BCA</option>
+                        <option value="MCA">MCA</option>
+                        <option value="B.Tech">B.Tech</option>
+                        <option value="M.Tech">M.Tech</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Semester *</label>
+                    <select id="quizSemester" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none">
+                        <option value="">Select Semester</option>
+                        <option value="1">Semester 1</option>
+                        <option value="2">Semester 2</option>
+                        <option value="3">Semester 3</option>
+                        <option value="4">Semester 4</option>
+                        <option value="5">Semester 5</option>
+                        <option value="6">Semester 6</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Duration (minutes) *</label>
+                    <input type="number" id="quizDuration" placeholder="e.g., 60" min="1" 
+                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Scheduled Date & Time *</label>
+                    <input type="datetime-local" id="quizSchedule" 
+                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none">
+                </div>
+            </div>
+            
+            <div class="mt-6">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                <textarea id="quizDescription" rows="3" placeholder="Brief description of the quiz..." 
+                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none"></textarea>
+            </div>
+            
+            <!-- Anti-Cheat Settings -->
+            <div class="mt-6 p-4 bg-red-50 border-2 border-red-200 rounded-lg">
+                <h3 class="text-lg font-bold text-red-800 mb-3">
+                    <i class="fas fa-shield-alt mr-2"></i>Anti-Cheat Features (Always Enabled)
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                        <span class="text-gray-700">Tab switch detection</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                        <span class="text-gray-700">Full-screen mode required</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                        <span class="text-gray-700">Copy-paste disabled</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                        <span class="text-gray-700">Right-click disabled</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                        <span class="text-gray-700">Randomized questions</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                        <span class="text-gray-700">Time limit enforced</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Next Button -->
+            <div class="mt-6 flex justify-end">
+                <button onclick="goToStep(2)" class="px-8 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-bold text-lg shadow-lg transition">
+                    Next: Add Questions <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: Questions Section -->
+        <div id="step2" class="step glass rounded-2xl p-6 mb-6 shadow-xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">
+                    <i class="fas fa-question-circle text-green-600 mr-2"></i>Questions
+                    <span id="questionCount" class="text-lg text-gray-600 ml-2">(0)</span>
+                </h2>
+                <button onclick="addQuestion()" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition">
+                    <i class="fas fa-plus mr-2"></i>Add Question
+                </button>
+            </div>
+            
+            <div id="questionsContainer" class="space-y-6">
+                <!-- Questions will be added here -->
+                <div class="text-center py-12 text-gray-500">
+                    <i class="fas fa-question-circle text-6xl mb-4"></i>
+                    <p class="text-xl">No questions added yet</p>
+                    <p class="text-sm mt-2">Click "Add Question" button above to start</p>
+                </div>
+            </div>
+            
+            <!-- Navigation Buttons -->
+            <div class="mt-6 flex justify-between">
+                <button onclick="goToStep(1)" class="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-semibold transition">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Details
+                </button>
+                <button onclick="goToStep(3)" class="px-8 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-bold text-lg shadow-lg transition">
+                    Next: Review & Publish <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 3: Review & Publish -->
+        <div id="step3" class="step glass rounded-2xl p-6 shadow-xl">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                <i class="fas fa-check-circle text-green-600 mr-2"></i>Review Quiz
+            </h2>
+            
+            <!-- Quiz Summary -->
+            <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-6 mb-6">
+                <h3 class="text-xl font-bold text-blue-800 mb-4">Quiz Summary</h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div>
+                        <p class="text-sm text-gray-600">Title</p>
+                        <p class="font-bold text-gray-800" id="reviewTitle">-</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Subject</p>
+                        <p class="font-bold text-gray-800" id="reviewSubject">-</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Program</p>
+                        <p class="font-bold text-gray-800" id="reviewProgram">-</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Semester</p>
+                        <p class="font-bold text-gray-800" id="reviewSemester">-</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Duration</p>
+                        <p class="font-bold text-gray-800" id="reviewDuration">-</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Scheduled</p>
+                        <p class="font-bold text-gray-800" id="reviewSchedule">-</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Questions Summary -->
+            <div class="bg-green-50 border-2 border-green-200 rounded-lg p-6 mb-6">
+                <h3 class="text-xl font-bold text-green-800 mb-4">Questions Summary</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-sm text-gray-600">Total Questions</p>
+                        <p class="text-3xl font-bold text-green-600" id="totalQuestions">0</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Total Marks</p>
+                        <p class="text-3xl font-bold text-green-600" id="totalMarks">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center">
+                <button onclick="goToStep(2)" class="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-semibold transition">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Questions
+                </button>
+                <button onclick="publishQuiz()" class="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg font-bold text-lg shadow-lg transition transform hover:scale-105">
+                    <i class="fas fa-rocket mr-2"></i>Publish Quiz for Program & Semester
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="create-quiz-enhanced.js"></script>
+</body>
+</html>

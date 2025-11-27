@@ -15,7 +15,8 @@ const router = express.Router();
 // Configure Multer for local storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'public/uploads/resources/');
+        const uploadPath = path.join(__dirname, '../public/uploads/resources/');
+        cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -25,22 +26,51 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit for resources
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit for resources
     fileFilter: (req, file, cb) => {
-        // Allow more file types for resources
-        const filetypes = /pdf|doc|docx|ppt|pptx|txt|jpg|jpeg|png|mp4|zip|rar/;
-        const mimetype = filetypes.test(file.mimetype);
-        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+        // Allowed MIME types for resources
+        const allowedMimeTypes = [
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-powerpoint',
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'text/plain',
+            'image/jpeg',
+            'image/jpg',
+            'image/png',
+            'video/mp4',
+            'application/zip',
+            'application/x-zip-compressed',
+            'application/x-rar-compressed',
+            'application/octet-stream' // For some file types
+        ];
 
-        if (mimetype && extname) {
+        // Check file extension as fallback
+        const extname = /\.(pdf|doc|docx|ppt|pptx|txt|jpg|jpeg|png|mp4|zip|rar)$/i.test(file.originalname);
+
+        if (allowedMimeTypes.includes(file.mimetype) || extname) {
             return cb(null, true);
         }
-        cb(new Error('Error: File type not supported!'));
+        cb(new Error('File type not supported! Allowed: PDF, DOC, DOCX, PPT, PPTX, TXT, JPG, PNG, MP4, ZIP, RAR'));
     }
 });
 
 // Routes
-router.post('/upload', authenticate, authorizeFaculty, upload.single('file'), uploadResource);
+router.post('/upload', authenticate, authorizeFaculty, (req, res, next) => {
+    upload.single('file')(req, res, (err) => {
+        if (err instanceof multer.MulterError) {
+            if (err.code === 'LIMIT_FILE_SIZE') {
+                return res.status(400).json({ message: 'File size too large. Maximum size is 10MB.' });
+            }
+            return res.status(400).json({ message: 'File upload error: ' + err.message });
+        } else if (err) {
+            return res.status(400).json({ message: err.message });
+        }
+        next();
+    });
+}, uploadResource);
+
 router.get('/faculty', authenticate, authorizeFaculty, getFacultyResources);
 router.get('/student', authenticate, authorizeStudent, getStudentResources);
 router.delete('/:id', authenticate, authorizeFaculty, deleteResource);

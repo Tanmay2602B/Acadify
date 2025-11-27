@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting to Enhanced Dashboard...</title>
+    <script>
+        // Redirect to enhanced dashboard
+        window.location.href = 'dashboard-enhanced.html';
+    </script>
+</head>
+<body class="bg-gray-50">
+    <!-- Top Navigation -->
+    <nav class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-3">
+                    <button id="menuToggle" class="lg:hidden text-white">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <i class="fas fa-chalkboard-teacher text-2xl"></i>
+                    <h1 class="text-xl font-bold">Acadify Faculty</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="userName" class="hidden md:inline font-medium"></span>
+                    <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg text-sm font-semibold transition transform hover:scale-105">
+                        <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-6">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- Sidebar -->
+            <aside id="sidebar" class="lg:w-64 mobile-menu">
+                <div class="bg-white rounded-xl shadow-md p-4 sticky top-24">
+                    <nav class="space-y-2">
+                        <a href="#" class="nav-link sidebar-active flex items-center px-4 py-3 rounded-lg transition" data-section="dashboard">
+                            <i class="fas fa-tachometer-alt w-6"></i>
+                            <span class="ml-3">Dashboard</span>
+                        </a>
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition" data-section="students">
+                            <i class="fas fa-user-graduate w-6"></i>
+                            <span class="ml-3">Students</span>
+                        </a>
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition" data-section="meetings">
+                            <i class="fas fa-video w-6"></i>
+                            <span class="ml-3">Meetings</span>
+                        </a>
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition" data-section="quizzes">
+                            <i class="fas fa-file-alt w-6"></i>
+                            <span class="ml-3">Quizzes</span>
+                        </a>
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition" data-section="announcements">
+                            <i class="fas fa-bullhorn w-6"></i>
+                            <span class="ml-3">Announcements</span>
+                        </a>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1">
+                <!-- Dashboard Section -->
+                <div id="dashboardSection" class="content-section">
+                    <h2 class="text-3xl font-bold mb-6 text-gray-800">Dashboard Overview</h2>
+                    
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-blue-100 text-sm">Total Students</p>
+                                    <p class="text-4xl font-bold mt-2" id="totalStudents">0</p>
+                                </div>
+                                <div class="bg-blue-400 bg-opacity-50 p-3 rounded-lg">
+                                    <i class="fas fa-users text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-green-100 text-sm">Meetings</p>
+                                    <p class="text-4xl font-bold mt-2" id="totalMeetings">0</p>
+                                </div>
+                                <div class="bg-green-400 bg-opacity-50 p-3 rounded-lg">
+                                    <i class="fas fa-video text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-purple-100 text-sm">Quizzes</p>
+                                    <p class="text-4xl font-bold mt-2" id="totalQuizzes">0</p>
+                                </div>
+                                <div class="bg-purple-400 bg-opacity-50 p-3 rounded-lg">
+                                    <i class="fas fa-file-alt text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-orange-100 text-sm">Announcements</p>
+                                    <p class="text-4xl font-bold mt-2" id="totalAnnouncements">0</p>
+                                </div>
+                                <div class="bg-orange-400 bg-opacity-50 p-3 rounded-lg">
+                                    <i class="fas fa-bullhorn text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                        <h3 class="text-xl font-bold mb-4 text-gray-800">Quick Actions</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                            <button onclick="showSection('students')" class="flex flex-col items-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition">
+                                <i class="fas fa-users text-3xl text-blue-600 mb-2"></i>
+                                <span class="text-sm font-medium text-gray-700">Students</span>
+                            </button>
+                            <button onclick="showCreateMeetingModal()" class="flex flex-col items-center p-4 bg-green-50 hover:bg-green-100 rounded-lg transition">
+                                <i class="fas fa-video text-3xl text-green-600 mb-2"></i>
+                                <span class="text-sm font-medium text-gray-700">New Meeting</span>
+                            </button>
+                            <button onclick="showCreateQuizModal()" class="flex flex-col items-center p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition">
+                                <i class="fas fa-plus-circle text-3xl text-purple-600 mb-2"></i>
+                                <span class="text-sm font-medium text-gray-700">New Quiz</span>
+                            </button>
+                            <button onclick="showCreateAnnouncementModal()" class="flex flex-col items-center p-4 bg-orange-50 hover:bg-orange-100 rounded-lg transition">
+                                <i class="fas fa-bullhorn text-3xl text-orange-600 mb-2"></i>
+                                <span class="text-sm font-medium text-gray-700">Announce</span>
+                            </button>
+                            <button onclick="showSection('announcements')" class="flex flex-col items-center p-4 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition">
+                                <i class="fas fa-list text-3xl text-indigo-600 mb-2"></i>
+                                <span class="text-sm font-medium text-gray-700">View All</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Students Section -->
+                <div id="studentsSection" class="content-section hidden">
+                    <h2 class="text-3xl font-bold mb-6 text-gray-800">My Students</h2>
+                    
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Student</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Program</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Semester</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentsTableBody" class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">Loading students...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meetings Section -->
+                <div id="meetingsSection" class="content-section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">Meetings</h2>
+                        <button onclick="showCreateMeetingModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-lg">
+                            <i class="fas fa-plus mr-2"></i>Create Meeting
+                        </button>
+                    </div>
+                    
+                    <div id="meetingsList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <p class="text-gray-500 text-center py-8 col-span-2">Loading meetings...</p>
+                    </div>
+                </div>
+
+                <!-- Quizzes Section -->
+                <div id="quizzesSection" class="content-section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">Quizzes</h2>
+                        <button onclick="showCreateQuizModal()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-lg">
+                            <i class="fas fa-plus mr-2"></i>Create Quiz
+                        </button>
+                    </div>
+                    
+                    <div id="quizzesList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <p class="text-gray-500 text-center py-8 col-span-2">Loading quizzes...</p>
+                    </div>
+                </div>
+
+                <!-- Announcements Section -->
+                <div id="announcementsSection" class="content-section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">Announcements</h2>
+                        <button onclick="showCreateAnnouncementModal()" class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-lg">
+                            <i class="fas fa-plus mr-2"></i>New Announcement
+                        </button>
+                    </div>
+                    
+                    <div id="announcementsList" class="space-y-4">
+                        <p class="text-gray-500 text-center py-8">Loading announcements...</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Create Meeting Modal -->
+    <div id="createMeetingModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl p-8 max-w-2xl w-full max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Create Meeting</h3>
+                <button onclick="hideModal('createMeetingModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <form id="meetingForm" class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Title *</label>
+                    <input type="text" id="meetingTitle" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Description</label>
+                    <textarea id="meetingDescription" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Program *</label>
+                        <select id="meetingProgram" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select Program</option>
+                            <option value="BCA">BCA</option>
+                            <option value="MCA">MCA</option>
+                            <option value="BSc">BSc</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Semester *</label>
+                        <select id="meetingSemester" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select Semester</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Subject *</label>
+                    <input type="text" id="meetingSubject" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Date & Time *</label>
+                        <input type="datetime-local" id="meetingTime" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Duration (minutes) *</label>
+                        <input type="number" id="meetingDuration" required value="60" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <div class="flex gap-3 mt-6">
+                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition">
+                        <i class="fas fa-video mr-2"></i>Create Meeting
+                    </button>
+                    <button type="button" onclick="hideModal('createMeetingModal')" class="px-6 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-semibold transition">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Announcement Modal -->
+    <div id="createAnnouncementModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl p-8 max-w-2xl w-full max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Create Announcement</h3>
+                <button onclick="hideModal('createAnnouncementModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <form id="announcementForm" class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Title *</label>
+                    <input type="text" id="announcementTitle" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Message *</label>
+                    <textarea id="announcementMessage" required rows="5" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Program *</label>
+                        <select id="announcementProgram" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+                            <option value="">Select Program</option>
+                            <option value="BCA">BCA</option>
+                            <option value="MCA">MCA</option>
+                            <option value="BSc">BSc</option>
+                            <option value="all">All Programs</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Semester *</label>
+                        <select id="announcementSemester" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+                            <option value="">Select Semester</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="all">All Semesters</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex gap-3 mt-6">
+                    <button type="submit" class="flex-1 bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-lg font-semibold transition">
+                        <i class="fas fa-bullhorn mr-2"></i>Post Announcement
+                    </button>
+                    <button type="button" onclick="hideModal('createAnnouncementModal')" class="px-6 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-semibold transition">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Quiz Modal (Simplified) -->
+    <div id="createQuizModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl p-8 max-w-md w-full">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Create Quiz</h3>
+                <button onclick="hideModal('createQuizModal')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            <p class="text-gray-600 mb-4">Quiz creation feature coming soon. You can create quizzes using the API endpoint.</p>
+            <button onclick="hideModal('createQuizModal')" class="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-semibold transition">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <script src="faculty-new.js"></script>
+</body>
+</html>

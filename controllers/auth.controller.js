@@ -7,7 +7,10 @@ const registerSchema = Joi.object({
   email: Joi.string().email().required(),
   role: Joi.string().valid('admin', 'faculty', 'student').required(),
   program: Joi.string().optional(),
-  semester: Joi.string().optional()
+  semester: Joi.string().optional(),
+  department: Joi.string().allow('').optional(),
+  designation: Joi.string().allow('').optional(),
+  phone: Joi.string().allow('').optional()
 });
 
 const loginSchema = Joi.object({
@@ -23,23 +26,23 @@ const register = async (req, res) => {
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
-    
-    const { name, email, role, program, semester } = req.body;
-    
+
+    const { name, email, role, program, semester, department, designation, phone } = req.body;
+
     // Check if user already exists
     const existingUser = await User.findByEmail(email);
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists with this email' });
     }
-    
+
     // Create user
-    const userData = { name, email, role, program, semester };
+    const userData = { name, email, role, program, semester, department, designation, phone };
     const { userId, password } = await User.create(userData);
-    
+
     // Generate token
     const user = await User.findByEmail(email);
     const token = User.generateToken(user);
-    
+
     res.status(201).json({
       message: 'User registered successfully',
       token,
@@ -58,7 +61,7 @@ const register = async (req, res) => {
   } catch (error) {
     console.error('Registration error:', error.message);
     if (error.message.includes('Database')) {
-      return res.status(500).json({ 
+      return res.status(500).json({
         message: 'Database connection failed. Please check your database configuration.',
         detail: error.message
       });
@@ -75,24 +78,24 @@ const login = async (req, res) => {
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
-    
+
     const { email, password } = req.body;
-    
+
     // Check if user exists
     const user = await User.findByEmail(email);
     if (!user) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
-    
+
     // Check password
     const isMatch = await User.comparePassword(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
-    
+
     // Generate token
     const token = User.generateToken(user);
-    
+
     res.json({
       message: 'Logged in successfully',
       token,
@@ -107,7 +110,7 @@ const login = async (req, res) => {
   } catch (error) {
     console.error('Login error:', error.message);
     if (error.message.includes('Database')) {
-      return res.status(500).json({ 
+      return res.status(500).json({
         message: 'Database connection failed. Please check your database configuration.',
         detail: error.message
       });
@@ -123,7 +126,7 @@ const getProfile = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    
+
     res.json({
       user: {
         id: user.id,
@@ -138,7 +141,7 @@ const getProfile = async (req, res) => {
   } catch (error) {
     console.error('Profile error:', error.message);
     if (error.message.includes('Database')) {
-      return res.status(500).json({ 
+      return res.status(500).json({
         message: 'Database connection failed. Please check your database configuration.',
         detail: error.message
       });

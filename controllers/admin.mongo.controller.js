@@ -1,4 +1,5 @@
 const User = require('../models/User.mongo');
+const Faculty = require('../models/Faculty.mongo');
 
 // Get dashboard statistics
 const getDashboardStats = async (req, res) => {
@@ -6,7 +7,7 @@ const getDashboardStats = async (req, res) => {
     const students = await User.countDocuments({ role: 'student' });
     const faculty = await User.countDocuments({ role: 'faculty' });
     const programs = await User.distinct('program', { program: { $ne: null } });
-    
+
     res.json({
       stats: {
         totalStudents: students,
@@ -34,7 +35,20 @@ const getAllStudents = async (req, res) => {
 // Get all faculty
 const getAllFaculty = async (req, res) => {
   try {
-    const faculty = await User.find({ role: 'faculty' }).select('user_id name email');
+    const users = await User.find({ role: 'faculty' }).select('user_id name email department designation');
+
+    // Fetch faculty details including teaching assignments
+    const facultyDetails = await Faculty.find({ user_id: { $in: users.map(u => u.user_id) } });
+
+    // Merge data
+    const faculty = users.map(user => {
+      const details = facultyDetails.find(f => f.user_id === user.user_id);
+      return {
+        ...user.toObject(),
+        teaching_assignments: details ? details.teaching_assignments : []
+      };
+    });
+
     res.json({ faculty });
   } catch (error) {
     console.error(error);
@@ -46,16 +60,16 @@ const getAllFaculty = async (req, res) => {
 const createUser = async (req, res) => {
   try {
     const { name, email, role, program, semester } = req.body;
-    
+
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists with this email' });
     }
-    
+
     // Generate random password
     const password = Math.random().toString(36).slice(-8);
-    
+
     // Generate user ID based on role
     let userIdPrefix = '';
     switch (role) {
@@ -71,23 +85,23 @@ const createUser = async (req, res) => {
       default:
         userIdPrefix = 'USR';
     }
-    
+
     const userId = userIdPrefix + Date.now().toString().slice(-6);
-    
+
     // Create user
-    const userData = { 
+    const userData = {
       user_id: userId,
-      name, 
-      email, 
-      password, 
-      role, 
-      program, 
-      semester 
+      name,
+      email,
+      password,
+      role,
+      program,
+      semester
     };
-    
+
     const user = new User(userData);
     await user.save();
-    
+
     res.status(201).json({
       message: 'User created successfully',
       user: {
@@ -113,21 +127,49 @@ const createUser = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email, role, program, semester } = req.body;
-    
+    const { name, email, role, program, semester, department, designation, phone } = req.body;
+
+    // Build update object with only provided fields
+    const updateData = { name, email, role };
+    if (program) updateData.program = program;
+    if (semester) updateData.semester = semester;
+    if (department) updateData.department = department;
+    if (designation) updateData.designation = designation;
+    if (phone) updateData.phone = phone;
+
+    console.log('Updating user with user_id:', id); // Debug log
+    console.log('Update data:', updateData); // Debug log
+
     const user = await User.findOneAndUpdate(
       { user_id: id },
-      { name, email, role, program, semester },
+      updateData,
       { new: true }
     );
-    
+
     if (!user) {
+      console.log('User not found with user_id:', id); // Debug log
       return res.status(404).json({ message: 'User not found' });
     }
-    
-    res.json({ message: 'User updated successfully' });
+
+    // If it's a faculty member and teaching_assignments are provided, update Faculty model
+    if (user.role === 'faculty' && req.body.teaching_assignments) {
+      await Faculty.findOneAndUpdate(
+        { user_id: id },
+        {
+          $set: {
+            teaching_assignments: req.body.teaching_assignments,
+            department: department || user.department,
+            designation: designation || user.designation
+          }
+        },
+        { new: true, upsert: true } // Create if doesn't exist
+      );
+    }
+
+    console.log('User updated successfully:', user.user_id); // Debug log
+    res.json({ message: 'User updated successfully', user });
   } catch (error) {
-    console.error(error);
+    console.error('Error updating user:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -136,13 +178,13 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     const user = await User.findOneAndDelete({ user_id: id });
-    
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    
+
     res.json({ message: 'User deleted successfully' });
   } catch (error) {
     console.error(error);
@@ -154,9 +196,9 @@ const deleteUser = async (req, res) => {
 const searchUsers = async (req, res) => {
   try {
     const { searchTerm, role } = req.query;
-    
+
     let query = { role };
-    
+
     if (searchTerm) {
       query.$or = [
         { name: { $regex: searchTerm, $options: 'i' } },
@@ -164,9 +206,9 @@ const searchUsers = async (req, res) => {
         { user_id: { $regex: searchTerm, $options: 'i' } }
       ];
     }
-    
+
     const users = await User.find(query);
-    
+
     res.json({ users });
   } catch (error) {
     console.error(error);
@@ -271,12 +313,27 @@ const createProgram = async (req, res) => {
 // Get all programs
 const getAllPrograms = async (req, res) => {
   try {
-    // For now, we'll just return a placeholder
-    const programs = await User.distinct('program', { program: { $ne: null } });
+    const Program = require('../models/Program.mongo');
+    const programs = await Program.find({ status: 'active' }).sort({ name: 1 });
     res.json({ programs });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Get programs error:', error);
+    // Fallback: return distinct programs from users
+    try {
+      const programNames = await User.distinct('program', { program: { $ne: null } });
+      const programs = programNames.map((name, index) => ({
+        _id: `prog-${index}`,
+        name: name,
+        code: name,
+        description: `${name} Program`,
+        duration: 3,
+        totalSemesters: 6,
+        status: 'active'
+      }));
+      res.json({ programs });
+    } catch (fallbackError) {
+      res.status(500).json({ message: 'Server error', programs: [] });
+    }
   }
 };
 

@@ -6,7 +6,8 @@ const {
     getFacultyAssignments,
     getStudentAssignments,
     submitAssignment,
-    getAssignmentSubmissions
+    getAssignmentSubmissions,
+    gradeSubmission
 } = require('../controllers/assignment.mongo.controller');
 const { authenticate, authorizeFaculty, authorizeStudent } = require('../middlewares/auth');
 
@@ -40,9 +41,22 @@ const upload = multer({
 
 // Routes
 router.post('/upload', authenticate, authorizeFaculty, upload.single('file'), uploadAssignment);
-router.post('/submit', authenticate, authorizeStudent, upload.single('file'), submitAssignment);
+router.post('/submit', authenticate, authorizeStudent, (req, res, next) => {
+    upload.single('file')(req, res, (err) => {
+        if (err instanceof multer.MulterError) {
+            if (err.code === 'LIMIT_FILE_SIZE') {
+                return res.status(400).json({ message: 'File size too large. Maximum size is 10MB.' });
+            }
+            return res.status(400).json({ message: 'File upload error: ' + err.message });
+        } else if (err) {
+            return res.status(400).json({ message: err.message });
+        }
+        next();
+    });
+}, submitAssignment);
 router.get('/faculty', authenticate, authorizeFaculty, getFacultyAssignments);
 router.get('/student', authenticate, authorizeStudent, getStudentAssignments);
 router.get('/:assignmentId/submissions', authenticate, authorizeFaculty, getAssignmentSubmissions);
+router.post('/:assignmentId/grade', authenticate, authorizeFaculty, gradeSubmission);
 
 module.exports = router;

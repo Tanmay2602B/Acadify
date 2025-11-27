@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Examination - Acadify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Disable text selection */
+        * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* Allow selection only in text inputs */
+        input[type="text"], textarea {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+        
+        body {
+            font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #1a1a2e;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* Fullscreen styles */
+        .quiz-container {
+            background: white;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .question-card {
+            transition: all 0.3s ease;
+        }
+        
+        .option-card {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .option-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .option-card.selected {
+            background: #dbeafe;
+            border-color: #3b82f6;
+        }
+        
+        .timer {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        /* Warning banner */
+        .warning-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #dc2626;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            z-index: 9999;
+            display: none;
+        }
+        
+        .warning-banner.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        /* Hide AI chatbox and other overlays */
+        #ai-mentor-chat, .ai-chatbox, .chatbot, [class*="chat"], [id*="chat"] {
+            display: none !important;
+            visibility: hidden !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Warning Banner -->
+    <div id="warningBanner" class="warning-banner">
+        <i class="fas fa-exclamation-triangle mr-2"></i>
+        <span id="warningText">Warning: Tab switching detected!</span>
+    </div>
+
+    <!-- Security Notice -->
+    <div id="securityNotice" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-2xl mx-4">
+            <div class="text-center mb-6">
+                <i class="fas fa-shield-alt text-6xl text-blue-600 mb-4"></i>
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Secure Examination Mode</h2>
+                <p class="text-gray-600 mb-6">This is a proctored online examination. Please read the rules carefully:</p>
+            </div>
+            
+            <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+                <h3 class="font-bold text-red-800 mb-2">⚠️ Anti-Cheating Rules:</h3>
+                <ul class="text-sm text-red-700 space-y-2">
+                    <li>✗ <strong>No tab switching</strong> - Switching tabs will be recorded</li>
+                    <li>✗ <strong>No copy-paste</strong> - Right-click and copy functions are disabled</li>
+                    <li>✗ <strong>No external help</strong> - AI assistants and chatbots are blocked</li>
+                    <li>✗ <strong>Fullscreen required</strong> - Exam will run in fullscreen mode</li>
+                    <li>✗ <strong>No page refresh</strong> - Refreshing will submit your exam</li>
+                </ul>
+            </div>
+            
+            <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-6">
+                <h3 class="font-bold text-green-800 mb-2">✓ What You Can Do:</h3>
+                <ul class="text-sm text-green-700 space-y-2">
+                    <li>✓ Navigate between questions using Previous/Next buttons</li>
+                    <li>✓ Change your answers before submitting</li>
+                    <li>✓ Type answers in text fields</li>
+                    <li>✓ View the timer and progress</li>
+                </ul>
+            </div>
+            
+            <div class="flex gap-4">
+                <button onclick="cancelExam()" class="flex-1 px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg font-semibold transition">
+                    <i class="fas fa-times mr-2"></i>Cancel
+                </button>
+                <button onclick="startExam()" class="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition">
+                    <i class="fas fa-check mr-2"></i>I Understand, Start Exam
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 shadow-lg">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div>
+                <h1 id="quizTitle" class="text-2xl font-bold">Loading Quiz...</h1>
+                <p id="quizInfo" class="text-sm opacity-90"></p>
+            </div>
+            <div class="text-right">
+                <div class="timer text-3xl font-bold" id="timer">00:00</div>
+                <p class="text-xs opacity-75">Time Remaining</p>
+                <p class="text-xs mt-1">
+                    <i class="fas fa-eye mr-1"></i>
+                    <span id="tabSwitches">0</span> tab switches
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Container -->
+    <div class="quiz-container">
+        <div class="max-w-6xl mx-auto p-8">
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center py-12">
+            <i class="fas fa-spinner fa-spin text-6xl text-blue-600 mb-4"></i>
+            <p class="text-xl text-gray-600">Loading quiz...</p>
+        </div>
+
+        <!-- Quiz Content -->
+        <div id="quizContent" class="hidden">
+            <!-- Progress Bar -->
+            <div class="mb-8">
+                <div class="flex justify-between text-sm text-gray-600 mb-2">
+                    <span>Question <span id="currentQuestion">1</span> of <span id="totalQuestions">0</span></span>
+                    <span id="progressPercent">0%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div id="progressBar" class="bg-blue-600 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Question Container -->
+            <div id="questionContainer" class="mb-8">
+                <!-- Questions will be injected here -->
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center pt-6 border-t">
+                <button id="prevBtn" onclick="previousQuestion()" class="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-arrow-left mr-2"></i>Previous
+                </button>
+                <button id="nextBtn" onclick="nextQuestion()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition">
+                    Next<i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submitBtn" onclick="submitQuiz()" class="hidden px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition">
+                    <i class="fas fa-check mr-2"></i>Submit Quiz
+                </button>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div id="resultsContainer" class="hidden text-center py-12">
+            <i class="fas fa-check-circle text-8xl text-green-600 mb-6"></i>
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Quiz Submitted!</h2>
+            <div class="bg-blue-50 rounded-xl p-6 mb-6">
+                <p class="text-6xl font-bold text-blue-600 mb-2" id="scoreDisplay">0/0</p>
+                <p class="text-xl text-gray-600">Your Score</p>
+            </div>
+            <a href="dashboard-enhanced.html" class="inline-block px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition">
+                <i class="fas fa-home mr-2"></i>Back to Dashboard
+            </a>
+        </div>
+        </div>
+    </div>
+
+    <script>
+        // Get quiz ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const quizId = urlParams.get('id');
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+        let quizData = null;
+        let currentQuestionIndex = 0;
+        let answers = {};
+        let timerInterval = null;
+        let timeRemaining = 0;
+        let tabSwitchCount = 0;
+        let examStarted = false;
+        let isSubmitting = false;
+
+        // Check authentication
+        if (!token || user.role !== 'student') {
+            window.location.href = '../login.html';
+        }
+
+        // ==================== ANTI-CHEAT FEATURES ====================
+
+        // Disable right-click
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            showWarning('Right-click is disabled during examination');
+        });
+
+        // Disable copy-paste
+        document.addEventListener('copy', (e) => {
+            if (!e.target.matches('input[type="text"], textarea')) {
+                e.preventDefault();
+                showWarning('Copy is disabled during examination');
+            }
+        });
+
+        document.addEventListener('paste', (e) => {
+            if (!e.target.matches('input[type="text"], textarea')) {
+                e.preventDefault();
+                showWarning('Paste is disabled during examination');
+            }
+        });
+
+        document.addEventListener('cut', (e) => {
+            if (!e.target.matches('input[type="text"], textarea')) {
+                e.preventDefault();
+                showWarning('Cut is disabled during examination');
+            }
+        });
+
+        // Disable keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+                (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+                showWarning('Developer tools are disabled during examination');
+            }
+            
+            // Disable Ctrl+C, Ctrl+V, Ctrl+X (except in input fields)
+            if (e.ctrlKey && (e.key === 'c' || e.key === 'v' || e.key === 'x')) {
+                if (!e.target.matches('input[type="text"], textarea')) {
+                    e.preventDefault();
+                    showWarning('Copy/Paste is disabled during examination');
+                }
+            }
+        });
+
+        // Detect tab/window switching
+        document.addEventListener('visibilitychange', () => {
+            if (examStarted && !isSubmitting && document.hidden) {
+                tabSwitchCount++;
+                document.getElementById('tabSwitches').textContent = tabSwitchCount;
+                showWarning(`Tab switch detected! Count: ${tabSwitchCount}. Excessive switching may result in exam termination.`);
+                
+                // Auto-submit after 5 tab switches
+                if (tabSwitchCount >= 5) {
+                    alert('Too many tab switches detected! Your exam will be submitted automatically.');
+                    submitQuiz();
+                }
+            }
+        });
+
+        // Detect window blur (switching to another window)
+        window.addEventListener('blur', () => {
+            if (examStarted && !isSubmitting) {
+                showWarning('Focus lost! Please stay on the exam window.');
+            }
+        });
+
+        // Prevent page refresh/close
+        window.addEventListener('beforeunload', (e) => {
+            if (examStarted && !isSubmitting) {
+                e.preventDefault();
+                e.returnValue = 'Your exam is in progress. Are you sure you want to leave?';
+                return e.returnValue;
+            }
+        });
+
+        // Show warning banner
+        function showWarning(message) {
+            const banner = document.getElementById('warningBanner');
+            const text = document.getElementById('warningText');
+            text.textContent = message;
+            banner.classList.add('show');
+            
+            setTimeout(() => {
+                banner.classList.remove('show');
+            }, 3000);
+        }
+
+        // Cancel exam
+        function cancelExam() {
+            if (confirm('Are you sure you want to cancel? You will return to the dashboard.')) {
+                window.location.href = 'dashboard-enhanced.html';
+            }
+        }
+
+        // Start exam (enter fullscreen)
+        function startExam() {
+            document.getElementById('securityNotice').style.display = 'none';
+            examStarted = true;
+            
+            // Request fullscreen
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen().catch(err => {
+                    console.log('Fullscreen request failed:', err);
+                });
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+            
+            // Load quiz
+            loadQuiz();
+        }
+
+        // Detect fullscreen exit
+        document.addEventListener('fullscreenchange', () => {
+            if (examStarted && !document.fullscreenElement && !isSubmitting) {
+                showWarning('Please stay in fullscreen mode during examination');
+                // Re-enter fullscreen
+                setTimeout(() => {
+                    const elem = document.documentElement;
+                    if (elem.requestFullscreen) {
+                        elem.requestFullscreen().catch(err => console.log(err));
+                    }
+                }, 1000);
+            }
+        });
+
+        // Hide any AI chatboxes or overlays
+        setInterval(() => {
+            // Remove any chat widgets that might appear
+            const chatElements = document.querySelectorAll('[class*="chat"], [id*="chat"], .chatbot, .ai-assistant');
+            chatElements.forEach(el => {
+                if (el && el.style) {
+                    el.style.display = 'none';
+                    el.style.visibility = 'hidden';
+                }
+            });
+        }, 1000);
+
+        // Load quiz
+        async function loadQuiz() {
+            try {
+                const response = await fetch(`/api/exams/${quizId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    quizData = data.exam;
+                    initializeQuiz();
+                } else {
+                    alert('Failed to load quiz');
+                    window.location.href = 'dashboard-enhanced.html';
+                }
+            } catch (error) {
+                console.error('Error loading quiz:', error);
+                alert('Error loading quiz');
+                window.location.href = 'dashboard-enhanced.html';
+            }
+        }
+
+        // Initialize quiz
+        function initializeQuiz() {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('quizContent').classList.remove('hidden');
+
+            // Set quiz info
+            document.getElementById('quizTitle').textContent = quizData.title;
+            document.getElementById('quizInfo').textContent = `${quizData.subject} | ${quizData.program} - Semester ${quizData.semester}`;
+            document.getElementById('totalQuestions').textContent = quizData.questions.length;
+
+            // Start timer
+            timeRemaining = quizData.duration * 60; // Convert to seconds
+            startTimer();
+
+            // Show first question
+            showQuestion(0);
+        }
+
+        // Start timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    alert('Time is up! Submitting quiz...');
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        // Update timer display
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            document.getElementById('timer').textContent = 
+                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        // Show question
+        function showQuestion(index) {
+            currentQuestionIndex = index;
+            const question = quizData.questions[index];
+            const container = document.getElementById('questionContainer');
+
+            // Update progress
+            document.getElementById('currentQuestion').textContent = index + 1;
+            const progress = ((index + 1) / quizData.questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressPercent').textContent = Math.round(progress) + '%';
+
+            // Build question HTML
+            let html = `
+                <div class="question-card">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">
+                        Question ${index + 1}
+                    </h3>
+                    <p class="text-lg text-gray-700 mb-6">${question.question_text}</p>
+            `;
+
+            // Add image if exists
+            if (question.image) {
+                html += `<img src="${question.image}" alt="Question image" class="max-w-full h-auto rounded-lg mb-6 shadow-md">`;
+            }
+
+            // Add options based on type
+            if (question.type === 'radio') {
+                html += '<div class="space-y-3">';
+                question.options.forEach((option, i) => {
+                    const isSelected = answers[index] === option;
+                    html += `
+                        <div class="option-card ${isSelected ? 'selected' : ''} border-2 border-gray-300 rounded-lg p-4" onclick="selectOption(${index}, '${option.replace(/'/g, "\\'")}', 'radio')">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="q${index}" value="${option}" ${isSelected ? 'checked' : ''} class="mr-3 w-5 h-5">
+                                <span class="text-gray-800">${option}</span>
+                            </label>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            } else if (question.type === 'checkbox') {
+                html += '<div class="space-y-3">';
+                const selectedAnswers = answers[index] || [];
+                question.options.forEach((option, i) => {
+                    const isSelected = selectedAnswers.includes(option);
+                    html += `
+                        <div class="option-card ${isSelected ? 'selected' : ''} border-2 border-gray-300 rounded-lg p-4" onclick="selectOption(${index}, '${option.replace(/'/g, "\\'")}', 'checkbox')">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" value="${option}" ${isSelected ? 'checked' : ''} class="mr-3 w-5 h-5">
+                                <span class="text-gray-800">${option}</span>
+                            </label>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            } else if (question.type === 'text') {
+                const currentAnswer = answers[index] || '';
+                html += `
+                    <textarea id="textAnswer${index}" rows="4" class="w-full border-2 border-gray-300 rounded-lg p-4 focus:border-blue-500 focus:outline-none" placeholder="Type your answer here..." onchange="selectOption(${index}, this.value, 'text')">${currentAnswer}</textarea>
+                `;
+            }
+
+            html += '</div>';
+            container.innerHTML = html;
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = index === 0;
+            
+            if (index === quizData.questions.length - 1) {
+                document.getElementById('nextBtn').classList.add('hidden');
+                document.getElementById('submitBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('nextBtn').classList.remove('hidden');
+                document.getElementById('submitBtn').classList.add('hidden');
+            }
+        }
+
+        // Select option
+        function selectOption(questionIndex, value, type) {
+            if (type === 'radio' || type === 'text') {
+                answers[questionIndex] = value;
+            } else if (type === 'checkbox') {
+                if (!answers[questionIndex]) {
+                    answers[questionIndex] = [];
+                }
+                const index = answers[questionIndex].indexOf(value);
+                if (index > -1) {
+                    answers[questionIndex].splice(index, 1);
+                } else {
+                    answers[questionIndex].push(value);
+                }
+            }
+            // Refresh display
+            showQuestion(currentQuestionIndex);
+        }
+
+        // Navigation
+        function nextQuestion() {
+            if (currentQuestionIndex < quizData.questions.length - 1) {
+                showQuestion(currentQuestionIndex + 1);
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                showQuestion(currentQuestionIndex - 1);
+            }
+        }
+
+        // Submit quiz
+        async function submitQuiz() {
+            if (!isSubmitting && !confirm('Are you sure you want to submit? You cannot change your answers after submission.')) {
+                return;
+            }
+
+            isSubmitting = true;
+            clearInterval(timerInterval);
+
+            // Calculate score
+            let score = 0;
+            const formattedAnswers = quizData.questions.map((question, index) => {
+                const studentAnswer = answers[index];
+                const correctAnswer = question.correct_answer;
+                let isCorrect = false;
+
+                if (question.type === 'checkbox') {
+                    // For checkbox, check if arrays match
+                    const studentSet = new Set(studentAnswer || []);
+                    const correctSet = new Set(Array.isArray(correctAnswer) ? correctAnswer : [correctAnswer]);
+                    isCorrect = studentSet.size === correctSet.size && 
+                                [...studentSet].every(ans => correctSet.has(ans));
+                } else {
+                    // For radio and text, direct comparison (case-insensitive for text)
+                    if (question.type === 'text') {
+                        isCorrect = (studentAnswer || '').toLowerCase().trim() === 
+                                   (correctAnswer || '').toLowerCase().trim();
+                    } else {
+                        isCorrect = studentAnswer === correctAnswer;
+                    }
+                }
+
+                if (isCorrect) {
+                    score += question.marks || 1;
+                }
+
+                return {
+                    question_id: question._id,
+                    selected_answer: studentAnswer
+                };
+            });
+
+            const totalMarks = quizData.total_marks;
+            const percentage = (score / totalMarks) * 100;
+
+            // Submit to backend
+            try {
+                const response = await fetch(`/api/exams/${quizData.exam_id}/submit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        answers: formattedAnswers,
+                        time_taken: quizData.duration - Math.floor(timeRemaining / 60),
+                        tab_switches: tabSwitchCount,
+                        suspicious_activity: tabSwitchCount >= 3
+                    })
+                });
+
+                if (response.ok) {
+                    // Exit fullscreen
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen().catch(err => console.log(err));
+                    }
+                    
+                    // Show results
+                    document.getElementById('quizContent').classList.add('hidden');
+                    document.getElementById('resultsContainer').classList.remove('hidden');
+                    document.getElementById('scoreDisplay').textContent = `${score}/${totalMarks}`;
+                    
+                    // Show tab switch warning if any
+                    if (tabSwitchCount > 0) {
+                        const warning = document.createElement('p');
+                        warning.className = 'text-red-600 text-sm mt-4';
+                        warning.innerHTML = `<i class="fas fa-exclamation-triangle mr-2"></i>Warning: ${tabSwitchCount} tab switch(es) detected during exam`;
+                        document.getElementById('resultsContainer').insertBefore(warning, document.getElementById('resultsContainer').lastElementChild);
+                    }
+                } else {
+                    isSubmitting = false;
+                    alert('Failed to submit quiz. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error submitting quiz:', error);
+                isSubmitting = false;
+                alert('Error submitting quiz. Please try again.');
+            }
+        }
+
+        // Don't auto-load quiz - wait for user to accept terms
+        // loadQuiz() is called from startExam()
+
+    </script>
+</body>
+</html>

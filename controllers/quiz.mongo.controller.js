@@ -2,19 +2,28 @@ const { Exam, ExamSubmission } = require('../models/Exam.mongo');
 const { notifyGradeUpdate } = require('../services/notificationService');
 
 /**
- * Create MCQ quiz
+ * Create MCQ quiz with scheduling
  */
 const createQuiz = async (req, res) => {
   try {
-    const { title, description, program, semester, subject, duration, questions } = req.body;
+    const { title, description, program, semester, subject, duration, questions, start_time } = req.body;
     
     // Validate questions
     if (!Array.isArray(questions) || questions.length === 0) {
       return res.status(400).json({ message: 'Questions are required' });
     }
     
+    // Validate start_time
+    if (!start_time) {
+      return res.status(400).json({ message: 'Schedule time is required' });
+    }
+    
     // Calculate total marks
     const total_marks = questions.reduce((sum, q) => sum + (q.marks || 1), 0);
+    
+    // Calculate end time (start_time + duration + 1 hour buffer)
+    const startDate = new Date(start_time);
+    const endDate = new Date(startDate.getTime() + (duration + 60) * 60 * 1000);
     
     const quiz = new Exam({
       exam_id: `QUIZ-${Date.now()}`,
@@ -26,24 +35,26 @@ const createQuiz = async (req, res) => {
       faculty_id: req.user.user_id,
       duration,
       total_marks,
-      start_time: new Date(),
-      end_time: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year
+      start_time: startDate,
+      end_time: endDate,
       questions,
       anti_cheat_enabled: true,
       randomize_questions: true,
-      show_results: true,
+      show_results: false, // Don't show results immediately
       status: 'published'
     });
     
     await quiz.save();
     
     res.status(201).json({
-      message: 'Quiz created successfully',
+      message: 'Quiz created and scheduled successfully',
       quiz: {
         exam_id: quiz.exam_id,
         title: quiz.title,
         total_marks: quiz.total_marks,
-        questions_count: quiz.questions.length
+        questions_count: quiz.questions.length,
+        start_time: quiz.start_time,
+        end_time: quiz.end_time
       }
     });
     
@@ -257,9 +268,141 @@ const getStudentQuizResult = async (req, res) => {
   }
 };
 
+/**
+ * Get available quizzes for student
+ */
+const getAvailableQuizzes = async (req, res) => {
+  try {
+    const User = require('../models/User.mongo');
+    const student = await User.findOne({ user_id: req.user.user_id });
+    
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+    
+    // Find quizzes for student's program and semester
+    const quizzes = await Exam.find({
+      program: student.program,
+      semester: student.semester,
+      status: 'published'
+    }).sort({ start_time: -1 });
+    
+    // Check which quizzes student has already submitted
+    const submissions = await ExamSubmission.find({
+      student_id: req.user.user_id
+    });
+    
+    const submittedExamIds = submissions.map(s => s.exam_id);
+    
+    // Format quiz data with status
+    const now = new Date();
+    const formattedQuizzes = quizzes.map(quiz => {
+      const isSubmitted = submittedExamIds.includes(quiz.exam_id);
+      const isScheduled = new Date(quiz.start_time) > now;
+      const isExpired = new Date(quiz.end_time) < now;
+      const isActive = !isScheduled && !isExpired;
+      
+      let status = 'active';
+      if (isSubmitted) status = 'submitted';
+      else if (isScheduled) status = 'scheduled';
+      else if (isExpired) status = 'expired';
+      
+      return {
+        exam_id: quiz.exam_id,
+        title: quiz.title,
+        description: quiz.description,
+        subject: quiz.subject,
+        duration: quiz.duration,
+        total_marks: quiz.total_marks,
+        questions_count: quiz.questions.length,
+        start_time: quiz.start_time,
+        end_time: quiz.end_time,
+        status,
+        is_submitted: isSubmitted,
+        is_scheduled: isScheduled,
+        is_active: isActive,
+        is_expired: isExpired
+      };
+    });
+    
+    res.json({ quizzes: formattedQuizzes });
+    
+  } catch (error) {
+    console.error('Get available quizzes error:', error);
+    res.status(500).json({ message: 'Failed to fetch quizzes' });
+  }
+};
+
+/**
+ * Get quiz for taking (with questions)
+ */
+const getQuizForTaking = async (req, res) => {
+  try {
+    const { exam_id } = req.params;
+    
+    const quiz = await Exam.findOne({ exam_id, status: 'published' });
+    
+    if (!quiz) {
+      return res.status(404).json({ message: 'Quiz not found' });
+    }
+    
+    // Check if already submitted
+    const existingSubmission = await ExamSubmission.findOne({
+      exam_id,
+      student_id: req.user.user_id
+    });
+    
+    if (existingSubmission) {
+      return res.status(400).json({ message: 'Quiz already submitted' });
+    }
+    
+    // Check if quiz is active
+    const now = new Date();
+    if (new Date(quiz.start_time) > now) {
+      return res.status(400).json({ message: 'Quiz has not started yet' });
+    }
+    
+    if (new Date(quiz.end_time) < now) {
+      return res.status(400).json({ message: 'Quiz has expired' });
+    }
+    
+    // Randomize questions if enabled
+    let questions = quiz.questions.map(q => ({
+      _id: q._id,
+      type: q.type,
+      question_text: q.question_text,
+      options: q.options,
+      marks: q.marks
+    }));
+    
+    if (quiz.randomize_questions) {
+      questions = questions.sort(() => Math.random() - 0.5);
+    }
+    
+    res.json({
+      exam_id: quiz.exam_id,
+      title: quiz.title,
+      description: quiz.description,
+      subject: quiz.subject,
+      duration: quiz.duration,
+      total_marks: quiz.total_marks,
+      start_time: quiz.start_time,
+      end_time: quiz.end_time,
+      anti_cheat_enabled: quiz.anti_cheat_enabled,
+      questions
+    });
+    
+  } catch (error) {
+    console.error('Get quiz for taking error:', error);
+    res.status(500).json({ message: 'Failed to fetch quiz' });
+  }
+};
+
 module.exports = {
   createQuiz,
   submitQuiz,
   getQuizResults,
-  getStudentQuizResult
+  getStudentQuizResult,
+  getAvailableQuizzes,
+  getQuizForTaking
 };

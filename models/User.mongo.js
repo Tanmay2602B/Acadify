@@ -35,6 +35,15 @@ const userSchema = new mongoose.Schema({
   },
   semester: {
     type: String
+  },
+  department: {
+    type: String
+  },
+  designation: {
+    type: String
+  },
+  phone: {
+    type: String
   }
 }, {
   timestamps: true

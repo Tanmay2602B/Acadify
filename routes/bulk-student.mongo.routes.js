@@ -4,7 +4,8 @@ const {
   getAllStudents,
   updateStudent,
   deleteStudent,
-  getStudentById
+  getStudentById,
+  getStudentCredentials
 } = require('../controllers/bulk-student.mongo.controller');
 const { authenticate, authorizeFaculty, authorizeAdmin } = require('../middlewares/auth');
 
@@ -45,6 +46,7 @@ router.post('/bulk', authorizeFaculty, bulkAddStudents);
 router.post('/upload', authorizeFaculty, upload.single('file'), importStudents);
 router.post('/confirm', authorizeFaculty, confirmImportStudents);
 router.get('/', authorizeFaculty, getAllStudents);
+router.get('/credentials', authorizeFaculty, getStudentCredentials);
 router.get('/:student_id', authorizeFaculty, getStudentById);
 router.put('/:student_id', authorizeFaculty, updateStudent);
 router.delete('/:student_id', authorizeFaculty, deleteStudent);

@@ -12,7 +12,7 @@ function parseFile(fileBuffer, fileType) {
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];
     const data = xlsx.utils.sheet_to_json(sheet);
-    
+
     return data;
   } catch (error) {
     throw new Error(`Failed to parse file: ${error.message}`);
@@ -27,24 +27,24 @@ function parseFile(fileBuffer, fileType) {
 function validateStudentData(data) {
   const valid = [];
   const invalid = [];
-  
+
   data.forEach((row, index) => {
     const errors = [];
-    
+
     // Required fields
-    if (!row.name || row.name.trim() === '') {
+    if (!row.name || String(row.name).trim() === '') {
       errors.push('Name is required');
     }
     if (!row.email || !isValidEmail(row.email)) {
       errors.push('Valid email is required');
     }
-    if (!row.program || row.program.trim() === '') {
+    if (!row.program || String(row.program).trim() === '') {
       errors.push('Program is required');
     }
     if (!row.semester) {
       errors.push('Semester is required');
     }
-    
+
     if (errors.length > 0) {
       invalid.push({
         row: index + 2, // +2 because Excel rows start at 1 and header is row 1
@@ -55,7 +55,7 @@ function validateStudentData(data) {
       valid.push(row);
     }
   });
-  
+
   return { valid, invalid };
 }
 
@@ -67,20 +67,20 @@ function validateStudentData(data) {
 function validateFacultyData(data) {
   const valid = [];
   const invalid = [];
-  
+
   data.forEach((row, index) => {
     const errors = [];
-    
-    if (!row.name || row.name.trim() === '') {
+
+    if (!row.name || String(row.name).trim() === '') {
       errors.push('Name is required');
     }
     if (!row.email || !isValidEmail(row.email)) {
       errors.push('Valid email is required');
     }
-    if (!row.department || row.department.trim() === '') {
+    if (!row.department || String(row.department).trim() === '') {
       errors.push('Department is required');
     }
-    
+
     if (errors.length > 0) {
       invalid.push({
         row: index + 2,
@@ -91,7 +91,7 @@ function validateFacultyData(data) {
       valid.push(row);
     }
   });
-  
+
   return { valid, invalid };
 }
 
@@ -120,7 +120,7 @@ Jane Smith,jane@example.com,BCA,1,2024-2027,A,2345678901,1098765432,456 Oak Ave,
 Dr. John Smith,drjohn@example.com,Computer Science,Professor,1234567890,Artificial Intelligence
 Prof. Jane Doe,profjane@example.com,Mathematics,Associate Professor,2345678901,Applied Mathematics`;
   }
-  
+
   return '';
 }
 

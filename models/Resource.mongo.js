@@ -5,13 +5,16 @@ const resourceSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  description: {
+    type: String
+  },
   subject: {
     type: String,
     required: true
   },
   type: {
     type: String,
-    enum: ['Slides', 'Notes', 'Video', 'Other'],
+    enum: ['notes', 'ppt', 'assignment', 'reference', 'Slides', 'Notes', 'Video', 'Other'],
     default: 'Other'
   },
   fileUrl: {
@@ -39,6 +42,33 @@ const resourceSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  // Assignment-specific fields
+  startDate: {
+    type: Date
+  },
+  dueDate: {
+    type: Date
+  },
+  lateSubmission: {
+    type: String,
+    enum: ['yes', 'no'],
+    default: 'no'
+  },
+  // Assignment submissions
+  submissions: [{
+    student_id: String,
+    student_name: String,
+    file_url: String,
+    submitted_at: Date,
+    comments: String,
+    marks: Number,
+    feedback: String,
+    status: {
+      type: String,
+      enum: ['submitted', 'graded', 'late'],
+      default: 'submitted'
+    }
+  }],
   createdAt: {
     type: Date,
     default: Date.now
