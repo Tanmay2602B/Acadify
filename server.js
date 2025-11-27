@@ -7,20 +7,11 @@ const path = require('path');
 dotenv.config();
 
 // Load MongoDB connection
-const db = require('./config/db.mongo');
+// Load MongoDB connection
+const connectDB = require('./config/db.mongo');
 
-// Handle MongoDB connection events
-db.on('connected', () => {
-  console.log('MongoDB connected successfully');
-});
-
-db.on('error', (err) => {
-  console.error('MongoDB connection error:', err.message);
-});
-
-db.on('disconnected', () => {
-  console.log('MongoDB disconnected');
-});
+// Connect to DB immediately for local dev, but also use middleware for serverless
+connectDB();
 
 // Initialize app
 const app = express();
@@ -30,6 +21,17 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Database Connection Middleware
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error('Database connection failed in middleware:', error);
+    res.status(500).json({ error: 'Database connection failed' });
+  }
+});
 
 // Serve static files from public directory
 app.use(express.static(path.join(__dirname, 'public')));
