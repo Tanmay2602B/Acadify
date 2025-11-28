@@ -35,13 +35,13 @@ document.querySelectorAll('.nav-link').forEach(link => {
         e.preventDefault();
         const section = e.currentTarget.dataset.section;
         showSection(section);
-        
+
         // Update active state
         document.querySelectorAll('.nav-link').forEach(l => {
             l.classList.remove('sidebar-active');
         });
         e.currentTarget.classList.add('sidebar-active');
-        
+
         // Close mobile menu
         if (window.innerWidth < 1024) {
             document.getElementById('sidebar').classList.remove('active');
@@ -55,7 +55,7 @@ function showSection(sectionName) {
         section.classList.add('hidden');
     });
     document.getElementById(sectionName + 'Section').classList.remove('hidden');
-    
+
     // Load data for section
     if (sectionName === 'dashboard') loadDashboardData();
     if (sectionName === 'students') loadStudents();
@@ -71,7 +71,7 @@ function showToast(message, type = 'success') {
     toast.className = `toast ${type}`;
     toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} mr-2"></i>${message}`;
     document.body.appendChild(toast);
-    
+
     setTimeout(() => {
         toast.remove();
     }, 3000);
@@ -92,7 +92,13 @@ function showCreateQuizModal() {
 }
 
 function showUploadResourceModal() {
-    document.getElementById('uploadResourceModal').classList.remove('hidden');
+    console.log('Opening upload resource modal');
+    const modal = document.getElementById('uploadResourceModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+    } else {
+        console.error('Upload resource modal not found');
+    }
 }
 
 function hideModal(modalId) {
@@ -110,7 +116,7 @@ async function loadDashboardData() {
             const data = await studentsRes.json();
             document.getElementById('totalStudents').textContent = data.students?.length || 0;
         }
-        
+
         // Load meetings count
         const meetingsRes = await fetch('/api/meetings/faculty', {
             headers: { 'Authorization': `Bearer ${token}` }
@@ -119,7 +125,7 @@ async function loadDashboardData() {
             const data = await meetingsRes.json();
             document.getElementById('totalMeetings').textContent = data.meetings?.length || 0;
         }
-        
+
         // Load quizzes count
         const quizzesRes = await fetch('/api/exams/faculty', {
             headers: { 'Authorization': `Bearer ${token}` }
@@ -128,11 +134,11 @@ async function loadDashboardData() {
             const data = await quizzesRes.json();
             document.getElementById('totalQuizzes').textContent = data.exams?.length || 0;
         }
-        
+
         // Load announcements count (from localStorage for now)
         const announcements = JSON.parse(localStorage.getItem('announcements') || '[]');
         document.getElementById('totalAnnouncements').textContent = announcements.length;
-        
+
     } catch (error) {
         console.error('Error loading dashboard:', error);
     }
@@ -144,7 +150,7 @@ async function loadStudents() {
         const response = await fetch('/api/bulk-students/', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        
+
         if (response.ok) {
             const data = await response.json();
             allStudents = data.students || [];
@@ -163,20 +169,20 @@ async function loadStudents() {
 // Display students
 function displayStudents(students) {
     const tbody = document.getElementById('studentsTableBody');
-    
+
     // Update student count
     const countElement = document.getElementById('studentCount');
     if (countElement) {
         countElement.textContent = students.length;
     }
-    
+
     if (students.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No students found</td></tr>';
         return;
     }
-    
+
     console.log('Displaying students:', students.length); // Debug log
-    
+
     tbody.innerHTML = students.map(student => `
         <tr class="hover:bg-gray-50">
             <td class="px-6 py-4 whitespace-nowrap">
@@ -215,25 +221,25 @@ function applyStudentFilters() {
     const searchTerm = document.getElementById('studentSearch').value.toLowerCase();
     const programFilter = document.getElementById('programFilter').value;
     const semesterFilter = document.getElementById('semesterFilter').value;
-    
+
     let filtered = allStudents;
-    
+
     if (searchTerm) {
-        filtered = filtered.filter(s => 
-            s.name?.toLowerCase().includes(searchTerm) || 
+        filtered = filtered.filter(s =>
+            s.name?.toLowerCase().includes(searchTerm) ||
             s.email?.toLowerCase().includes(searchTerm) ||
             s.rollNumber?.toLowerCase().includes(searchTerm)
         );
     }
-    
+
     if (programFilter) {
         filtered = filtered.filter(s => s.program === programFilter);
     }
-    
+
     if (semesterFilter) {
         filtered = filtered.filter(s => s.semester === parseInt(semesterFilter));
     }
-    
+
     displayStudents(filtered);
 }
 
@@ -241,11 +247,11 @@ function applyStudentFilters() {
 async function loadMeetings() {
     try {
         console.log('Loading meetings...'); // Debug log
-        
+
         const response = await fetch('/api/meetings/faculty', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        
+
         if (response.ok) {
             const data = await response.json();
             console.log('Meetings loaded:', data); // Debug log
@@ -267,14 +273,14 @@ async function loadMeetings() {
 // Display meetings
 function displayMeetings(meetings) {
     const container = document.getElementById('meetingsList');
-    
+
     if (meetings.length === 0) {
         container.innerHTML = '<p class="text-gray-500 text-center py-8 col-span-2">No meetings scheduled</p>';
         return;
     }
-    
+
     console.log('Displaying meetings:', meetings); // Debug log
-    
+
     container.innerHTML = meetings.map(meeting => {
         // Debug log for each meeting
         console.log('Meeting data:', {
@@ -284,17 +290,17 @@ function displayMeetings(meetings) {
             _id: meeting._id,
             meeting_id: meeting.meeting_id
         });
-        
+
         // Handle both scheduled_time and scheduledAt field names
         const dateValue = meeting.scheduled_time || meeting.scheduledAt;
         const meetingDate = dateValue ? new Date(dateValue) : null;
         const isValidDate = meetingDate && !isNaN(meetingDate.getTime());
         const isUpcoming = isValidDate && meetingDate > new Date();
-        
+
         // Get meeting link from various possible field names
         const baseMeetingLink = meeting.jitsi_room_url || meeting.meetingLink || meeting.meeting_link;
         const meetingId = meeting._id || meeting.meeting_id;
-        
+
         // Add user info and configuration for faculty (host)
         // Note: First person to join becomes moderator automatically in Jitsi
         let meetingLink = baseMeetingLink;
@@ -307,7 +313,7 @@ function displayMeetings(meetings) {
             url.hash = '#config.startWithAudioMuted=false&config.startWithVideoMuted=false&config.prejoinPageEnabled=false';
             meetingLink = url.toString();
         }
-        
+
         return `
             <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
                 <div class="flex justify-between items-start mb-4">
@@ -375,7 +381,7 @@ function displayMeetings(meetings) {
 // Create meeting
 document.getElementById('meetingForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     const meetingData = {
         title: document.getElementById('meetingTitle').value,
         description: document.getElementById('meetingDescription').value,
@@ -385,9 +391,9 @@ document.getElementById('meetingForm').addEventListener('submit', async (e) => {
         scheduled_time: document.getElementById('meetingTime').value, // Changed from scheduledAt to scheduled_time
         duration: parseInt(document.getElementById('meetingDuration').value)
     };
-    
+
     console.log('Creating meeting with data:', meetingData); // Debug log
-    
+
     try {
         const response = await fetch('/api/meetings', {
             method: 'POST',
@@ -397,7 +403,7 @@ document.getElementById('meetingForm').addEventListener('submit', async (e) => {
             },
             body: JSON.stringify(meetingData)
         });
-        
+
         if (response.ok) {
             const data = await response.json();
             console.log('Meeting created:', data); // Debug log
@@ -424,13 +430,13 @@ function startMeetingAsHost(meetingUrl, meetingTitle) {
         const url = new URL(meetingUrl);
         const roomName = url.pathname.substring(1); // Remove leading slash
         const domain = url.hostname;
-        
+
         // Create a new window with Jitsi meeting
         const width = 1200;
         const height = 800;
         const left = (screen.width - width) / 2;
         const top = (screen.height - height) / 2;
-        
+
         // Build URL with configuration to bypass authentication
         const jitsiUrl = `https://${domain}/${roomName}#` +
             `config.startWithAudioMuted=false&` +
@@ -439,13 +445,13 @@ function startMeetingAsHost(meetingUrl, meetingTitle) {
             `config.requireDisplayName=false&` +
             `userInfo.displayName=${encodeURIComponent(user.name || 'Faculty')}&` +
             `userInfo.email=${encodeURIComponent(user.email || '')}`;
-        
+
         const meetingWindow = window.open(
             jitsiUrl,
             'JitsiMeeting',
             `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
         );
-        
+
         if (meetingWindow) {
             meetingWindow.focus();
             showToast('Meeting opened! You are the host.', 'success');
@@ -461,7 +467,7 @@ function startMeetingAsHost(meetingUrl, meetingTitle) {
 // Generate meeting link
 async function generateMeetingLink(meetingId) {
     const meetingLink = `https://meet.google.com/${Math.random().toString(36).substring(7)}`;
-    
+
     try {
         const response = await fetch(`/api/meetings/${meetingId}`, {
             method: 'PUT',
@@ -471,7 +477,7 @@ async function generateMeetingLink(meetingId) {
             },
             body: JSON.stringify({ meetingLink })
         });
-        
+
         if (response.ok) {
             showToast('Meeting link generated!', 'success');
             loadMeetings();
@@ -487,21 +493,21 @@ async function generateMeetingLink(meetingId) {
 // Delete meeting
 async function deleteMeeting(meetingId) {
     if (!confirm('Are you sure you want to delete this meeting? This action cannot be undone.')) return;
-    
+
     try {
         console.log('Deleting meeting with ID:', meetingId); // Debug log
-        
+
         const response = await fetch(`/api/meetings/${meetingId}`, {
             method: 'DELETE',
-            headers: { 
+            headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             }
         });
-        
+
         const data = await response.json();
         console.log('Delete response:', data); // Debug log
-        
+
         if (response.ok) {
             showToast('Meeting deleted successfully!', 'success');
             loadMeetings();
@@ -522,7 +528,7 @@ async function loadQuizzes() {
         const response = await fetch('/api/exams/faculty', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        
+
         if (response.ok) {
             const data = await response.json();
             allQuizzes = data.exams || [];
@@ -544,9 +550,9 @@ async function loadQuizzes() {
 // Display recently added questions
 function displayRecentQuestions(quizzes) {
     const container = document.getElementById('recentQuestionsList');
-    
+
     if (!container) return;
-    
+
     // Collect all questions from all quizzes with quiz info
     const allQuestions = [];
     quizzes.forEach(quiz => {
@@ -562,17 +568,17 @@ function displayRecentQuestions(quizzes) {
             });
         }
     });
-    
+
     // Sort by date (most recent first) and take top 5
     const recentQuestions = allQuestions
         .sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt))
         .slice(0, 5);
-    
+
     if (recentQuestions.length === 0) {
         container.innerHTML = '<p class="text-gray-500 text-center py-4">No questions added yet</p>';
         return;
     }
-    
+
     container.innerHTML = recentQuestions.map((q, index) => `
         <div class="border-l-4 border-blue-500 bg-blue-50 p-4 rounded-r-lg hover:bg-blue-100 transition">
             <div class="flex justify-between items-start mb-2">
@@ -597,19 +603,19 @@ function displayRecentQuestions(quizzes) {
 // Display quizzes
 function displayQuizzes(quizzes) {
     const container = document.getElementById('quizzesList');
-    
+
     if (quizzes.length === 0) {
         container.innerHTML = '<p class="text-gray-500 text-center py-8 col-span-2">No quizzes created yet</p>';
         return;
     }
-    
+
     container.innerHTML = quizzes.map(quiz => {
         // Calculate actual total marks from questions if available
         let actualMarks = quiz.total_marks || quiz.totalMarks || 0;
         if (quiz.questions && quiz.questions.length > 0) {
             actualMarks = quiz.questions.reduce((sum, q) => sum + (q.marks || 0), 0);
         }
-        
+
         return `
         <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
             <div class="flex justify-between items-start mb-4">
@@ -674,13 +680,13 @@ function viewQuizResults(quizId) {
 // Delete quiz
 async function deleteQuiz(quizId) {
     if (!confirm('Are you sure you want to delete this quiz?')) return;
-    
+
     try {
         const response = await fetch(`/api/exams/${quizId}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        
+
         if (response.ok) {
             showToast('Quiz deleted successfully!', 'success');
             loadQuizzes();
@@ -703,19 +709,19 @@ function loadAnnouncements() {
 // Display announcements
 function displayAnnouncements(announcements) {
     const container = document.getElementById('announcementsList');
-    
+
     if (announcements.length === 0) {
         container.innerHTML = '<p class="text-gray-500 text-center py-8">No announcements posted yet</p>';
         return;
     }
-    
+
     container.innerHTML = announcements.map((announcement, index) => {
         const priorityColors = {
             normal: 'bg-blue-100 text-blue-800',
             important: 'bg-yellow-100 text-yellow-800',
             urgent: 'bg-red-100 text-red-800'
         };
-        
+
         return `
             <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
                 <div class="flex justify-between items-start mb-3">
@@ -755,7 +761,7 @@ function displayAnnouncements(announcements) {
 // Create announcement
 document.getElementById('announcementForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    
+
     const announcementData = {
         title: document.getElementById('announcementTitle').value,
         message: document.getElementById('announcementMessage').value,
@@ -765,12 +771,12 @@ document.getElementById('announcementForm').addEventListener('submit', (e) => {
         createdBy: user.name,
         createdAt: new Date().toISOString()
     };
-    
+
     // Save to localStorage
     const announcements = JSON.parse(localStorage.getItem('announcements') || '[]');
     announcements.unshift(announcementData);
     localStorage.setItem('announcements', JSON.stringify(announcements));
-    
+
     showToast('Announcement posted successfully!', 'success');
     hideModal('createAnnouncementModal');
     document.getElementById('announcementForm').reset();
@@ -782,28 +788,28 @@ document.getElementById('announcementForm').addEventListener('submit', (e) => {
 function applyAnnouncementFilters() {
     const programFilter = document.getElementById('announcementProgramFilter').value;
     const semesterFilter = document.getElementById('announcementSemesterFilter').value;
-    
+
     let filtered = allAnnouncements;
-    
+
     if (programFilter) {
         filtered = filtered.filter(a => a.program === programFilter || a.program === 'all');
     }
-    
+
     if (semesterFilter) {
         filtered = filtered.filter(a => a.semester === semesterFilter || a.semester === 'all');
     }
-    
+
     displayAnnouncements(filtered);
 }
 
 // Delete announcement
 function deleteAnnouncement(index) {
     if (!confirm('Are you sure you want to delete this announcement?')) return;
-    
+
     const announcements = JSON.parse(localStorage.getItem('announcements') || '[]');
     announcements.splice(index, 1);
     localStorage.setItem('announcements', JSON.stringify(announcements));
-    
+
     showToast('Announcement deleted successfully!', 'success');
     loadAnnouncements();
     loadDashboardData();
@@ -815,7 +821,7 @@ async function loadResources() {
         const response = await fetch('/api/resources/faculty', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        
+
         if (response.ok) {
             const data = await response.json();
             allResources = data.resources || [];
@@ -834,42 +840,42 @@ async function loadResources() {
 // Display resources
 function displayResources(resources) {
     const container = document.getElementById('resourcesList');
-    
+
     if (resources.length === 0) {
         container.innerHTML = '<p class="text-gray-500 text-center py-8 col-span-3">No resources uploaded yet</p>';
         return;
     }
-    
+
     const typeIcons = {
         notes: 'fa-file-alt',
         ppt: 'fa-file-powerpoint',
         assignment: 'fa-tasks',
         reference: 'fa-book'
     };
-    
+
     const typeColors = {
         notes: 'bg-blue-100 text-blue-800',
         ppt: 'bg-orange-100 text-orange-800',
         assignment: 'bg-green-100 text-green-800',
         reference: 'bg-purple-100 text-purple-800'
     };
-    
+
     container.innerHTML = resources.map((resource, index) => {
         const isAssignment = resource.type === 'assignment';
         const fileUrl = resource.fileUrl || resource.link;
         const uploadDate = resource.createdAt || resource.uploadedAt;
-        
+
         // Check if assignment is overdue
         let assignmentStatus = '';
         if (isAssignment && resource.dueDate) {
             const now = new Date();
             const dueDate = new Date(resource.dueDate);
             const isOverdue = now > dueDate;
-            assignmentStatus = isOverdue ? 
-                '<span class="text-red-600 font-semibold">Overdue</span>' : 
+            assignmentStatus = isOverdue ?
+                '<span class="text-red-600 font-semibold">Overdue</span>' :
                 '<span class="text-green-600 font-semibold">Active</span>';
         }
-        
+
         return `
         <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
             <div class="flex justify-between items-start mb-4">
@@ -951,7 +957,7 @@ document.getElementById('resourceType').addEventListener('change', (e) => {
     const assignmentDates = document.getElementById('assignmentDates');
     const startDate = document.getElementById('assignmentStartDate');
     const dueDate = document.getElementById('assignmentDueDate');
-    
+
     if (e.target.value === 'assignment') {
         assignmentDates.classList.remove('hidden');
         startDate.required = true;
@@ -965,39 +971,39 @@ document.getElementById('resourceType').addEventListener('change', (e) => {
 
 document.getElementById('resourceForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     const fileInput = document.getElementById('resourceFile');
     const file = fileInput.files[0];
-    
+
     if (!file) {
         showToast('Please select a file to upload', 'error');
         return;
     }
-    
+
     // Check file size (10MB limit)
     if (file.size > 10 * 1024 * 1024) {
         showToast('File size must be less than 10MB', 'error');
         return;
     }
-    
+
     const resourceType = document.getElementById('resourceType').value;
-    
+
     // Validate assignment dates if type is assignment
     if (resourceType === 'assignment') {
         const startDate = document.getElementById('assignmentStartDate').value;
         const dueDate = document.getElementById('assignmentDueDate').value;
-        
+
         if (!startDate || !dueDate) {
             showToast('Please set start date and due date for assignment', 'error');
             return;
         }
-        
+
         if (new Date(startDate) >= new Date(dueDate)) {
             showToast('Due date must be after start date', 'error');
             return;
         }
     }
-    
+
     // Create FormData for file upload
     const formData = new FormData();
     formData.append('file', file);
@@ -1007,17 +1013,17 @@ document.getElementById('resourceForm').addEventListener('submit', async (e) => 
     formData.append('semester', document.getElementById('resourceSemester').value);
     formData.append('subject', document.getElementById('resourceSubject').value);
     formData.append('type', resourceType);
-    
+
     // Add assignment dates if applicable
     if (resourceType === 'assignment') {
         formData.append('startDate', document.getElementById('assignmentStartDate').value);
         formData.append('dueDate', document.getElementById('assignmentDueDate').value);
         formData.append('lateSubmission', document.getElementById('lateSubmission').value);
     }
-    
+
     try {
         showToast('Uploading file...', 'success');
-        
+
         const response = await fetch('/api/resources/upload', {
             method: 'POST',
             headers: {
@@ -1025,7 +1031,7 @@ document.getElementById('resourceForm').addEventListener('submit', async (e) => 
             },
             body: formData
         });
-        
+
         if (response.ok) {
             const data = await response.json();
             showToast('Resource uploaded successfully!', 'success');
@@ -1047,34 +1053,34 @@ function applyResourceFilters() {
     const programFilter = document.getElementById('resourceProgramFilter').value;
     const semesterFilter = document.getElementById('resourceSemesterFilter').value;
     const typeFilter = document.getElementById('resourceTypeFilter').value;
-    
+
     let filtered = allResources;
-    
+
     if (programFilter) {
         filtered = filtered.filter(r => r.program === programFilter);
     }
-    
+
     if (semesterFilter) {
         filtered = filtered.filter(r => r.semester === semesterFilter);
     }
-    
+
     if (typeFilter) {
         filtered = filtered.filter(r => r.type === typeFilter);
     }
-    
+
     displayResources(filtered);
 }
 
 // Delete resource
 async function deleteResource(resourceId) {
     if (!confirm('Are you sure you want to delete this resource?')) return;
-    
+
     try {
         const response = await fetch(`/api/resources/${resourceId}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        
+
         if (response.ok) {
             showToast('Resource deleted successfully!', 'success');
             loadResources();
@@ -1128,24 +1134,24 @@ function populateProgramDropdowns() {
         'announcementProgramFilter',
         'resourceProgramFilter'
     ];
-    
+
     programDropdowns.forEach(dropdownId => {
         const dropdown = document.getElementById(dropdownId);
         if (dropdown) {
             // Store current value
             const currentValue = dropdown.value;
-            
+
             // Get the first option (usually "Select Program" or "All Programs")
             const firstOption = dropdown.options[0];
-            
+
             // Clear all options
             dropdown.innerHTML = '';
-            
+
             // Re-add first option
             if (firstOption) {
                 dropdown.appendChild(firstOption);
             }
-            
+
             // Add program options
             allPrograms.forEach(program => {
                 const option = document.createElement('option');
@@ -1153,7 +1159,7 @@ function populateProgramDropdowns() {
                 option.textContent = program.name || program.code;
                 dropdown.appendChild(option);
             });
-            
+
             // Restore previous value if it still exists
             if (currentValue && Array.from(dropdown.options).some(opt => opt.value === currentValue)) {
                 dropdown.value = currentValue;
@@ -1174,19 +1180,19 @@ let currentSubmissionTitle = null;
 async function viewSubmissions(resourceId, title) {
     currentSubmissionResourceId = resourceId;
     currentSubmissionTitle = title;
-    
+
     document.getElementById('submissionAssignmentTitle').textContent = title;
     document.getElementById('viewSubmissionsModal').classList.remove('hidden');
-    
+
     console.log('Fetching submissions for resource:', resourceId);
-    
+
     try {
         const response = await fetch(`/api/assignments/${resourceId}/submissions`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        
+
         console.log('Response status:', response.status);
-        
+
         if (response.ok) {
             const data = await response.json();
             console.log('Submissions data:', data);
@@ -1212,19 +1218,19 @@ function refreshSubmissions() {
 // Display submissions
 function displaySubmissions(submissions, resourceId) {
     const container = document.getElementById('submissionsList');
-    
+
     if (submissions.length === 0) {
         container.innerHTML = '<p class="text-gray-500 text-center py-8">No submissions yet</p>';
         return;
     }
-    
+
     container.innerHTML = submissions.map(sub => {
         const statusColors = {
             submitted: 'bg-blue-100 text-blue-800',
             graded: 'bg-green-100 text-green-800',
             late: 'bg-red-100 text-red-800'
         };
-        
+
         return `
             <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
                 <div class="flex justify-between items-start mb-3">
@@ -1283,12 +1289,12 @@ function hideGradeModal() {
 // Submit grade
 document.getElementById('gradeSubmissionForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     const resourceId = document.getElementById('gradeResourceId').value;
     const studentId = document.getElementById('gradeStudentId').value;
     const marks = parseInt(document.getElementById('gradeMarks').value);
     const feedback = document.getElementById('gradeFeedback').value;
-    
+
     try {
         const response = await fetch(`/api/assignments/${resourceId}/grade`, {
             method: 'POST',
@@ -1302,7 +1308,7 @@ document.getElementById('gradeSubmissionForm').addEventListener('submit', async 
                 feedback
             })
         });
-        
+
         if (response.ok) {
             showToast('Grade submitted successfully!', 'success');
             hideGradeModal();

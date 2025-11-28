@@ -12,10 +12,16 @@ const { authenticate, authorizeFaculty, authorizeStudent } = require('../middlew
 
 const router = express.Router();
 
+const fs = require('fs');
+
 // Configure Multer for local storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const uploadPath = path.join(__dirname, '../public/uploads/resources/');
+        // Ensure directory exists
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+        }
         cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
