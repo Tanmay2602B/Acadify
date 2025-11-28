@@ -19,7 +19,7 @@ const getAIResponse = async (prompt) => {
     return text;
   } catch (error) {
     console.error("Error with AI response:", error);
-    throw new Error("Failed to generate AI response");
+    throw new Error(`Failed to generate AI response: ${error.message}`);
   }
 };
 
