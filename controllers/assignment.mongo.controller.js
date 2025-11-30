@@ -43,7 +43,10 @@ const submitAssignment = async (req, res) => {
                         public_id: `${Date.now()}-${Math.round(Math.random() * 1E9)}`
                     },
                     (error, result) => {
-                        if (error) return reject(error);
+                        if (error) {
+                            console.error('Cloudinary Upload Error:', error);
+                            return reject(error);
+                        }
                         resolve(result);
                     }
                 );
