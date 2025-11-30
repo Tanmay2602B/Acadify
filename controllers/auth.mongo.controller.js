@@ -146,6 +146,18 @@ const getProfile = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
+    let additionalDetails = {};
+    if (user.role === 'student') {
+      const Student = require('../models/Student.mongo');
+      const student = await Student.findOne({ user_id: user.user_id });
+      if (student) {
+        additionalDetails = {
+          roll_number: student.roll_number,
+          student_id: student.student_id
+        };
+      }
+    }
+
     res.json({
       user: {
         id: user._id,
@@ -154,7 +166,8 @@ const getProfile = async (req, res) => {
         email: user.email,
         role: user.role,
         program: user.program,
-        semester: user.semester
+        semester: user.semester,
+        ...additionalDetails
       }
     });
   } catch (error) {

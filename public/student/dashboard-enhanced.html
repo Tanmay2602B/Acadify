@@ -1,46 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard - Acadify</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .animate-slide-in { animation: slideIn 0.3s ease-out; }
-        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+
+        .animate-slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
         .sidebar-active {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
+
         @media (max-width: 768px) {
-            .mobile-menu { display: none; }
-            .mobile-menu.active { display: block; }
+            .mobile-menu {
+                display: none;
+            }
+
+            .mobile-menu.active {
+                display: block;
+            }
         }
-        
+
         /* AI Chat message styling */
         #chatWindow strong {
             font-weight: 700;
             color: inherit;
         }
-        
+
         #chatWindow em {
             font-style: italic;
         }
-        
-        #chatWindow ul, #chatWindow ol {
+
+        #chatWindow ul,
+        #chatWindow ol {
             margin: 0.5rem 0;
             padding-left: 1.5rem;
         }
-        
+
         #chatWindow li {
             margin: 0.25rem 0;
         }
-        
+
         #chatWindow code {
             background: rgba(0, 0, 0, 0.1);
             padding: 0.125rem 0.25rem;
@@ -48,7 +71,7 @@
             font-family: monospace;
             font-size: 0.9em;
         }
-        
+
         #chatWindow pre {
             background: rgba(0, 0, 0, 0.05);
             padding: 0.75rem;
@@ -56,13 +79,15 @@
             overflow-x: auto;
             margin: 0.5rem 0;
         }
-        
-        #chatWindow h3, #chatWindow h4 {
+
+        #chatWindow h3,
+        #chatWindow h4 {
             font-weight: 600;
             margin: 0.75rem 0 0.5rem 0;
         }
     </style>
 </head>
+
 <body class="bg-gray-50">
     <!-- Top Navigation -->
     <nav class="gradient-bg text-white shadow-lg sticky top-0 z-50">
@@ -79,11 +104,13 @@
                     <div class="relative">
                         <button id="notificationBtn" class="relative">
                             <i class="fas fa-bell text-xl"></i>
-                            <span id="notifCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+                            <span id="notifCount"
+                                class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
                         </button>
                     </div>
                     <span id="userName" class="hidden md:inline font-medium"></span>
-                    <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg text-sm font-semibold transition transform hover:scale-105">
+                    <button id="logoutBtn"
+                        class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg text-sm font-semibold transition transform hover:scale-105">
                         <i class="fas fa-sign-out-alt mr-1"></i>Logout
                     </button>
                 </div>
@@ -97,31 +124,38 @@
             <aside id="sidebar" class="lg:w-64 mobile-menu">
                 <div class="bg-white rounded-xl shadow-md p-4 sticky top-24">
                     <nav class="space-y-2">
-                        <a href="#" class="nav-link sidebar-active flex items-center px-4 py-3 rounded-lg transition" data-section="dashboard">
+                        <a href="#" class="nav-link sidebar-active flex items-center px-4 py-3 rounded-lg transition"
+                            data-section="dashboard">
                             <i class="fas fa-tachometer-alt w-6"></i>
                             <span class="ml-3">Dashboard</span>
                         </a>
-                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition" data-section="timetable">
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition"
+                            data-section="timetable">
                             <i class="fas fa-calendar-alt w-6"></i>
                             <span class="ml-3">Timetable</span>
                         </a>
-                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition" data-section="meetings">
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition"
+                            data-section="meetings">
                             <i class="fas fa-video w-6"></i>
                             <span class="ml-3">Meetings</span>
                         </a>
-                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition" data-section="quizzes">
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition"
+                            data-section="quizzes">
                             <i class="fas fa-file-alt w-6"></i>
                             <span class="ml-3">Quizzes</span>
                         </a>
-                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition" data-section="grades">
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition"
+                            data-section="grades">
                             <i class="fas fa-chart-line w-6"></i>
                             <span class="ml-3">Grades</span>
                         </a>
-                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition" data-section="resources">
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition"
+                            data-section="resources">
                             <i class="fas fa-book w-6"></i>
                             <span class="ml-3">Resources</span>
                         </a>
-                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition" data-section="ai">
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition"
+                            data-section="ai">
                             <i class="fas fa-robot w-6"></i>
                             <span class="ml-3">AI Mentor</span>
                         </a>
@@ -134,10 +168,11 @@
                 <!-- Dashboard Section -->
                 <div id="dashboardSection" class="content-section">
                     <h2 class="text-3xl font-bold mb-6 text-gray-800">Dashboard Overview</h2>
-                    
+
                     <!-- Stats Cards -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
+                        <div
+                            class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <p class="text-blue-100 text-sm">Attendance</p>
@@ -148,8 +183,9 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
+
+                        <div
+                            class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <p class="text-green-100 text-sm">Quizzes Taken</p>
@@ -160,8 +196,9 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
+
+                        <div
+                            class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <p class="text-purple-100 text-sm">Average Score</p>
@@ -172,8 +209,9 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
+
+                        <div
+                            class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <p class="text-orange-100 text-sm">Meetings</p>
@@ -190,27 +228,33 @@
                     <div class="bg-white rounded-xl shadow-md p-6 mb-6">
                         <h3 class="text-xl font-bold mb-4 text-gray-800">Quick Actions</h3>
                         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                            <button onclick="showSection('timetable')" class="flex flex-col items-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition">
+                            <button onclick="showSection('timetable')"
+                                class="flex flex-col items-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition">
                                 <i class="fas fa-calendar-alt text-3xl text-blue-600 mb-2"></i>
                                 <span class="text-sm font-medium text-gray-700">Timetable</span>
                             </button>
-                            <button onclick="showSection('meetings')" class="flex flex-col items-center p-4 bg-green-50 hover:bg-green-100 rounded-lg transition">
+                            <button onclick="showSection('meetings')"
+                                class="flex flex-col items-center p-4 bg-green-50 hover:bg-green-100 rounded-lg transition">
                                 <i class="fas fa-video text-3xl text-green-600 mb-2"></i>
                                 <span class="text-sm font-medium text-gray-700">Meetings</span>
                             </button>
-                            <button onclick="showSection('quizzes')" class="flex flex-col items-center p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition">
+                            <button onclick="showSection('quizzes')"
+                                class="flex flex-col items-center p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition">
                                 <i class="fas fa-file-alt text-3xl text-purple-600 mb-2"></i>
                                 <span class="text-sm font-medium text-gray-700">Quizzes</span>
                             </button>
-                            <button onclick="showSection('grades')" class="flex flex-col items-center p-4 bg-orange-50 hover:bg-orange-100 rounded-lg transition">
+                            <button onclick="showSection('grades')"
+                                class="flex flex-col items-center p-4 bg-orange-50 hover:bg-orange-100 rounded-lg transition">
                                 <i class="fas fa-chart-line text-3xl text-orange-600 mb-2"></i>
                                 <span class="text-sm font-medium text-gray-700">Grades</span>
                             </button>
-                            <button onclick="showSection('resources')" class="flex flex-col items-center p-4 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition">
+                            <button onclick="showSection('resources')"
+                                class="flex flex-col items-center p-4 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition">
                                 <i class="fas fa-book text-3xl text-indigo-600 mb-2"></i>
                                 <span class="text-sm font-medium text-gray-700">Resources</span>
                             </button>
-                            <button onclick="loadNotifications()" class="flex flex-col items-center p-4 bg-pink-50 hover:bg-pink-100 rounded-lg transition">
+                            <button onclick="loadNotifications()"
+                                class="flex flex-col items-center p-4 bg-pink-50 hover:bg-pink-100 rounded-lg transition">
                                 <i class="fas fa-bell text-3xl text-pink-600 mb-2"></i>
                                 <span class="text-sm font-medium text-gray-700">Notifications</span>
                             </button>
@@ -237,22 +281,28 @@
                 <!-- Timetable Section -->
                 <div id="timetableSection" class="content-section hidden">
                     <h2 class="text-3xl font-bold mb-6 text-gray-800">My Timetable</h2>
-                    
+
                     <div class="bg-white rounded-xl shadow-md p-6">
                         <div class="overflow-x-auto">
                             <table class="min-w-full">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Day</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Time</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subject</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Faculty</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Room</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Day
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Time
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            Subject</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            Faculty</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Room
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody id="timetableBody" class="divide-y divide-gray-200">
                                     <tr>
-                                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">Loading timetable...</td>
+                                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">Loading timetable...
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -263,7 +313,7 @@
                 <!-- Meetings Section -->
                 <div id="meetingsSection" class="content-section hidden">
                     <h2 class="text-3xl font-bold mb-6 text-gray-800">Online Meetings</h2>
-                    
+
                     <div id="meetingsList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <p class="text-gray-500 text-center py-8 col-span-2">Loading meetings...</p>
                     </div>
@@ -272,7 +322,7 @@
                 <!-- Quizzes Section -->
                 <div id="quizzesSection" class="content-section hidden">
                     <h2 class="text-3xl font-bold mb-6 text-gray-800">Available Quizzes</h2>
-                    
+
                     <div id="quizzesList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <p class="text-gray-500 text-center py-8 col-span-2">Loading quizzes...</p>
                     </div>
@@ -281,7 +331,7 @@
                 <!-- Grades Section -->
                 <div id="gradesSection" class="content-section hidden">
                     <h2 class="text-3xl font-bold mb-6 text-gray-800">My Grades</h2>
-                    
+
                     <div class="bg-white rounded-xl shadow-md p-6 mb-6">
                         <h3 class="text-xl font-bold mb-4 text-gray-800">Report Card</h3>
                         <div id="reportCard">
@@ -300,13 +350,17 @@
                 <!-- Resources Section -->
                 <div id="resourcesSection" class="content-section hidden">
                     <h2 class="text-3xl font-bold mb-6 text-gray-800">Learning Resources</h2>
-                    
+
                     <div class="bg-white rounded-xl shadow-md p-6 mb-6">
                         <div class="flex gap-2 mb-4">
-                            <button onclick="filterResources('all')" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold">All</button>
-                            <button onclick="filterResources('notes')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold">Notes</button>
-                            <button onclick="filterResources('ppt')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold">PPTs</button>
-                            <button onclick="filterResources('assignment')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold">Assignments</button>
+                            <button onclick="filterResources('all')"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold">All</button>
+                            <button onclick="filterResources('notes')"
+                                class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold">Notes</button>
+                            <button onclick="filterResources('ppt')"
+                                class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold">PPTs</button>
+                            <button onclick="filterResources('assignment')"
+                                class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold">Assignments</button>
                         </div>
                     </div>
 
@@ -318,7 +372,7 @@
                 <!-- AI Mentor Section -->
                 <div id="aiSection" class="content-section hidden">
                     <h2 class="text-3xl font-bold mb-6 text-gray-800">AI Mentor</h2>
-                    
+
                     <div class="bg-white rounded-xl shadow-md p-6">
                         <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">
                             <div>
@@ -329,24 +383,20 @@
                                 <i class="fas fa-circle text-green-500 text-xs mr-1"></i>Online
                             </span>
                         </div>
-                        
+
                         <div id="chatWindow" class="h-96 overflow-y-auto space-y-4 mb-4 p-4 bg-gray-50 rounded-lg">
                             <div class="text-center text-gray-500 py-8">
                                 <i class="fas fa-robot text-5xl text-gray-300 mb-3"></i>
                                 <p>Start a conversation with your AI mentor!</p>
                             </div>
                         </div>
-                        
+
                         <form id="aiForm" class="flex gap-3">
-                            <input 
-                                id="aiPrompt" 
-                                type="text" 
-                                placeholder="Ask anything about your syllabus, assignments, or studies..." 
+                            <input id="aiPrompt" type="text"
+                                placeholder="Ask anything about your syllabus, assignments, or studies..."
                                 class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                required
-                            >
-                            <button 
-                                type="submit" 
+                                required>
+                            <button type="submit"
                                 class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105">
                                 <i class="fas fa-paper-plane mr-2"></i>Send
                             </button>
@@ -358,7 +408,8 @@
     </div>
 
     <!-- Submit Assignment Modal -->
-    <div id="submitAssignmentModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div id="submitAssignmentModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl p-8 max-w-md w-full">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-2xl font-bold text-gray-800">Submit Assignment</h3>
@@ -366,7 +417,7 @@
                     <i class="fas fa-times text-2xl"></i>
                 </button>
             </div>
-            
+
             <form id="submitAssignmentForm" class="space-y-4">
                 <input type="hidden" id="assignmentResourceId">
                 <div>
@@ -375,18 +426,23 @@
                 </div>
                 <div>
                     <label class="block text-gray-700 font-medium mb-2">Upload Your Work *</label>
-                    <input type="file" id="submissionFile" required accept=".pdf,.doc,.docx,.zip,.rar" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                    <input type="file" id="submissionFile" required accept=".pdf,.doc,.docx,.zip,.rar"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
                     <p class="text-sm text-gray-500 mt-1">Supported: PDF, DOC, DOCX, ZIP, RAR (Max 10MB)</p>
                 </div>
                 <div>
                     <label class="block text-gray-700 font-medium mb-2">Comments (Optional)</label>
-                    <textarea id="submissionComments" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500" placeholder="Any notes for your teacher..."></textarea>
+                    <textarea id="submissionComments" rows="3"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        placeholder="Any notes for your teacher..."></textarea>
                 </div>
                 <div class="flex gap-3 mt-6">
-                    <button type="submit" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold transition">
+                    <button type="submit"
+                        class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold transition">
                         <i class="fas fa-upload mr-2"></i>Submit Assignment
                     </button>
-                    <button type="button" onclick="hideSubmitModal()" class="px-6 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-semibold transition">
+                    <button type="button" onclick="hideSubmitModal()"
+                        class="px-6 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-semibold transition">
                         Cancel
                     </button>
                 </div>
@@ -396,4 +452,5 @@
 
     <script src="student-dashboard.js"></script>
 </body>
+
 </html>
