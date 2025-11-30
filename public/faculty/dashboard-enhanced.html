@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,19 +9,40 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .animate-slide-in { animation: slideIn 0.3s ease-out; }
-        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+
+        .animate-slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
         .sidebar-active {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
+
         @media (max-width: 768px) {
-            .mobile-menu { display: none; }
-            .mobile-menu.active { display: block; }
+            .mobile-menu {
+                display: none;
+            }
+
+            .mobile-menu.active {
+                display: block;
+            }
         }
+
         .toast {
             position: fixed;
             top: 20px;
@@ -32,10 +54,17 @@
             z-index: 9999;
             animation: slideIn 0.3s ease-out;
         }
-        .toast.success { background: #10b981; }
-        .toast.error { background: #ef4444; }
+
+        .toast.success {
+            background: #10b981;
+        }
+
+        .toast.error {
+            background: #ef4444;
+        }
     </style>
 </head>
+
 <body class="bg-gray-50">
     <!-- Top Navigation -->
     <nav class="gradient-bg text-white shadow-lg sticky top-0 z-50">
@@ -50,7 +79,8 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     <span id="userName" class="hidden md:inline font-medium"></span>
-                    <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg text-sm font-semibold transition transform hover:scale-105">
+                    <button id="logoutBtn"
+                        class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg text-sm font-semibold transition transform hover:scale-105">
                         <i class="fas fa-sign-out-alt mr-1"></i>Logout
                     </button>
                 </div>
@@ -64,27 +94,38 @@
             <aside id="sidebar" class="lg:w-64 mobile-menu">
                 <div class="bg-white rounded-xl shadow-md p-4 sticky top-24">
                     <nav class="space-y-2">
-                        <a href="#" class="nav-link sidebar-active flex items-center px-4 py-3 rounded-lg transition" data-section="dashboard">
+                        <a href="#" class="nav-link sidebar-active flex items-center px-4 py-3 rounded-lg transition"
+                            data-section="dashboard">
                             <i class="fas fa-tachometer-alt w-6"></i>
                             <span class="ml-3">Dashboard</span>
                         </a>
-                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition" data-section="students">
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition"
+                            data-section="students">
                             <i class="fas fa-user-graduate w-6"></i>
                             <span class="ml-3">Students</span>
                         </a>
-                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition" data-section="meetings">
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition"
+                            data-section="meetings">
                             <i class="fas fa-video w-6"></i>
                             <span class="ml-3">Meetings</span>
                         </a>
-                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition" data-section="quizzes">
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition"
+                            data-section="quizzes">
                             <i class="fas fa-file-alt w-6"></i>
                             <span class="ml-3">Quizzes</span>
                         </a>
-                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition" data-section="announcements">
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition"
+                            data-section="announcements">
                             <i class="fas fa-bullhorn w-6"></i>
                             <span class="ml-3">Announcements</span>
                         </a>
-                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition" data-section="resources">
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition"
+                            data-section="timetable">
+                            <i class="fas fa-calendar-alt w-6"></i>
+                            <span class="ml-3">Timetable</span>
+                        </a>
+                        <a href="#" class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100 transition"
+                            data-section="resources">
                             <i class="fas fa-book w-6"></i>
                             <span class="ml-3">Resources</span>
                         </a>
@@ -97,10 +138,11 @@
                 <!-- Dashboard Section -->
                 <div id="dashboardSection" class="content-section">
                     <h2 class="text-3xl font-bold mb-6 text-gray-800">Dashboard Overview</h2>
-                    
+
                     <!-- Stats Cards -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
+                        <div
+                            class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <p class="text-blue-100 text-sm">Total Students</p>
@@ -111,8 +153,9 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
+
+                        <div
+                            class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <p class="text-green-100 text-sm">Meetings</p>
@@ -123,8 +166,9 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
+
+                        <div
+                            class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <p class="text-purple-100 text-sm">Quizzes</p>
@@ -135,8 +179,9 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
+
+                        <div
+                            class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg transform hover:scale-105 transition">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <p class="text-orange-100 text-sm">Announcements</p>
@@ -153,27 +198,33 @@
                     <div class="bg-white rounded-xl shadow-md p-6 mb-6">
                         <h3 class="text-xl font-bold mb-4 text-gray-800">Quick Actions</h3>
                         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-                            <button onclick="showSection('students')" class="flex flex-col items-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition">
+                            <button onclick="showSection('students')"
+                                class="flex flex-col items-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition">
                                 <i class="fas fa-users text-3xl text-blue-600 mb-2"></i>
                                 <span class="text-sm font-medium text-gray-700">View Students</span>
                             </button>
-                            <button onclick="showCreateMeetingModal()" class="flex flex-col items-center p-4 bg-green-50 hover:bg-green-100 rounded-lg transition">
+                            <button onclick="showCreateMeetingModal()"
+                                class="flex flex-col items-center p-4 bg-green-50 hover:bg-green-100 rounded-lg transition">
                                 <i class="fas fa-video text-3xl text-green-600 mb-2"></i>
                                 <span class="text-sm font-medium text-gray-700">New Meeting</span>
                             </button>
-                            <a href="create-quiz-enhanced.html" class="flex flex-col items-center p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition">
+                            <a href="create-quiz-enhanced.html"
+                                class="flex flex-col items-center p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition">
                                 <i class="fas fa-plus-circle text-3xl text-purple-600 mb-2"></i>
                                 <span class="text-sm font-medium text-gray-700">New Quiz</span>
                             </a>
-                            <button onclick="showCreateAnnouncementModal()" class="flex flex-col items-center p-4 bg-orange-50 hover:bg-orange-100 rounded-lg transition">
+                            <button onclick="showCreateAnnouncementModal()"
+                                class="flex flex-col items-center p-4 bg-orange-50 hover:bg-orange-100 rounded-lg transition">
                                 <i class="fas fa-bullhorn text-3xl text-orange-600 mb-2"></i>
                                 <span class="text-sm font-medium text-gray-700">Announce</span>
                             </button>
-                            <button onclick="showSection('announcements')" class="flex flex-col items-center p-4 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition">
+                            <button onclick="showSection('announcements')"
+                                class="flex flex-col items-center p-4 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition">
                                 <i class="fas fa-list text-3xl text-indigo-600 mb-2"></i>
                                 <span class="text-sm font-medium text-gray-700">View All</span>
                             </button>
-                            <button onclick="showSection('resources')" class="flex flex-col items-center p-4 bg-pink-50 hover:bg-pink-100 rounded-lg transition">
+                            <button onclick="showSection('resources')"
+                                class="flex flex-col items-center p-4 bg-pink-50 hover:bg-pink-100 rounded-lg transition">
                                 <i class="fas fa-upload text-3xl text-pink-600 mb-2"></i>
                                 <span class="text-sm font-medium text-gray-700">Upload</span>
                             </button>
@@ -197,17 +248,20 @@
                             Total: <span id="studentCount" class="text-blue-600">0</span>
                         </div>
                     </div>
-                    
+
                     <div class="bg-white rounded-xl shadow-md p-4 mb-4">
                         <div class="flex flex-wrap gap-3">
-                            <input type="text" id="studentSearch" placeholder="Search students..." class="flex-1 min-w-[200px] px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                            <select id="programFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <input type="text" id="studentSearch" placeholder="Search students..."
+                                class="flex-1 min-w-[200px] px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <select id="programFilter"
+                                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                                 <option value="">All Programs</option>
                                 <option value="BCA">BCA</option>
                                 <option value="MCA">MCA</option>
                                 <option value="BSc">BSc</option>
                             </select>
-                            <select id="semesterFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <select id="semesterFilter"
+                                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                                 <option value="">All Semesters</option>
                                 <option value="1">Semester 1</option>
                                 <option value="2">Semester 2</option>
@@ -216,27 +270,34 @@
                                 <option value="5">Semester 5</option>
                                 <option value="6">Semester 6</option>
                             </select>
-                            <button onclick="applyStudentFilters()" class="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">
+                            <button onclick="applyStudentFilters()"
+                                class="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">
                                 <i class="fas fa-filter mr-2"></i>Filter
                             </button>
                         </div>
                     </div>
-                    
+
                     <div class="bg-white rounded-xl shadow-md overflow-hidden">
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Student</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Program</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Semester</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            Student</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            Email</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            Program</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            Semester</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            Status</th>
                                     </tr>
                                 </thead>
                                 <tbody id="studentsTableBody" class="bg-white divide-y divide-gray-200">
                                     <tr>
-                                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">Loading students...</td>
+                                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">Loading students...
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -248,11 +309,12 @@
                 <div id="meetingsSection" class="content-section hidden">
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-3xl font-bold text-gray-800">Meetings</h2>
-                        <button onclick="showCreateMeetingModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-lg">
+                        <button onclick="showCreateMeetingModal()"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-lg">
                             <i class="fas fa-plus mr-2"></i>Create Meeting
                         </button>
                     </div>
-                    
+
                     <div id="meetingsList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <p class="text-gray-500 text-center py-8 col-span-2">Loading meetings...</p>
                     </div>
@@ -262,11 +324,12 @@
                 <div id="quizzesSection" class="content-section hidden">
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-3xl font-bold text-gray-800">Quizzes</h2>
-                        <a href="create-quiz-enhanced.html" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-lg inline-block">
+                        <a href="create-quiz-enhanced.html"
+                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-lg inline-block">
                             <i class="fas fa-plus mr-2"></i>Create New Quiz
                         </a>
                     </div>
-                    
+
                     <!-- Recently Added Questions -->
                     <div class="bg-white rounded-xl shadow-md p-6 mb-6">
                         <h3 class="text-xl font-bold text-gray-800 mb-4">
@@ -276,7 +339,7 @@
                             <p class="text-gray-500 text-center py-4">Loading recent questions...</p>
                         </div>
                     </div>
-                    
+
                     <!-- All Quizzes -->
                     <h3 class="text-xl font-bold text-gray-800 mb-4">All Quizzes</h3>
                     <div id="quizzesList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -288,20 +351,23 @@
                 <div id="resourcesSection" class="content-section hidden">
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-3xl font-bold text-gray-800">Learning Resources</h2>
-                        <button onclick="showUploadResourceModal()" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-lg">
+                        <button onclick="showUploadResourceModal()"
+                            class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-lg">
                             <i class="fas fa-upload mr-2"></i>Upload Resource
                         </button>
                     </div>
-                    
+
                     <div class="bg-white rounded-xl shadow-md p-4 mb-4">
                         <div class="flex flex-wrap gap-3">
-                            <select id="resourceProgramFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
+                            <select id="resourceProgramFilter"
+                                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
                                 <option value="">All Programs</option>
                                 <option value="BCA">BCA</option>
                                 <option value="MCA">MCA</option>
                                 <option value="BSc">BSc</option>
                             </select>
-                            <select id="resourceSemesterFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
+                            <select id="resourceSemesterFilter"
+                                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
                                 <option value="">All Semesters</option>
                                 <option value="1">Semester 1</option>
                                 <option value="2">Semester 2</option>
@@ -310,19 +376,21 @@
                                 <option value="5">Semester 5</option>
                                 <option value="6">Semester 6</option>
                             </select>
-                            <select id="resourceTypeFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
+                            <select id="resourceTypeFilter"
+                                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
                                 <option value="">All Types</option>
                                 <option value="notes">Notes</option>
                                 <option value="ppt">PPT</option>
                                 <option value="assignment">Assignment</option>
                                 <option value="reference">Reference</option>
                             </select>
-                            <button onclick="applyResourceFilters()" class="px-6 py-2 bg-pink-600 text-white rounded-lg font-semibold hover:bg-pink-700 transition">
+                            <button onclick="applyResourceFilters()"
+                                class="px-6 py-2 bg-pink-600 text-white rounded-lg font-semibold hover:bg-pink-700 transition">
                                 <i class="fas fa-filter mr-2"></i>Filter
                             </button>
                         </div>
                     </div>
-                    
+
                     <div id="resourcesList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <p class="text-gray-500 text-center py-8 col-span-3">Loading resources...</p>
                     </div>
@@ -332,20 +400,23 @@
                 <div id="announcementsSection" class="content-section hidden">
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-3xl font-bold text-gray-800">Announcements</h2>
-                        <button onclick="showCreateAnnouncementModal()" class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-lg">
+                        <button onclick="showCreateAnnouncementModal()"
+                            class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-semibold transition transform hover:scale-105 shadow-lg">
                             <i class="fas fa-plus mr-2"></i>New Announcement
                         </button>
                     </div>
-                    
+
                     <div class="bg-white rounded-xl shadow-md p-4 mb-4">
                         <div class="flex flex-wrap gap-3">
-                            <select id="announcementProgramFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+                            <select id="announcementProgramFilter"
+                                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
                                 <option value="">All Programs</option>
                                 <option value="BCA">BCA</option>
                                 <option value="MCA">MCA</option>
                                 <option value="BSc">BSc</option>
                             </select>
-                            <select id="announcementSemesterFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+                            <select id="announcementSemesterFilter"
+                                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
                                 <option value="">All Semesters</option>
                                 <option value="1">Semester 1</option>
                                 <option value="2">Semester 2</option>
@@ -354,14 +425,59 @@
                                 <option value="5">Semester 5</option>
                                 <option value="6">Semester 6</option>
                             </select>
-                            <button onclick="applyAnnouncementFilters()" class="px-6 py-2 bg-orange-600 text-white rounded-lg font-semibold hover:bg-orange-700 transition">
+                            <button onclick="applyAnnouncementFilters()"
+                                class="px-6 py-2 bg-orange-600 text-white rounded-lg font-semibold hover:bg-orange-700 transition">
                                 <i class="fas fa-filter mr-2"></i>Filter
                             </button>
                         </div>
                     </div>
-                    
+
                     <div id="announcementsList" class="space-y-4">
                         <p class="text-gray-500 text-center py-8">Loading announcements...</p>
+                    </div>
+                </div>
+                <!-- Timetable Section -->
+                <div id="timetableSection" class="content-section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">My Timetable</h2>
+                        <div class="text-sm text-gray-500">
+                            <i class="fas fa-info-circle mr-1"></i> Showing current semester schedule
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Day</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Time</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Subject</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Program</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Room</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="facultyTimetableBody" class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">Loading timetable...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </main>
@@ -369,7 +485,8 @@
     </div>
 
     <!-- Create Meeting Modal -->
-    <div id="createMeetingModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div id="createMeetingModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl p-8 max-w-2xl w-full max-h-screen overflow-y-auto animate-slide-in">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-2xl font-bold text-gray-800">Create Meeting</h3>
@@ -377,20 +494,23 @@
                     <i class="fas fa-times text-2xl"></i>
                 </button>
             </div>
-            
+
             <form id="meetingForm" class="space-y-4">
                 <div>
                     <label class="block text-gray-700 font-medium mb-2">Title *</label>
-                    <input type="text" id="meetingTitle" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="meetingTitle" required
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div>
                     <label class="block text-gray-700 font-medium mb-2">Description</label>
-                    <textarea id="meetingDescription" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                    <textarea id="meetingDescription" rows="3"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-gray-700 font-medium mb-2">Program *</label>
-                        <select id="meetingProgram" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <select id="meetingProgram" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                             <option value="">Select Program</option>
                             <option value="BCA">BCA</option>
                             <option value="MCA">MCA</option>
@@ -399,7 +519,8 @@
                     </div>
                     <div>
                         <label class="block text-gray-700 font-medium mb-2">Semester *</label>
-                        <select id="meetingSemester" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <select id="meetingSemester" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                             <option value="">Select Semester</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -412,23 +533,28 @@
                 </div>
                 <div>
                     <label class="block text-gray-700 font-medium mb-2">Subject *</label>
-                    <input type="text" id="meetingSubject" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="meetingSubject" required
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-gray-700 font-medium mb-2">Date & Time *</label>
-                        <input type="datetime-local" id="meetingTime" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <input type="datetime-local" id="meetingTime" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div>
                         <label class="block text-gray-700 font-medium mb-2">Duration (minutes) *</label>
-                        <input type="number" id="meetingDuration" required value="60" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <input type="number" id="meetingDuration" required value="60"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                     </div>
                 </div>
                 <div class="flex gap-3 mt-6">
-                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition">
+                    <button type="submit"
+                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition">
                         <i class="fas fa-video mr-2"></i>Create Meeting
                     </button>
-                    <button type="button" onclick="hideModal('createMeetingModal')" class="px-6 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-semibold transition">
+                    <button type="button" onclick="hideModal('createMeetingModal')"
+                        class="px-6 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-semibold transition">
                         Cancel
                     </button>
                 </div>
@@ -437,7 +563,8 @@
     </div>
 
     <!-- Create Announcement Modal -->
-    <div id="createAnnouncementModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div id="createAnnouncementModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl p-8 max-w-2xl w-full max-h-screen overflow-y-auto animate-slide-in">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-2xl font-bold text-gray-800">Create Announcement</h3>
@@ -445,20 +572,23 @@
                     <i class="fas fa-times text-2xl"></i>
                 </button>
             </div>
-            
+
             <form id="announcementForm" class="space-y-4">
                 <div>
                     <label class="block text-gray-700 font-medium mb-2">Title *</label>
-                    <input type="text" id="announcementTitle" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+                    <input type="text" id="announcementTitle" required
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
                 </div>
                 <div>
                     <label class="block text-gray-700 font-medium mb-2">Message *</label>
-                    <textarea id="announcementMessage" required rows="5" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"></textarea>
+                    <textarea id="announcementMessage" required rows="5"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"></textarea>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-gray-700 font-medium mb-2">Program *</label>
-                        <select id="announcementProgram" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+                        <select id="announcementProgram" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
                             <option value="">Select Program</option>
                             <option value="BCA">BCA</option>
                             <option value="MCA">MCA</option>
@@ -468,7 +598,8 @@
                     </div>
                     <div>
                         <label class="block text-gray-700 font-medium mb-2">Semester *</label>
-                        <select id="announcementSemester" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+                        <select id="announcementSemester" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
                             <option value="">Select Semester</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -482,17 +613,20 @@
                 </div>
                 <div>
                     <label class="block text-gray-700 font-medium mb-2">Priority</label>
-                    <select id="announcementPriority" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+                    <select id="announcementPriority"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
                         <option value="normal">Normal</option>
                         <option value="important">Important</option>
                         <option value="urgent">Urgent</option>
                     </select>
                 </div>
                 <div class="flex gap-3 mt-6">
-                    <button type="submit" class="flex-1 bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-lg font-semibold transition">
+                    <button type="submit"
+                        class="flex-1 bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-lg font-semibold transition">
                         <i class="fas fa-bullhorn mr-2"></i>Post Announcement
                     </button>
-                    <button type="button" onclick="hideModal('createAnnouncementModal')" class="px-6 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-semibold transition">
+                    <button type="button" onclick="hideModal('createAnnouncementModal')"
+                        class="px-6 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-semibold transition">
                         Cancel
                     </button>
                 </div>
@@ -501,7 +635,8 @@
     </div>
 
     <!-- Upload Resource Modal -->
-    <div id="uploadResourceModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div id="uploadResourceModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl p-8 max-w-2xl w-full max-h-screen overflow-y-auto animate-slide-in">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-2xl font-bold text-gray-800">Upload Resource</h3>
@@ -509,20 +644,23 @@
                     <i class="fas fa-times text-2xl"></i>
                 </button>
             </div>
-            
+
             <form id="resourceForm" class="space-y-4">
                 <div>
                     <label class="block text-gray-700 font-medium mb-2">Resource Title *</label>
-                    <input type="text" id="resourceTitle" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
+                    <input type="text" id="resourceTitle" required
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
                 </div>
                 <div>
                     <label class="block text-gray-700 font-medium mb-2">Description</label>
-                    <textarea id="resourceDescription" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500"></textarea>
+                    <textarea id="resourceDescription" rows="3"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500"></textarea>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-gray-700 font-medium mb-2">Program *</label>
-                        <select id="resourceProgram" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
+                        <select id="resourceProgram" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
                             <option value="">Select Program</option>
                             <option value="BCA">BCA</option>
                             <option value="MCA">MCA</option>
@@ -531,7 +669,8 @@
                     </div>
                     <div>
                         <label class="block text-gray-700 font-medium mb-2">Semester *</label>
-                        <select id="resourceSemester" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
+                        <select id="resourceSemester" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
                             <option value="">Select Semester</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -545,11 +684,13 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-gray-700 font-medium mb-2">Subject *</label>
-                        <input type="text" id="resourceSubject" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
+                        <input type="text" id="resourceSubject" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
                     </div>
                     <div>
                         <label class="block text-gray-700 font-medium mb-2">Type *</label>
-                        <select id="resourceType" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
+                        <select id="resourceType" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
                             <option value="">Select Type</option>
                             <option value="notes">Notes</option>
                             <option value="ppt">PPT/Slides</option>
@@ -560,10 +701,12 @@
                 </div>
                 <div>
                     <label class="block text-gray-700 font-medium mb-2">Upload File *</label>
-                    <input type="file" id="resourceFile" required accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.zip,.rar" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
-                    <p class="text-sm text-gray-500 mt-1">Supported: PDF, DOC, DOCX, PPT, PPTX, TXT, ZIP, RAR (Max 10MB)</p>
+                    <input type="file" id="resourceFile" required accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.zip,.rar"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500">
+                    <p class="text-sm text-gray-500 mt-1">Supported: PDF, DOC, DOCX, PPT, PPTX, TXT, ZIP, RAR (Max 10MB)
+                    </p>
                 </div>
-                
+
                 <!-- Assignment Dates (shown only for assignment type) -->
                 <div id="assignmentDates" class="hidden space-y-4 bg-blue-50 p-4 rounded-lg border border-blue-200">
                     <h4 class="font-semibold text-blue-800 mb-2">
@@ -572,27 +715,32 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-gray-700 font-medium mb-2">Start Date *</label>
-                            <input type="datetime-local" id="assignmentStartDate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <input type="datetime-local" id="assignmentStartDate"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
                             <label class="block text-gray-700 font-medium mb-2">Due Date *</label>
-                            <input type="datetime-local" id="assignmentDueDate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <input type="datetime-local" id="assignmentDueDate"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                         </div>
                     </div>
                     <div>
                         <label class="block text-gray-700 font-medium mb-2">Late Submission Allowed?</label>
-                        <select id="lateSubmission" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <select id="lateSubmission"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                             <option value="no">No - Submissions closed after due date</option>
                             <option value="yes">Yes - Allow late submissions</option>
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="flex gap-3 mt-6">
-                    <button type="submit" class="flex-1 bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold transition">
+                    <button type="submit"
+                        class="flex-1 bg-pink-600 hover:bg-pink-700 text-white py-3 rounded-lg font-semibold transition">
                         <i class="fas fa-upload mr-2"></i>Upload Resource
                     </button>
-                    <button type="button" onclick="hideModal('uploadResourceModal')" class="px-6 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-semibold transition">
+                    <button type="button" onclick="hideModal('uploadResourceModal')"
+                        class="px-6 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-semibold transition">
                         Cancel
                     </button>
                 </div>
@@ -601,7 +749,8 @@
     </div>
 
     <!-- View Submissions Modal -->
-    <div id="viewSubmissionsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div id="viewSubmissionsModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl p-8 max-w-4xl w-full max-h-screen overflow-y-auto">
             <div class="flex justify-between items-center mb-6">
                 <div class="flex-1">
@@ -609,7 +758,8 @@
                     <p id="submissionAssignmentTitle" class="text-gray-600"></p>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="refreshSubmissions()" class="text-blue-600 hover:text-blue-700 px-3 py-2" title="Refresh">
+                    <button onclick="refreshSubmissions()" class="text-blue-600 hover:text-blue-700 px-3 py-2"
+                        title="Refresh">
                         <i class="fas fa-sync-alt"></i>
                     </button>
                     <button onclick="hideSubmissionsModal()" class="text-gray-500 hover:text-gray-700">
@@ -617,7 +767,7 @@
                     </button>
                 </div>
             </div>
-            
+
             <div id="submissionsList" class="space-y-4">
                 <p class="text-gray-500 text-center py-8">Loading submissions...</p>
             </div>
@@ -625,7 +775,8 @@
     </div>
 
     <!-- Grade Submission Modal -->
-    <div id="gradeSubmissionModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div id="gradeSubmissionModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl p-8 max-w-md w-full">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-2xl font-bold text-gray-800">Grade Submission</h3>
@@ -633,7 +784,7 @@
                     <i class="fas fa-times text-2xl"></i>
                 </button>
             </div>
-            
+
             <form id="gradeSubmissionForm" class="space-y-4">
                 <input type="hidden" id="gradeResourceId">
                 <input type="hidden" id="gradeStudentId">
@@ -643,17 +794,22 @@
                 </div>
                 <div>
                     <label class="block text-gray-700 font-medium mb-2">Marks *</label>
-                    <input type="number" id="gradeMarks" required min="0" max="100" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                    <input type="number" id="gradeMarks" required min="0" max="100"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
                 </div>
                 <div>
                     <label class="block text-gray-700 font-medium mb-2">Feedback</label>
-                    <textarea id="gradeFeedback" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="Comments for the student..."></textarea>
+                    <textarea id="gradeFeedback" rows="3"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                        placeholder="Comments for the student..."></textarea>
                 </div>
                 <div class="flex gap-3 mt-6">
-                    <button type="submit" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold transition">
+                    <button type="submit"
+                        class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold transition">
                         <i class="fas fa-check mr-2"></i>Submit Grade
                     </button>
-                    <button type="button" onclick="hideGradeModal()" class="px-6 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-semibold transition">
+                    <button type="button" onclick="hideGradeModal()"
+                        class="px-6 bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded-lg font-semibold transition">
                         Cancel
                     </button>
                 </div>
@@ -663,4 +819,5 @@
 
     <script src="faculty-dashboard.js"></script>
 </body>
+
 </html>

@@ -63,6 +63,7 @@ function showSection(sectionName) {
     if (sectionName === 'quizzes') loadQuizzes();
     if (sectionName === 'announcements') loadAnnouncements();
     if (sectionName === 'resources') loadResources();
+    if (sectionName === 'timetable') loadTimetable();
 }
 
 // Toast notification
@@ -1324,3 +1325,58 @@ document.getElementById('gradeSubmissionForm').addEventListener('submit', async 
         showToast('Error submitting grade', 'error');
     }
 });
+// Timetable Management
+async function loadTimetable() {
+    const tbody = document.getElementById('facultyTimetableBody');
+    tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Loading timetable...</td></tr>';
+
+    try {
+        const response = await fetch('/api/timetable/faculty', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            displayTimetable(data.timetable);
+        } else {
+            const error = await response.json();
+            console.error('Error loading timetable:', error);
+            tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">No timetable found</td></tr>';
+        }
+    } catch (error) {
+        console.error('Error loading timetable:', error);
+        tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-red-500">Error loading timetable</td></tr>';
+    }
+}
+
+function displayTimetable(timetable) {
+    const tbody = document.getElementById('facultyTimetableBody');
+
+    if (!timetable || !timetable.entries || timetable.entries.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">No classes scheduled</td></tr>';
+        return;
+    }
+
+    // Sort entries by day and time
+    const dayOrder = { 'Monday': 1, 'Tuesday': 2, 'Wednesday': 3, 'Thursday': 4, 'Friday': 5, 'Saturday': 6 };
+    const sortedEntries = timetable.entries.sort((a, b) => {
+        if (dayOrder[a.day] !== dayOrder[b.day]) return dayOrder[a.day] - dayOrder[b.day];
+        return a.start_time.localeCompare(b.start_time);
+    });
+
+    tbody.innerHTML = sortedEntries.map(entry => `
+        <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${entry.day}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${entry.start_time} - ${entry.end_time}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">${entry.subject}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${entry.program || timetable.program} - Sem ${entry.semester || timetable.semester}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${entry.room || '-'}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 py-1 text-xs font-semibold rounded-full ${entry.type === 'lecture' ? 'bg-blue-100 text-blue-800' :
+            entry.type === 'lab' ? 'bg-purple-100 text-purple-800' :
+                'bg-green-100 text-green-800'
+        }">${entry.type}</span>
+            </td>
+        </tr>
+    `).join('');
+}
