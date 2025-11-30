@@ -2,23 +2,17 @@ const mongoose = require('mongoose');
 const Resource = require('../models/Resource.mongo');
 const User = require('../models/User.mongo');
 
+const cloudinary = require('../config/cloudinary');
+const streamifier = require('streamifier');
+
 // Submit Assignment (Student)
 const submitAssignment = async (req, res) => {
     try {
         console.log('Submit assignment request received');
-        console.log('Body:', req.body);
-        console.log('File:', req.file);
-        console.log('User:', req.user);
 
         const { resourceId, comments } = req.body;
         const studentId = req.user.user_id || req.user.id;
         const studentName = req.user.name;
-
-        console.log('=== SUBMIT ASSIGNMENT DEBUG ===');
-        console.log('Resource ID from request:', resourceId);
-        console.log('Student ID:', studentId);
-        console.log('Student Name:', studentName);
-        console.log('File:', req.file ? req.file.filename : 'NO FILE');
 
         if (!req.file) {
             return res.status(400).json({ message: 'No file uploaded' });
@@ -29,9 +23,7 @@ const submitAssignment = async (req, res) => {
         }
 
         // Find the resource (assignment)
-        console.log('Searching for resource with ID:', resourceId);
         const resource = await Resource.findById(resourceId);
-        console.log('Resource found?', !!resource);
 
         if (!resource) {
             return res.status(404).json({ message: 'Assignment not found' });
@@ -41,29 +33,45 @@ const submitAssignment = async (req, res) => {
             return res.status(400).json({ message: 'This resource is not an assignment' });
         }
 
+        // Upload to Cloudinary
+        const uploadToCloudinary = () => {
+            return new Promise((resolve, reject) => {
+                const uploadStream = cloudinary.uploader.upload_stream(
+                    {
+                        folder: 'assignments',
+                        resource_type: 'auto',
+                        public_id: `${Date.now()}-${Math.round(Math.random() * 1E9)}`
+                    },
+                    (error, result) => {
+                        if (error) return reject(error);
+                        resolve(result);
+                    }
+                );
+                streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+            });
+        };
+
+        console.log('Uploading to Cloudinary...');
+        const result = await uploadToCloudinary();
+        const fileUrl = result.secure_url;
+        console.log('Cloudinary upload successful:', fileUrl);
+
         // Check if already submitted
         if (!resource.submissions) {
             resource.submissions = [];
-            console.log('Initialized submissions array');
         }
-
-        console.log('Current submissions count:', resource.submissions.length);
 
         const existingSubmission = resource.submissions.find(
             s => s.student_id === studentId
         );
 
-        const fileUrl = `/uploads/assignments/${req.file.filename}`;
-
         if (existingSubmission) {
-            console.log('Updating existing submission for student:', studentId);
             // Update existing submission
             existingSubmission.file_url = fileUrl;
             existingSubmission.submitted_at = new Date();
             existingSubmission.comments = comments;
             existingSubmission.status = 'submitted';
         } else {
-            console.log('Adding new submission for student:', studentId);
             // Add new submission
             resource.submissions.push({
                 student_id: studentId,
@@ -75,28 +83,9 @@ const submitAssignment = async (req, res) => {
             });
         }
 
-        console.log('📝 Submissions before save:', resource.submissions.length);
-        console.log('📄 Full submissions array:', JSON.stringify(resource.submissions, null, 2));
-        
         // Mark submissions as modified to ensure it saves
         resource.markModified('submissions');
-        
-        console.log('💾 Saving resource...');
-        const saveResult = await resource.save();
-        console.log('✅ Save result:', saveResult ? 'SUCCESS' : 'FAILED');
-        
-        // Verify it was saved by fetching again
-        console.log('🔍 Verifying save by fetching resource again...');
-        const savedResource = await Resource.findById(resourceId).lean();
-        console.log('📊 Submissions after save (verified):', savedResource.submissions?.length || 0);
-        console.log('📄 Verified submissions:', JSON.stringify(savedResource.submissions, null, 2));
-        
-        if (savedResource.submissions && savedResource.submissions.length > 0) {
-            console.log('✅ SUBMISSION SAVED SUCCESSFULLY');
-            console.log('👤 Latest submission:', savedResource.submissions[savedResource.submissions.length - 1]);
-        } else {
-            console.log('❌ WARNING: Submissions array is empty after save!');
-        }
+        await resource.save();
 
         res.status(201).json({
             message: 'Assignment submitted successfully',
@@ -112,7 +101,7 @@ const submitAssignment = async (req, res) => {
 const getAssignmentSubmissions = async (req, res) => {
     try {
         const { assignmentId } = req.params;
-        
+
         console.log('=== GET SUBMISSIONS DEBUG ===');
         console.log('Fetching submissions for resource:', assignmentId);
 
@@ -126,7 +115,7 @@ const getAssignmentSubmissions = async (req, res) => {
         console.log('✅ Resource found:', resource.title);
         console.log('📋 Raw submissions from DB:', JSON.stringify(resource.submissions, null, 2));
         console.log('📊 Submission count:', resource.submissions?.length || 0);
-        
+
         if (resource.submissions && resource.submissions.length > 0) {
             console.log('👥 Students who submitted:');
             resource.submissions.forEach((sub, idx) => {

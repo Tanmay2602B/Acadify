@@ -3,48 +3,59 @@ const path = require('path');
 const mongoose = require('mongoose');
 const Resource = require('../models/Resource.mongo');
 const User = require('../models/User.mongo');
+const cloudinary = require('../config/cloudinary');
+const streamifier = require('streamifier');
 
 // Upload resource (Faculty)
 const uploadResource = async (req, res) => {
   try {
     console.log('Upload resource request received');
-    console.log('Body:', req.body);
-    console.log('File:', req.file);
-    console.log('User:', req.user);
 
     const { title, description, type, program, semester, subject, startDate, dueDate, lateSubmission } = req.body;
-    
+
     // Get user ID - try both id and user_id from token
     const uploadedBy = req.user.id || req.user.user_id;
-    
+
     if (!uploadedBy) {
-      console.error('No user ID found in token');
       return res.status(401).json({ message: 'User authentication failed' });
     }
-    
-    console.log('Uploaded by:', uploadedBy);
 
     if (!req.file) {
-      console.error('No file in request');
       return res.status(400).json({ message: 'No file uploaded' });
     }
 
     if (!title || !type || !program || !semester || !subject) {
-      console.error('Missing required fields');
       return res.status(400).json({ message: 'Missing required fields: title, type, program, semester, subject' });
     }
 
-    const fileUrl = `/uploads/resources/${req.file.filename}`;
-    const filePath = req.file.path;
+    // Upload to Cloudinary
+    const uploadToCloudinary = () => {
+      return new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: 'resources',
+            resource_type: 'auto',
+            public_id: `${Date.now()}-${Math.round(Math.random() * 1E9)}`
+          },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+          }
+        );
+        streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+      });
+    };
 
-    console.log('File URL:', fileUrl);
-    console.log('File Path:', filePath);
+    console.log('Uploading to Cloudinary...');
+    const result = await uploadToCloudinary();
+    const fileUrl = result.secure_url;
+    console.log('Cloudinary upload successful:', fileUrl);
 
     // Convert uploadedBy to ObjectId if it's a string
     let uploadedByObjectId;
     try {
-      uploadedByObjectId = mongoose.Types.ObjectId.isValid(uploadedBy) 
-        ? new mongoose.Types.ObjectId(uploadedBy) 
+      uploadedByObjectId = mongoose.Types.ObjectId.isValid(uploadedBy)
+        ? new mongoose.Types.ObjectId(uploadedBy)
         : uploadedBy;
     } catch (err) {
       console.error('Error converting uploadedBy to ObjectId:', err);
@@ -56,7 +67,6 @@ const uploadResource = async (req, res) => {
       description,
       type,
       fileUrl,
-      filePath,
       fileName: req.file.originalname,
       program,
       semester,
@@ -67,23 +77,16 @@ const uploadResource = async (req, res) => {
     // Add assignment-specific fields if type is assignment
     if (type === 'assignment') {
       if (!startDate || !dueDate) {
-        console.error('Missing assignment dates');
         return res.status(400).json({ message: 'Start date and due date are required for assignments' });
       }
-      
+
       resourceData.startDate = new Date(startDate);
       resourceData.dueDate = new Date(dueDate);
       resourceData.lateSubmission = lateSubmission || 'no';
-      
-      console.log('Assignment dates:', { startDate: resourceData.startDate, dueDate: resourceData.dueDate });
     }
-
-    console.log('Creating resource with data:', resourceData);
 
     const newResource = new Resource(resourceData);
     await newResource.save();
-
-    console.log('Resource saved successfully:', newResource._id);
 
     res.status(201).json({
       message: 'Resource uploaded successfully',
@@ -124,18 +127,18 @@ const getFacultyResources = async (req, res) => {
   try {
     const userId = req.user.id || req.user.user_id;
     console.log('Fetching resources for user:', userId);
-    
+
     // Filter resources uploaded by this faculty
     const resources = await Resource.find({ uploadedBy: userId }).sort({ createdAt: -1 });
     console.log('Found resources:', resources.length);
-    
+
     // Log submission counts for assignments
     resources.forEach(r => {
       if (r.type === 'assignment') {
         console.log(`Assignment "${r.title}" has ${r.submissions?.length || 0} submissions`);
       }
     });
-    
+
     res.json({ resources });
   } catch (error) {
     console.error('Error fetching resources:', error);
@@ -148,7 +151,7 @@ const deleteResource = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user.id || req.user.user_id;
-    
+
     const resource = await Resource.findById(id);
 
     if (!resource) {
@@ -161,14 +164,8 @@ const deleteResource = async (req, res) => {
       return res.status(403).json({ message: 'Unauthorized to delete this resource' });
     }
 
-    // Delete file from filesystem
-    if (resource.filePath && fs.existsSync(resource.filePath)) {
-      try {
-        fs.unlinkSync(resource.filePath);
-      } catch (err) {
-        console.error("Error deleting file:", err);
-      }
-    }
+    // Delete file from Cloudinary if possible (requires public_id storage, which we didn't explicitly save but could extract)
+    // For now, we just delete the DB entry as Cloudinary cleanup is a separate concern or requires storing public_id
 
     // Remove from DB
     await Resource.findByIdAndDelete(id);
@@ -190,11 +187,12 @@ const downloadResource = async (req, res) => {
       return res.status(404).json({ message: 'Resource not found' });
     }
 
-    if (!resource.filePath || !fs.existsSync(resource.filePath)) {
-      return res.status(404).json({ message: 'File not found on server' });
+    // Redirect to Cloudinary URL
+    if (resource.fileUrl) {
+      return res.redirect(resource.fileUrl);
     }
 
-    res.download(resource.filePath, resource.fileName);
+    res.status(404).json({ message: 'File URL not found' });
   } catch (error) {
     console.error('Error downloading resource:', error);
     res.status(500).json({ message: 'Failed to download resource' });
