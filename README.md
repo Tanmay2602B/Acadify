@@ -30,7 +30,9 @@
 - **Auto-Attendance**: Marks attendance based on meeting duration
 - **MCQ Auto-Grading**: Create quizzes with automatic grading
 - **Report Card Generator**: Auto-generate grades with SGPA/CGPA
-- **Resource Upload**: Upload notes, PPTs, assignments
+- **Resource Upload**: Upload notes, PPTs, assignments with Cloudinary
+- **Assignment Management**: Create assignments with due dates
+- **Submission Grading**: View and grade student submissions
 - **Notification System**: Auto-notify students
 
 ### 👨‍🎓 Student Features
@@ -38,8 +40,10 @@
 - **Join Meetings**: Embedded Jitsi video conferencing
 - **Take Quizzes**: Auto-graded MCQ exams
 - **View Grades**: Access report cards
+- **Download Resources**: Access notes, PPTs, materials
+- **Submit Assignments**: Upload files with comments
 - **Notifications**: Real-time updates
-- **Submit Assignments**: Upload files
+- **AI Mentor**: Gemini-powered study assistant
 
 ### 🤖 Automatic Features
 - ✅ Auto ID/Password Generation
@@ -88,11 +92,11 @@ npm start
 - **Login**: http://localhost:3000/login.html
 
 ### Test Credentials
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@acadify.com | admin123 |
-| Faculty | john.smith@acadify.com | faculty123 |
-| Student | alice@example.com | student123 |
+| Role | Email | Password | Purpose |
+|------|-------|----------|---------|
+| Admin | admin@acadify.com | admin123 | System administration |
+| Faculty | testfaculty@acadify.com | password123 | Resource upload testing |
+| Student | teststudent@acadify.com | password123 | Assignment submission testing |
 
 ---
 
@@ -100,17 +104,7 @@ npm start
 
 ### Essential Guides
 - **[QUICK_START.md](QUICK_START.md)** - Quick setup guide
-- **[MVP_DOCUMENTATION.md](MVP_DOCUMENTATION.md)** - Complete MVP documentation
-- **[PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)** - Project structure
-
-### Reference Guides
-- **[FEATURES.md](FEATURES.md)** - Detailed feature documentation
-- **[MONGODB_GUIDE.md](MONGODB_GUIDE.md)** - MongoDB Compass guide
-- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Common issues and solutions
-- **[QUICK_REFERENCE.txt](QUICK_REFERENCE.txt)** - Quick reference
-
-### Deployment
-- **[DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md)** - Production deployment guide
+- **[TESTING_GUIDE.md](TESTING_GUIDE.md)** - Upload functionality testing
 
 ---
 
@@ -181,6 +175,16 @@ GET    /api/notifications                # Get all notifications
 GET    /api/notifications/unread-count   # Get unread count
 PUT    /api/notifications/:id/read       # Mark as read
 PUT    /api/notifications/read-all       # Mark all as read
+```
+
+### Resources & Assignments
+```
+POST   /api/resources/upload          # Upload resource (faculty)
+GET    /api/resources/faculty         # Get faculty resources
+GET    /api/resources/student         # Get student resources
+POST   /api/assignments/submit        # Submit assignment (student)
+GET    /api/assignments/:id/submissions # Get submissions (faculty)
+POST   /api/assignments/:id/grade     # Grade submission (faculty)
 ```
 
 ### Report Cards
@@ -303,13 +307,20 @@ GEMINI_API_KEY=your_gemini_api_key
 6. Leave meeting
 7. Check attendance - should be marked automatically
 
-### Test Auto-Grading
-1. Login as faculty
-2. Create a quiz with MCQ questions
-3. Login as student
-4. Take the quiz
-5. Submit answers
-6. View auto-graded results immediately
+### Test Upload Functionality
+1. **Faculty Resource Upload**:
+   - Login: `testfaculty@acadify.com` / `password123`
+   - Go to Resources → Upload Resource
+   - Upload notes, PPTs, or assignments
+   - Supports: PDF, DOC, DOCX, PPT, PPTX, TXT, JPG, PNG, ZIP, RAR (max 10MB)
+
+2. **Student Assignment Submission**:
+   - Login: `teststudent@acadify.com` / `password123`
+   - Go to Resources → Find Assignment → Submit
+   - Upload assignment files with comments
+   - Faculty can view and grade submissions
+
+See [TESTING_GUIDE.md](TESTING_GUIDE.md) for detailed testing instructions.
 
 ---
 
