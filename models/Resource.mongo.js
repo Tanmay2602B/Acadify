@@ -21,9 +21,11 @@ const resourceSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  publicId: {
+    type: String // Cloudinary public_id for deletion
+  },
   filePath: {
-    type: String, // Absolute path for deletion
-    required: true
+    type: String // Kept for backward compatibility, not required
   },
   fileName: {
     type: String, // Original filename for download

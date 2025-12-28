@@ -22,14 +22,30 @@ const upload = multer({
     storage: storage,
     limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
     fileFilter: (req, file, cb) => {
-        const filetypes = /pdf|doc|docx|ppt|pptx|txt/;
-        const mimetype = filetypes.test(file.mimetype);
-        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+        // Allowed MIME types for assignments
+        const allowedMimeTypes = [
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-powerpoint',
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'text/plain',
+            'image/jpeg',
+            'image/jpg',
+            'image/png',
+            'application/zip',
+            'application/x-zip-compressed',
+            'application/x-rar-compressed',
+            'application/octet-stream' // For some file types
+        ];
 
-        if (mimetype && extname) {
+        // Check file extension as fallback
+        const extname = /\.(pdf|doc|docx|ppt|pptx|txt|jpg|jpeg|png|zip|rar)$/i.test(file.originalname);
+
+        if (allowedMimeTypes.includes(file.mimetype) || extname) {
             return cb(null, true);
         }
-        cb(new Error('Error: File upload only supports PDF, DOC, PPT, and TXT!'));
+        cb(new Error('File type not supported! Allowed: PDF, DOC, DOCX, PPT, PPTX, TXT, JPG, PNG, ZIP, RAR'));
     }
 });
 

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timetable Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .time-slot {
+            min-height: 80px;
+            transition: all 0.3s;
+        }
+        .time-slot:hover {
+            background-color: #f3f4f6;
+        }
+        .slot-filled {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            cursor: move;
+        }
+        .slot-conflict {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        .dragging {
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <nav class="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
+            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <button onclick="window.history.back()" class="hover:bg-white/20 p-2 rounded">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h1 class="text-2xl font-bold">Timetable Generator</h1>
+                </div>
+                <span id="userName"></span>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="container mx-auto px-4 py-6">
+            <!-- Controls -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
+                    <select id="program" class="px-4 py-2 border rounded-lg" onchange="loadTimetable()">
+                        <option value="">Select Program</option>
+                        <option value="BCA">BCA</option>
+                        <option value="MCA">MCA</option>
+                        <option value="BSc">BSc</option>
+                    </select>
+                    <select id="semester" class="px-4 py-2 border rounded-lg" onchange="loadTimetable()">
+                        <option value="">Select Semester</option>
+                        <option value="1">Semester 1</option>
+                        <option value="2">Semester 2</option>
+                        <option value="3">Semester 3</option>
+                        <option value="4">Semester 4</option>
+                        <option value="5">Semester 5</option>
+                        <option value="6">Semester 6</option>
+                    </select>
+                    <select id="section" class="px-4 py-2 border rounded-lg">
+                        <option value="A">Section A</option>
+                        <option value="B">Section B</option>
+                        <option value="C">Section C</option>
+                    </select>
+                    <input type="text" id="academicYear" value="2024-25" class="px-4 py-2 border rounded-lg" placeholder="Academic Year">
+                    <button onclick="autoGenerate()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 font-semibold">
+                        <i class="fas fa-magic mr-2"></i>Auto Generate
+                    </button>
+                </div>
+                <div class="flex gap-4">
+                    <button onclick="saveTimetable()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">
+                        <i class="fas fa-save mr-2"></i>Save Timetable
+                    </button>
+                    <button onclick="publishTimetable()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 font-semibold">
+                        <i class="fas fa-check-circle mr-2"></i>Publish
+                    </button>
+                    <button onclick="clearTimetable()" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600">
+                        <i class="fas fa-eraser mr-2"></i>Clear All
+                    </button>
+                    <button onclick="showAddSlotModal()" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">
+                        <i class="fas fa-plus mr-2"></i>Add Slot
+                    </button>
+                </div>
+            </div>
+
+            <!-- Timetable Grid -->
+            <div class="bg-white rounded-lg shadow-lg p-6 overflow-x-auto">
+                <table class="min-w-full border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border px-4 py-3 w-32">Time</th>
+                            <th class="border px-4 py-3">Monday</th>
+                            <th class="border px-4 py-3">Tuesday</th>
+                            <th class="border px-4 py-3">Wednesday</th>
+                            <th class="border px-4 py-3">Thursday</th>
+                            <th class="border px-4 py-3">Friday</th>
+                            <th class="border px-4 py-3">Saturday</th>
+                        </tr>
+                    </thead>
+                    <tbody id="timetableGrid">
+                        <tr>
+                            <td colspan="7" class="text-center py-8 text-gray-500">
+                                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                <div>Loading timetable grid...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Slot Modal -->
+    <div id="addSlotModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full">
+            <h3 class="text-xl font-bold mb-4">Add Time Slot</h3>
+            <div class="space-y-3">
+                <select id="slotDay" class="w-full px-4 py-2 border rounded-lg">
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                </select>
+                <input type="time" id="slotStart" class="w-full px-4 py-2 border rounded-lg" value="09:00">
+                <input type="time" id="slotEnd" class="w-full px-4 py-2 border rounded-lg" value="10:00">
+                <input type="text" id="slotSubject" placeholder="Subject Name" class="w-full px-4 py-2 border rounded-lg">
+                <input type="text" id="slotFaculty" placeholder="Faculty Name" class="w-full px-4 py-2 border rounded-lg">
+                <input type="text" id="slotRoom" placeholder="Room (optional)" class="w-full px-4 py-2 border rounded-lg">
+                <div class="flex gap-3">
+                    <button onclick="addSlot()" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Add</button>
+                    <button onclick="hideAddSlotModal()" class="px-6 bg-gray-300 text-gray-800 py-2 rounded-lg hover:bg-gray-400">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        console.log('HTML loaded successfully');
+        console.log('Current path:', window.location.pathname);
+    </script>
+    <script src="timetable-generator.js"></script>
+    <script>
+        console.log('JavaScript file loaded');
+    </script>
+</body>
+</html>

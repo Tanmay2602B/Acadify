@@ -32,20 +32,25 @@ document.getElementById('menuToggle').addEventListener('click', () => {
 // Navigation
 document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', (e) => {
-        e.preventDefault();
         const section = e.currentTarget.dataset.section;
-        showSection(section);
+        
+        // Only prevent default for internal sections
+        if (section) {
+            e.preventDefault();
+            showSection(section);
 
-        // Update active state
-        document.querySelectorAll('.nav-link').forEach(l => {
-            l.classList.remove('sidebar-active');
-        });
-        e.currentTarget.classList.add('sidebar-active');
+            // Update active state
+            document.querySelectorAll('.nav-link').forEach(l => {
+                l.classList.remove('sidebar-active');
+            });
+            e.currentTarget.classList.add('sidebar-active');
 
-        // Close mobile menu
-        if (window.innerWidth < 1024) {
-            document.getElementById('sidebar').classList.remove('active');
+            // Close mobile menu
+            if (window.innerWidth < 1024) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
         }
+        // External links (like timetable-generator) will work normally
     });
 });
 

@@ -1,121 +1,118 @@
+const mongoose = require('mongoose');
 const Timetable = require('../models/Timetable.mongo');
 
-// Create timetable entry (Admin/Faculty)
-const createTimetableEntry = async (req, res) => {
+// Create or Update Timetable
+const saveTimetable = async (req, res) => {
   try {
-    const { program, semester, academic_year, entries } = req.body;
+    const { program, semester, section, academic_year, slots } = req.body;
 
-    // Check if timetable exists for this program/semester
-    let timetable = await Timetable.findOne({ program, semester, academic_year });
+    const timetable_id = `TT-${program}-${semester}-${section}-${academic_year}`;
+
+    let timetable = await Timetable.findOne({ timetable_id });
 
     if (timetable) {
-      // Update existing timetable
-      timetable.entries = entries;
-      await timetable.save();
+      // Update existing
+      timetable.slots = slots;
+      timetable.updated_at = Date.now();
     } else {
-      // Create new timetable
+      // Create new
       timetable = new Timetable({
-        timetable_id: `TT-${Date.now()}`,
+        timetable_id,
         program,
         semester,
+        section,
         academic_year,
-        entries
+        slots,
+        created_by: req.user.user_id,
+        status: 'draft'
       });
-      await timetable.save();
     }
 
-    res.status(201).json({
+    await timetable.save();
+
+    res.json({
       message: 'Timetable saved successfully',
       timetable
     });
   } catch (error) {
-    console.error('Error creating timetable entry:', error);
-    res.status(500).json({ message: 'Failed to create timetable entry' });
+    console.error('Error saving timetable:', error);
+    res.status(500).json({ message: 'Failed to save timetable', error: error.message });
   }
 };
 
-// Get timetable for a program and semester
+// Get Timetable
 const getTimetable = async (req, res) => {
   try {
-    const { program, semester } = req.params;
-    // Default to current academic year if not specified (simplified)
-    const academic_year = '2024-2025'; 
+    const { program, semester, section, academic_year } = req.query;
 
-    const timetable = await Timetable.findOne({ program, semester });
+    const query = {};
+    if (program) query.program = program;
+    if (semester) query.semester = parseInt(semester);
+    if (section) query.section = section;
+    if (academic_year) query.academic_year = academic_year;
 
-    if (!timetable) {
-      return res.json({ timetable: [] });
-    }
+    const timetables = await Timetable.find(query).sort({ created_at: -1 });
 
-    res.json({ timetable: timetable.entries });
+    res.json({ timetables });
   } catch (error) {
     console.error('Error fetching timetable:', error);
     res.status(500).json({ message: 'Failed to fetch timetable' });
   }
 };
 
-// Get faculty timetable
-const getFacultyTimetable = async (req, res) => {
+// Publish Timetable
+const publishTimetable = async (req, res) => {
   try {
-    const faculty_id = req.user.user_id;
-    
-    // Find all timetables where this faculty has entries
-    const timetables = await Timetable.find({ "entries.faculty_id": faculty_id });
-    
-    let facultyEntries = [];
-    timetables.forEach(tt => {
-      const entries = tt.entries.filter(e => e.faculty_id === faculty_id);
-      entries.forEach(e => {
-        facultyEntries.push({
-          ...e.toObject(),
-          program: tt.program,
-          semester: tt.semester
-        });
-      });
+    const { timetable_id } = req.params;
+    console.log('Publish request for timetable ID:', timetable_id);
+    console.log('User attempting publish:', req.user.user_id, req.user.role);
+
+    // Check if it's a valid ObjectId, otherwise try finding by custom timetable_id
+    const isObjectId = mongoose.Types.ObjectId.isValid(timetable_id);
+    const query = isObjectId ? { _id: timetable_id } : { timetable_id };
+    console.log('Query being used:', query);
+
+    const timetable = await Timetable.findOne(query);
+
+    if (!timetable) {
+      console.log('Timetable not found for ID:', timetable_id);
+      return res.status(404).json({ message: 'Timetable not found' });
+    }
+
+    timetable.status = 'published';
+    await timetable.save();
+    console.log('Timetable published successfully');
+
+    res.json({
+      message: 'Timetable published successfully',
+      timetable
     });
-
-    res.json({ timetable: facultyEntries });
   } catch (error) {
-    console.error('Error fetching faculty timetable:', error);
-    res.status(500).json({ message: 'Failed to fetch faculty timetable' });
+    console.error('Error publishing timetable:', error);
+    res.status(500).json({ message: 'Failed to publish timetable' });
   }
 };
 
-// Update timetable entry
-const updateTimetableEntry = async (req, res) => {
+// Delete Timetable
+const deleteTimetable = async (req, res) => {
   try {
-    const { id } = req.params; // This is likely the timetable ID or entry ID? 
-    // For simplicity, let's assume we are updating the whole timetable or a specific entry.
-    // However, the route is /:id.
-    
-    // If we are updating a specific entry, we need the timetable ID and entry ID.
-    // Let's assume the body contains the updated entry details.
-    
-    // This part depends on how the frontend sends the update.
-    // For now, let's stick to createTimetableEntry which handles upsert.
-    
-    res.status(501).json({ message: 'Use create/upsert for now' });
-  } catch (error) {
-    console.error('Error updating timetable entry:', error);
-    res.status(500).json({ message: 'Failed to update timetable entry' });
-  }
-};
+    const { timetable_id } = req.params;
 
-// Delete timetable entry
-const deleteTimetableEntry = async (req, res) => {
-  try {
-     // Placeholder
-    res.json({ message: 'Timetable entry deleted successfully (placeholder)' });
+    const isObjectId = mongoose.Types.ObjectId.isValid(timetable_id);
+    const query = isObjectId ? { _id: timetable_id } : { timetable_id };
+
+    await Timetable.deleteOne(query);
+
+    res.json({ message: 'Timetable deleted successfully' });
   } catch (error) {
-    console.error('Error deleting timetable entry:', error);
-    res.status(500).json({ message: 'Failed to delete timetable entry' });
+    console.error('Error deleting timetable:', error);
+    res.status(500).json({ message: 'Failed to delete timetable' });
   }
 };
 
 module.exports = {
-  createTimetableEntry,
+  saveTimetable,
   getTimetable,
-  getFacultyTimetable,
-  updateTimetableEntry,
-  deleteTimetableEntry
+  publishTimetable,
+  deleteTimetable
 };

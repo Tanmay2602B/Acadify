@@ -5,30 +5,37 @@ const { authenticate, authorizeStudent } = require('../middlewares/auth');
 const multer = require('multer');
 const path = require('path');
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/assignments/');
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + path.extname(file.originalname));
-    }
-});
+// Configure multer for file uploads (memory storage for Cloudinary)
+const storage = multer.memoryStorage();
 
 const upload = multer({
     storage: storage,
     limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
     fileFilter: (req, file, cb) => {
-        const allowedTypes = /pdf|doc|docx|txt|zip|rar/;
-        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = allowedTypes.test(file.mimetype);
-        
-        if (extname && mimetype) {
+        // Allowed MIME types for assignments
+        const allowedMimeTypes = [
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-powerpoint',
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'text/plain',
+            'image/jpeg',
+            'image/jpg',
+            'image/png',
+            'application/zip',
+            'application/x-zip-compressed',
+            'application/x-rar-compressed',
+            'application/octet-stream' // For some file types
+        ];
+
+        // Check file extension as fallback
+        const extname = /\.(pdf|doc|docx|ppt|pptx|txt|jpg|jpeg|png|zip|rar)$/i.test(file.originalname);
+
+        if (allowedMimeTypes.includes(file.mimetype) || extname) {
             return cb(null, true);
-        } else {
-            cb(new Error('Only documents are allowed (pdf, doc, docx, txt, zip, rar)'));
         }
+        cb(new Error('File type not supported! Allowed: PDF, DOC, DOCX, PPT, PPTX, TXT, JPG, PNG, ZIP, RAR'));
     }
 });
 

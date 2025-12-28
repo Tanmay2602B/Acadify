@@ -10,22 +10,39 @@ const streamifier = require('streamifier');
 const uploadResource = async (req, res) => {
   try {
     console.log('Upload resource request received');
+    console.log('Body:', JSON.stringify(req.body, null, 2));
 
     const { title, description, type, program, semester, subject, startDate, dueDate, lateSubmission } = req.body;
+
+    // Check Cloudinary credentials
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+      console.error('Cloudinary credentials missing');
+      return res.status(500).json({ message: 'Server configuration error: Cloudinary credentials missing' });
+    }
 
     // Get user ID - try both id and user_id from token
     const uploadedBy = req.user.id || req.user.user_id;
 
     if (!uploadedBy) {
+      console.error('User authentication failed in uploadResource');
       return res.status(401).json({ message: 'User authentication failed' });
     }
 
     if (!req.file) {
+      console.error('No file uploaded in request');
       return res.status(400).json({ message: 'No file uploaded' });
     }
+    console.log('File detected:', req.file.originalname);
 
     if (!title || !type || !program || !semester || !subject) {
-      return res.status(400).json({ message: 'Missing required fields: title, type, program, semester, subject' });
+      const missing = [];
+      if (!title) missing.push('title');
+      if (!type) missing.push('type');
+      if (!program) missing.push('program');
+      if (!semester) missing.push('semester');
+      if (!subject) missing.push('subject');
+      console.error('Missing fields:', missing.join(', '));
+      return res.status(400).json({ message: `Missing required fields: ${missing.join(', ')}` });
     }
 
     // Upload to Cloudinary
@@ -67,6 +84,7 @@ const uploadResource = async (req, res) => {
       description,
       type,
       fileUrl,
+      publicId: result.public_id,
       fileName: req.file.originalname,
       program,
       semester,
@@ -111,8 +129,10 @@ const getStudentResources = async (req, res) => {
     // Filter by student's program and semester
     // Also include resources that might be for 'All' or matching
     const resources = await Resource.find({
-      program: student.program,
-      semester: student.semester
+      $and: [
+        { $or: [{ program: student.program }, { program: 'all' }] },
+        { $or: [{ semester: student.semester }, { semester: 'all' }] }
+      ]
     }).sort({ createdAt: -1 });
 
     res.json({ resources });
@@ -164,8 +184,16 @@ const deleteResource = async (req, res) => {
       return res.status(403).json({ message: 'Unauthorized to delete this resource' });
     }
 
-    // Delete file from Cloudinary if possible (requires public_id storage, which we didn't explicitly save but could extract)
-    // For now, we just delete the DB entry as Cloudinary cleanup is a separate concern or requires storing public_id
+    // Delete file from Cloudinary if publicId exists
+    if (resource.publicId) {
+      try {
+        await cloudinary.uploader.destroy(resource.publicId);
+        console.log('Deleted from Cloudinary:', resource.publicId);
+      } catch (cloudError) {
+        console.error('Error deleting from Cloudinary:', cloudError);
+        // Continue to delete from DB even if Cloudinary fails
+      }
+    }
 
     // Remove from DB
     await Resource.findByIdAndDelete(id);

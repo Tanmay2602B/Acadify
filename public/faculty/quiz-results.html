@@ -56,18 +56,24 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="glass-panel rounded-3xl p-6">
                 <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Total Attempts</p>
-                <h3 class="text-3xl font-bold mt-2">42</h3>
-                <p class="text-xs text-emerald-400 mt-1">+12 from last week</p>
+                <h3 class="text-3xl font-bold mt-2">
+                    <i class="fas fa-spinner fa-spin text-slate-500"></i>
+                </h3>
+                <p class="text-xs text-slate-400 mt-1">Loading...</p>
             </div>
             <div class="glass-panel rounded-3xl p-6">
                 <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Average Score</p>
-                <h3 class="text-3xl font-bold mt-2">78%</h3>
-                <p class="text-xs text-slate-400 mt-1">Class average</p>
+                <h3 class="text-3xl font-bold mt-2">
+                    <i class="fas fa-spinner fa-spin text-slate-500"></i>
+                </h3>
+                <p class="text-xs text-slate-400 mt-1">Calculating...</p>
             </div>
             <div class="glass-panel rounded-3xl p-6">
                 <p class="text-xs uppercase tracking-[0.4em] text-slate-400">Pass Rate</p>
-                <h3 class="text-3xl font-bold mt-2">92%</h3>
-                <p class="text-xs text-emerald-400 mt-1">Above target</p>
+                <h3 class="text-3xl font-bold mt-2">
+                    <i class="fas fa-spinner fa-spin text-slate-500"></i>
+                </h3>
+                <p class="text-xs text-slate-400 mt-1">Calculating...</p>
             </div>
         </div>
 
@@ -99,40 +105,10 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-white/5">
-                        <tr class="hover:bg-white/5 transition">
-                            <td class="px-6 py-4 font-medium">Alex Johnson</td>
-                            <td class="px-6 py-4 text-slate-300">Data Structures Mid-Term</td>
-                            <td class="px-6 py-4 text-slate-400">Oct 24, 2023</td>
-                            <td class="px-6 py-4 font-bold text-emerald-400">95%</td>
-                            <td class="px-6 py-4"><span
-                                    class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs">Passed</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <button class="text-sky-400 hover:text-sky-300">View Details</button>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-white/5 transition">
-                            <td class="px-6 py-4 font-medium">Sarah Williams</td>
-                            <td class="px-6 py-4 text-slate-300">Data Structures Mid-Term</td>
-                            <td class="px-6 py-4 text-slate-400">Oct 24, 2023</td>
-                            <td class="px-6 py-4 font-bold text-amber-400">72%</td>
-                            <td class="px-6 py-4"><span
-                                    class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs">Passed</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <button class="text-sky-400 hover:text-sky-300">View Details</button>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-white/5 transition">
-                            <td class="px-6 py-4 font-medium">Michael Brown</td>
-                            <td class="px-6 py-4 text-slate-300">Data Structures Mid-Term</td>
-                            <td class="px-6 py-4 text-slate-400">Oct 25, 2023</td>
-                            <td class="px-6 py-4 font-bold text-rose-400">45%</td>
-                            <td class="px-6 py-4"><span
-                                    class="px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 text-xs">Failed</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <button class="text-sky-400 hover:text-sky-300">View Details</button>
+                        <tr>
+                            <td colspan="6" class="px-6 py-8 text-center text-slate-400">
+                                <i class="fas fa-spinner fa-spin text-4xl mb-3"></i>
+                                <p>Loading quiz results...</p>
                             </td>
                         </tr>
                     </tbody>
@@ -149,6 +125,128 @@
         if (!token || user.role !== 'faculty') {
             window.location.href = '../login.html';
         }
+
+        // Get exam ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const examId = urlParams.get('exam_id');
+
+        // Load quiz results
+        async function loadQuizResults() {
+            if (!examId) {
+                alert('No quiz ID provided');
+                window.location.href = 'dashboard-enhanced.html';
+                return;
+            }
+
+            try {
+                // Fetch quiz details
+                const quizResponse = await fetch(`/api/exams/${examId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!quizResponse.ok) {
+                    throw new Error('Failed to load quiz details');
+                }
+
+                const quizData = await quizResponse.json();
+                const quiz = quizData.exam || quizData;
+
+                // Fetch submissions for this quiz
+                const submissionsResponse = await fetch(`/api/quiz/submissions/${examId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                let submissions = [];
+                if (submissionsResponse.ok) {
+                    const submissionsData = await submissionsResponse.json();
+                    submissions = submissionsData.submissions || submissionsData || [];
+                }
+
+                // Calculate statistics
+                const totalAttempts = submissions.length;
+                const scores = submissions.map(s => s.score || 0);
+                const averageScore = totalAttempts > 0 
+                    ? Math.round(scores.reduce((a, b) => a + b, 0) / totalAttempts) 
+                    : 0;
+                const passedCount = submissions.filter(s => (s.score || 0) >= 40).length;
+                const passRate = totalAttempts > 0 
+                    ? Math.round((passedCount / totalAttempts) * 100) 
+                    : 0;
+
+                // Update stats
+                document.querySelector('.grid .glass-panel:nth-child(1) h3').textContent = totalAttempts;
+                document.querySelector('.grid .glass-panel:nth-child(2) h3').textContent = averageScore + '%';
+                document.querySelector('.grid .glass-panel:nth-child(3) h3').textContent = passRate + '%';
+
+                // Render results table
+                renderResultsTable(submissions, quiz);
+
+            } catch (error) {
+                console.error('Error loading quiz results:', error);
+                alert('Error loading quiz results. Please try again.');
+            }
+        }
+
+        function renderResultsTable(submissions, quiz) {
+            const tbody = document.querySelector('tbody');
+            
+            if (submissions.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="px-6 py-8 text-center text-slate-400">
+                            <i class="fas fa-inbox text-4xl mb-3"></i>
+                            <p>No submissions yet for this quiz</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = submissions.map(submission => {
+                const score = submission.score || 0;
+                const passed = score >= 40;
+                const date = submission.submitted_at 
+                    ? new Date(submission.submitted_at).toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric' 
+                    })
+                    : 'N/A';
+
+                return `
+                    <tr class="hover:bg-white/5 transition">
+                        <td class="px-6 py-4 font-medium">${submission.student_name || submission.student_id || 'Unknown'}</td>
+                        <td class="px-6 py-4 text-slate-300">${quiz.title || 'Quiz'}</td>
+                        <td class="px-6 py-4 text-slate-400">${date}</td>
+                        <td class="px-6 py-4 font-bold ${passed ? 'text-emerald-400' : 'text-rose-400'}">${score}%</td>
+                        <td class="px-6 py-4">
+                            <span class="px-3 py-1 rounded-full ${passed ? 'bg-emerald-500/20 text-emerald-300' : 'bg-rose-500/20 text-rose-300'} text-xs">
+                                ${passed ? 'Passed' : 'Failed'}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <button onclick="viewSubmissionDetails('${submission._id || submission.submission_id}')" 
+                                class="text-sky-400 hover:text-sky-300">
+                                View Details
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function viewSubmissionDetails(submissionId) {
+            // You can implement a modal or redirect to details page
+            alert('Submission details: ' + submissionId);
+        }
+
+        // Export to CSV
+        document.querySelector('button:has(.fa-download)').addEventListener('click', function() {
+            alert('Export to CSV feature - Coming soon');
+        });
+
+        // Load results on page load
+        loadQuizResults();
     </script>
 </body>
 

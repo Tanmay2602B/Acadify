@@ -1,27 +1,20 @@
 const express = require('express');
 const {
-  createTimetableEntry,
+  saveTimetable,
   getTimetable,
-  getFacultyTimetable,
-  updateTimetableEntry,
-  deleteTimetableEntry
+  publishTimetable,
+  deleteTimetable
 } = require('../controllers/timetable.mongo.controller');
 const { authenticate, authorizeAdmin, authorizeFaculty } = require('../middlewares/auth');
 
 const router = express.Router();
 
-// Apply authentication middleware to all routes
 router.use(authenticate);
 
-// Admin routes
-router.post('/', authorizeAdmin, createTimetableEntry);
-router.put('/:id', authorizeAdmin, updateTimetableEntry);
-router.delete('/:id', authorizeAdmin, deleteTimetableEntry);
-
-// Public route to get timetable for a program and semester
-router.get('/:program/:semester', getTimetable);
-
-// Faculty route to get their timetable
-router.get('/faculty', authorizeFaculty, getFacultyTimetable);
+// Admin and Faculty can manage timetables
+router.post('/', authorizeFaculty, saveTimetable);
+router.get('/', getTimetable);
+router.put('/:timetable_id/publish', authorizeFaculty, publishTimetable);
+router.delete('/:timetable_id', authorizeAdmin, deleteTimetable);
 
 module.exports = router;

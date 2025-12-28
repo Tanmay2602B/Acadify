@@ -31,18 +31,23 @@ document.getElementById('menuToggle').addEventListener('click', () => {
 // Navigation
 document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', (e) => {
-        e.preventDefault();
         const section = e.currentTarget.dataset.section;
-        showSection(section);
+        
+        // If link has data-section, it's an internal section
+        if (section) {
+            e.preventDefault();
+            showSection(section);
 
-        document.querySelectorAll('.nav-link').forEach(l => {
-            l.classList.remove('sidebar-active');
-        });
-        e.currentTarget.classList.add('sidebar-active');
+            document.querySelectorAll('.nav-link').forEach(l => {
+                l.classList.remove('sidebar-active');
+            });
+            e.currentTarget.classList.add('sidebar-active');
 
-        if (window.innerWidth < 1024) {
-            document.getElementById('sidebar').classList.remove('active');
+            if (window.innerWidth < 1024) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
         }
+        // Otherwise, let the link navigate normally (for external pages like timetable-generator.html)
     });
 });
 
@@ -88,7 +93,30 @@ function showAddStudentModal() {
 }
 
 function showAddFacultyModal() {
-    document.getElementById('addFacultyModal').classList.remove('hidden');
+    const modal = document.getElementById('addFacultyModal');
+    const form = document.getElementById('addFacultyForm');
+    
+    if (!modal) {
+        console.error('Add Faculty Modal not found');
+        showToast('Error: Modal not found', 'error');
+        return;
+    }
+    
+    // Reset form and remove edit mode
+    if (form) {
+        form.reset();
+        delete form.dataset.editMode;
+        delete form.dataset.userId;
+        
+        // Update button text
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fas fa-plus mr-2"></i>Add Faculty';
+        }
+    }
+    
+    modal.classList.remove('hidden');
+    console.log('Add Faculty Modal opened');
 }
 
 function hideModal(modalId) {
