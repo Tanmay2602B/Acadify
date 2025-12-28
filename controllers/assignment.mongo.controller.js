@@ -5,6 +5,9 @@ const User = require('../models/User.mongo');
 const cloudinary = require('../config/cloudinary');
 const streamifier = require('streamifier');
 
+// Ensure environment variables are loaded
+require('dotenv').config();
+
 // Submit Assignment (Student)
 const submitAssignment = async (req, res) => {
     try {
