@@ -1,0 +1,38 @@
+Programming Assignment Solution
+Student: Test Student
+Subject: Programming in C
+Date: December 28, 2025
+
+Assignment: Implement Sorting Algorithms
+
+Solution:
+
+1. Bubble Sort Algorithm:
+   - Time Complexity: O(n²)
+   - Space Complexity: O(1)
+   - Implementation provided in attached C file
+
+2. Quick Sort Algorithm:
+   - Time Complexity: O(n log n) average case
+   - Space Complexity: O(log n)
+   - Implementation provided in attached C file
+
+3. Test Results:
+   - Both algorithms tested with sample data
+   - Results verified for correctness
+   - Performance comparison included
+
+Files Included:
+- sorting_algorithms.c (main implementation)
+- test_data.txt (sample input/output)
+- documentation.pdf (detailed explanation)
+
+Notes:
+This solution demonstrates understanding of:
+- Algorithm implementation
+- Time/space complexity analysis
+- Code documentation
+- Testing methodology
+
+Submitted by: Test Student (STU001)
+Program: BCA, Semester 3

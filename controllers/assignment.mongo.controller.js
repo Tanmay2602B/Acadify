@@ -5,9 +5,6 @@ const User = require('../models/User.mongo');
 const cloudinary = require('../config/cloudinary');
 const streamifier = require('streamifier');
 
-// Ensure environment variables are loaded
-require('dotenv').config();
-
 // Submit Assignment (Student)
 const submitAssignment = async (req, res) => {
     try {
@@ -17,10 +14,10 @@ const submitAssignment = async (req, res) => {
         const studentId = req.user.user_id || req.user.id;
         const studentName = req.user.name;
 
-        // Check for Cloudinary credentials
-        if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
-            console.error('Cloudinary credentials missing');
-            return res.status(500).json({ message: 'Server configuration error: Cloudinary credentials missing' });
+        // Check Cloudinary configuration instead of environment variables directly
+        if (!cloudinary.config().cloud_name || !cloudinary.config().api_key || !cloudinary.config().api_secret) {
+            console.error('Cloudinary configuration missing');
+            return res.status(500).json({ message: 'Server configuration error: Cloudinary not configured properly' });
         }
 
         if (!req.file) {
